@@ -1,0 +1,16 @@
+'''
+import asf_search as asf
+options = {
+	'intersectsWith': 'POLYGON((-1.5443 5.4444,2.0799 5.4444,2.0799 9.2008,-1.5443 9.2008,-1.5443 5.4444))',
+	'dataset': 'SENTINEL-1',
+	'maxResults': 250
+}
+results = asf.search(**options)
+print(results)
+'''
+
+options_1 = {
+    'intersectsWith': 'POLYGON((-1.5443 5.4444,2.0799 5.4444,2.0799 9.2008,-1.5443 9.2008,-1.5443 5.4444))',
+    'dataset': 'SENTINEL-1',
+    'maxResults': 250
+}

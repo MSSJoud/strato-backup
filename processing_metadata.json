@@ -1,0 +1,50 @@
+{
+    "updated": "2025-04-24 12:16:13.942389",
+    "scripts": {
+        "generate_topsApp_batch.py": {
+            "timestamp": "2025-04-24 12:16:13.942365",
+            "arguments": [
+                {
+                    "name": "db_name",
+                    "value": "aoi_3_slcs",
+                    "description": "PostgreSQL DB"
+                },
+                {
+                    "name": "table_name",
+                    "value": "slc_data",
+                    "description": "DB table"
+                },
+                {
+                    "name": "data_path",
+                    "value": "/mnt/slc_data",
+                    "description": "Directory of .zip files"
+                },
+                {
+                    "name": "output_dir",
+                    "value": "./isce2_xmls",
+                    "description": "Where to save XMLs"
+                },
+                {
+                    "name": "bmax",
+                    "value": 200.0,
+                    "description": "Max B\u22a5"
+                },
+                {
+                    "name": "tmax",
+                    "value": 300,
+                    "description": "Max \u0394T"
+                },
+                {
+                    "name": "dry_run",
+                    "value": false,
+                    "description": "Simulate only"
+                },
+                {
+                    "name": "plot",
+                    "value": false,
+                    "description": "Show plot"
+                }
+            ]
+        }
+    }
+}
