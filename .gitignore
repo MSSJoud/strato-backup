@@ -17,3 +17,12 @@ __pycache__/
 *.h5
 *.csv
 
+# Ignore all large binary/data files
+*.dem.wgs84
+*.tif
+*.nc
+*.mat
+*.h5
+*.SAFE
+*.zip
+*.tar
