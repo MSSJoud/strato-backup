@@ -1,0 +1,34 @@
+name: isce2plus
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy=1.23
+  - basemap
+  - libgdal
+  - python=3.10
+  - pytest
+  - scons
+  - gdal
+  - h5py
+  - opencv
+  - fftw
+  - cython
+  - scipy
+  - git
+  - isce2
+  - jupyter
+  - boto3
+  - conda-build
+  - mintpy
+  - conda-forge::asf_search
+  - conda-forge::xarray
+  - rioxarray
+  - conda-forge::rasterio
+  - conda-forge::netcdf4
+  - sardem
+  - hyp3_sdk
+  - conda-forge::pv
+  - ipympl
+  - autorift
+prefix: /home/mehdi/anaconda3/envs/isce2plus

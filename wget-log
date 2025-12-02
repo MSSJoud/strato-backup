@@ -1,0 +1,15 @@
+--2025-10-24 00:25:45--  https://filesender.deic.dk/?s=download
+Resolving filesender.deic.dk (filesender.deic.dk)... 130.225.247.37, 2001:878:0:e000:82:e1:f7:25
+Connecting to filesender.deic.dk (filesender.deic.dk)|130.225.247.37|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://filesender.deic.dk/filesender/?s=download [following]
+--2025-10-24 00:25:46--  https://filesender.deic.dk/filesender/?s=download
+Reusing existing connection to filesender.deic.dk:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 4812 (4.7K) [text/html]
+Saving to: ‘/mnt/data/aoi_pinja/index.html?s=download’
+
+index.html?s=download          0%[                                               ]       0  --.-KB/s               index.html?s=download        100%[==============================================>]   4.70K  --.-KB/s    in 0s      
+
+2025-10-24 00:25:46 (2.53 GB/s) - ‘/mnt/data/aoi_pinja/index.html?s=download’ saved [4812/4812]
+

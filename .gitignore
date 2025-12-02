@@ -1,0 +1,19 @@
+# Ignore all folders
+*/
+
+# Allow specific types of files
+!*.py
+!*.ipynb
+!*.json
+!*.yml
+!*.yaml
+!*.txt
+
+# Ignore common garbage
+__pycache__/
+*.log
+*.tmp
+
+*.h5
+*.csv
+

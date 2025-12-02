@@ -1,0 +1,11 @@
+<VRTDataset rasterXSize="10800" rasterYSize="7200">
+    <SRS>EPSG:4326</SRS>
+    <GeoTransform>94.0, 0.0002777777777777778, 0.0, 24.0, 0.0, -0.0002777777777777778</GeoTransform>
+    <VRTRasterBand dataType="Int16" band="1" subClass="VRTRawRasterBand">
+        <SourceFilename relativeToVRT="1">demLat_N22_N24_Lon_E094_E097.dem.wgs84</SourceFilename>
+        <ByteOrder>LSB</ByteOrder>
+        <ImageOffset>0</ImageOffset>
+        <PixelOffset>2</PixelOffset>
+        <LineOffset>21600</LineOffset>
+    </VRTRasterBand>
+</VRTDataset>
