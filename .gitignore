@@ -1,6 +1,8 @@
 # Ignore all folders
 */
-
+# But allow these directories to be traversed
+!project_po/
+!project_po/scripts/
 # Allow specific types of files
 !*.py
 !*.ipynb
