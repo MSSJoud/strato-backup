@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "Hybrid MCMC and Physics-Aware Transformer-Based Inversion of Layered Hydrologic Storage from InSAR Deformation"
+message: "If you use this repository, please cite the associated paper."
+type: software
+authors:
+  - family-names: "Joud"
+    given-names: "Mehdi"
+  - family-names: "Ojha"
+    given-names: "Chandrakanta"
+repository-code: "https://github.com/MSSJoud/insar-layered-groundwater-mcmc-swin"
+abstract: >
+  Paper companion repository for a hybrid Bayesian and physics-aware transformer
+  workflow for hydrologic storage inversion from InSAR deformation, with an
+  Emilia-Romagna, Italy case study.
+keywords:
+  - InSAR
+  - groundwater
+  - hydrology
+  - MCMC
+  - Kalman filtering
+  - transformer
+  - W3RA
+  - GRACE
+  - SMAP
+license: "No license specified"

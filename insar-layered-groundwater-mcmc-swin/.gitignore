@@ -1,0 +1,32 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+.venv/
+venv/
+env/
+
+# local caches and scratch
+tmp/
+tmp_*/
+scratch/
+
+# do not add new heavy outputs by accident
+outputs/
+outputs_*/
+*.pt
+*.pth
+*.h5
+*.nc
+*.npz
+*.npy
+*.zip
+
+# but keep the curated lightweight summaries already committed
+!summaries/**/*.json
+!summaries/**/*.csv
+

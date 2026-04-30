@@ -1,0 +1,37 @@
+# Python / notebooks
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Local environments
+.env
+.venv/
+venv/
+
+# Large generated artifacts that are not GitHub-friendly
+*.h5
+*.hdf5
+*.nc
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.joblib
+*.mat
+
+# Optional compressed outputs
+*.tar
+*.gz
+*.zip
+
+# Keep lightweight paper outputs and summaries, but do not force-add huge binary exports
+
+# Separate clean package repo lives inside this workspace but should not be tracked here
+swin3d-dual-decoder-insar-inversion/
+*.pdf

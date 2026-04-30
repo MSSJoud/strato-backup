@@ -1,0 +1,211 @@
+\section*{Paper Figure, Table, and Text Insertion Plan}
+
+\subsection*{Main figures}
+
+\subsubsection*{Figure 1: Study area and validation setting}
+Replace the current Figure 1 placeholder in Section II immediately after the paragraph ending with ``Figure 1 is reserved for the study-area map, overlap grid, and validation-well locations.''
+
+\begin{verbatim}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figure_1.png}
+    \caption{Study area and validation setting. Left: DTM background over the broader Bologna/Emilia-Romagna scene with the shared InSAR/W3RA overlap marked by a red box. Right: zoom on the overlap domain showing the validation-well network and the trusted well subset used for interpretation.}
+    \label{fig:study_area}
+\end{figure*}
+\end{verbatim}
+
+\subsubsection*{Figure 2: Full workflow schematic}
+Insert in Section IV at the first paragraph where the workflow is introduced, immediately after the sentence in which the workflow is cited.
+
+\begin{verbatim}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figure_2.png}
+    \caption{Overall workflow of the study. The synthetic pre-stage validates the five-layer deformation-space inversion machinery under known truth. The applied Bologna branch uses the grouped state $[S0+Ss,\; Sd+Sr,\; Sg]$, assimilates InSAR, GRACE, and refreshed SMAP, treats SWOT as exploratory, and evaluates the grouped groundwater posterior against wells.}
+    \label{fig:workflow}
+\end{figure*}
+\end{verbatim}
+
+\subsubsection*{Figure 3: Synthetic validation summary}
+Replace the current Figure 3 placeholder in the synthetic-results subsection of Section V, directly after the paragraph that introduces the synthetic pre-stage as a methodological justification block.
+
+\begin{verbatim}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{figure_3.png}
+    \caption{Compact synthetic validation summary. The deformation-space Stage 1 inversion achieves strong recovery in the model-consistent synthetic setting, particularly for grouped storage metrics and deformation reconstruction.}
+    \label{fig:synthetic_summary}
+\end{figure}
+\end{verbatim}
+
+\subsubsection*{Figure 4: Main grouped Bologna result}
+Replace the current Figure 4 placeholder in Section V-C, directly after the paragraph beginning ``For the real Bologna application, the final workflow is'' and before Table III.
+
+\begin{verbatim}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figure_4.png}
+    \caption{Main grouped Stage 1 result for the Bologna overlap. Top: full-grid posterior reconstructions for ShallowLoad, DeepLoad, and Groundwater on the final overlap date, obtained by projecting the tiled grouped posterior back onto the shared $22\times24$ grid. Map values are in mm. Bottom: observed, prior, and posterior regional time-series comparisons for InSAR, GRACE, and SMAP.}
+    \label{fig:grouped_result}
+\end{figure*}
+\end{verbatim}
+
+\subsubsection*{Figure 5: Independent well validation}
+Replace the current Figure 5 placeholder in Section V-C immediately after the paragraph ending with ``Figure 5 should summarize these well-validation results and the trusted validation panel.''
+
+\begin{verbatim}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figure_5.png}
+    \caption{Independent well validation of the grouped posterior. Gray dots show the broader Emilia-Romagna well network, while trusted Bologna wells with best-lag anomaly correlation greater than or equal to 0.6 are highlighted as colored dots and starred markers. The upper-right panel shows the distribution of best-match anomaly correlation by depth class, and the lower-right panel summarizes the best-lag / best-state counts across the validated wells.}
+    \label{fig:well_validation}
+\end{figure*}
+\end{verbatim}
+
+\subsection*{Main tables}
+
+\subsubsection*{Table I: Data summary}
+Replace the current Table I placeholder in Section II.
+
+\begin{verbatim}
+\begin{table*}[t]
+\caption{Summary of the main datasets used in this study.}
+\label{tab:data_summary}
+\centering
+\begin{tabular}{p{1.6cm} p{3.4cm} p{2.1cm} p{2.4cm} p{2.3cm} p{2.4cm} p{2.8cm}}
+\hline
+Dataset & Product / source & Coverage used & Variables used & Role in study & Processing before assimilation & Notes \\
+\hline
+InSAR & \texttt{timeseries\_SET\_ERA5\_ramp\_demErr.h5} (MintPy / Sentinel-1) & 2017-01-04 to 2025-06-27; 394 acquisitions; 555 interferograms & deformation time series & Main observation stream & MintPy inversion, aggregation to W3RA grid, anomaly conversion & Descending geometry \\
+W3RA & Local overlap products from \texttt{W3RA\_2010\_2024\_.nc} & 2017-01-04 to 2024-08-01; shared $22\times24$ grid & $S0,Ss,Sd,Sg,Sr$ & Prior hydrologic state basis & Overlap extraction, regrouping, anomaly generation & Used for grouped state construction \\
+GRACE & JPL RL06.3 CRI mascon & 362 aligned overlap dates & $\mathrm{lwe\_thickness}$ anomaly & Regional storage constraint & Regional mean over Bologna overlap bounding box & Coarse external constraint \\
+SMAP & SPL3SMP\_E & 358 downloads; 254 valid aligned dates & surface soil moisture & Near-surface hydrologic constraint & One daily granule per InSAR date; regional mean over overlap box & Main shallow-state external constraint \\
+SWOT & RiverSP reach 2.0 and LakeSP obs 2.0 & 33 river dates; 34 lake dates; 9 matched dates retained per stream & surface-water summaries & Exploratory surface-water constraint & bbox subsetting and nearest-date matching & Included but not a main driver of the best result \\
+Wells & ARPAE manual and automatic groundwater networks & 2009-01-01 to 2024-12-18; validation overlap 2017-01-04 to 2024-08-01 & piezometric head; depth to water & Independent validation & Metadata merge, UTM-to-lon/lat conversion, anomaly-space matching & Used for external support of grouped groundwater \\
+\hline
+\end{tabular}
+\end{table*}
+\end{verbatim}
+
+\subsubsection*{Table II: Experiment design summary}
+Insert at the start of Section IV, after the workflow overview paragraph and before the detailed synthetic/real workflow description.
+
+\begin{verbatim}
+\begin{table*}[t]
+\caption{Summary of the synthetic and real experiment blocks used in the study.}
+\label{tab:experiment_blocks}
+\centering
+\begin{tabular}{p{2.2cm} p{3.2cm} p{3.2cm} p{3.0cm} p{3.2cm}}
+\hline
+Stage & State formulation & Observations & Goal & Output \\
+\hline
+Synthetic Stage 1 & $[S0,Ss,Sd,Sg,Sr]$ & Synthetic deformation $Y$ and model-side deformation predictors $Z$ & Validate the deformation-space inversion machinery under known truth & Posterior synthetic state and deformation skill \\
+Synthetic Stage 2 & Residual / lag refinement & Synthetic InSAR window and Stage 1 prior & Test whether learned residuals add value in a controlled setting & Exploratory residual diagnostic \\
+Real grouped Stage 1 & $[S0+Ss,\; Sd+Sr,\; Sg]$ & InSAR + GRACE + refreshed SMAP & Stable applied estimator for Bologna & Grouped posterior state \\
+Exploratory SWOT extension & $[S0+Ss,\; Sd+Sr,\; Sg]$ & InSAR + GRACE + SMAP + SWOT & Test whether sparse surface-water information improves the grouped posterior & No material improvement under current overlap sparsity \\
+Well validation & Grouped posterior vs well anomalies & ARPAE manual + automatic wells & Independent support for the grouped groundwater signal & Station-wise lagged anomaly correlations and trusted interpretation subset \\
+\hline
+\end{tabular}
+\end{table*}
+\end{verbatim}
+
+\subsubsection*{Table III: Main quantitative results}
+Replace the current Table III placeholder in Section V.
+
+\begin{verbatim}
+\begin{table}[t]
+\caption{Main quantitative results for the grouped Bologna estimator.}
+\label{tab:main_results}
+\centering
+\begin{tabular}{p{0.58\columnwidth} p{0.22\columnwidth}}
+\hline
+Metric & Value \\
+\hline
+Regional InSAR posterior $R^2$ & 0.9706 \\
+Regional GRACE posterior $R^2$ & 0.4865 \\
+Regional SMAP posterior $R^2$ & 0.6180 \\
+Tiled InSAR posterior $R^2$ & 0.9046 \\
+max $|\mathrm{ShallowLoad}|$ & 52.1 mm \\
+max $|\mathrm{DeepLoad}|$ & 88.1 mm \\
+max $|\mathrm{Groundwater}|$ & 48.1 mm \\
+Evaluated wells & 83 \\
+Median well correlation & 0.704 \\
+Wells with correlation $\ge 0.3$ & 74 \\
+Wells with correlation $\ge 0.5$ & 62 \\
+Wells with correlation $\ge 0.6$ & 57 \\
+Trusted hydrogeologic groups & 6 \\
+Trusted stations & 21 \\
+Trusted-subset median correlation & 0.801 \\
+\hline
+\end{tabular}
+\end{table}
+\end{verbatim}
+
+\subsubsection*{Table IV: Depth-class well-validation summary}
+Insert in Section V-C immediately after Figure~\ref{fig:well_validation} is first discussed.
+
+\begin{verbatim}
+\begin{table}[t]
+\caption{Depth-class summary of best-match well-validation correlations.}
+\label{tab:depth_validation}
+\centering
+\begin{tabular}{lcccc}
+\hline
+Depth class & Wells & Mean corr. & Median corr. & Wells with corr. $\ge 0.5$ \\
+\hline
+Deep & 41 & 0.579 & 0.617 & 25 \\
+Intermediate & 28 & 0.688 & 0.731 & 23 \\
+Shallow & 14 & 0.781 & 0.767 & 14 \\
+\hline
+\end{tabular}
+\end{table}
+\end{verbatim}
+
+\subsection*{Supplementary figures and tables}
+
+Use the following in the Supplementary Material:
+\begin{itemize}
+    \item \texttt{figure\_6.png}: top trusted well time-series comparisons.
+    \item \texttt{figure\_s1.png}: trusted hydrogeologic groups.
+    \item \texttt{figure\_s2.png}: lag histogram by best state.
+    \item \texttt{figure\_s3.png}: depth-class distribution alternative / sensitivity.
+    \item \texttt{figure\_s4.png}: conditioning diagnostics.
+    \item \texttt{figure\_s5.png}: SWOT overlap diagnostic.
+    \item \texttt{figure\_s6.png}: full Emilia-Romagna wells overview.
+\end{itemize}
+
+\subsection*{Text additions agreed for the manuscript}
+
+\subsubsection*{A. Insert in Section V-C immediately after the paragraph reporting the InSAR/GRACE/SMAP posterior skill}
+
+\begin{verbatim}
+The large separation between prior and posterior InSAR predictions reflects the mismatch of the raw grouped hydrologic forward model in deformation space and the strong corrective effect of the InSAR-constrained Kalman update. Accordingly, the InSAR posterior panel should be interpreted as internal assimilation consistency rather than independent validation. Despite the weak raw prior fit, the grouped multisensor posterior reproduces the observed InSAR anomaly series very well while also improving consistency with GRACE and SMAP, indicating that the assimilated grouped state-space model is working effectively as an estimator even though the uncorrected hydrologic prior is insufficient on its own in deformation space.
+\end{verbatim}
+
+\subsubsection*{B. Insert in Section V-C immediately after the paragraph introducing the lag search}
+
+\begin{verbatim}
+The lag histogram in Figure~\ref{fig:well_validation} summarizes the preferred temporal offset between grouped model anomalies and well-head anomalies across the validation network. For each well, correlations were evaluated over candidate lags of $-90,-60,-30,-14,0,14,30,60,90$ days, and the histogram reports the lag yielding the strongest anomaly agreement, thereby indicating the characteristic response delay of the well signal relative to the inferred grouped hydrologic state. This analysis is useful because agreement between storage-like grouped states and hydraulic-head observations is not expected to be strictly synchronous everywhere; the lag distribution therefore provides a compact summary of spatially varying response timing across the monitored hydrogeologic system.
+\end{verbatim}
+
+\subsubsection*{C. Insert in Section V-C immediately after the paragraph reporting the depth-stratified medians}
+
+\begin{verbatim}
+The depth-class panel in Figure~\ref{fig:well_validation} is based on the full validated well set rather than on the trusted subset alone. For each well, the plotted value corresponds to the best-match anomaly correlation obtained after spatial interpolation to the well location, lag search, and best-state selection among the grouped components. The plotted violins therefore summarize the distribution of best-match anomaly correlation within each depth class, with the median shown as the central reference line.
+\end{verbatim}
+
+\subsubsection*{D. Replace the existing trusted-subset sentence in Section V-C with the following expanded version}
+
+\begin{verbatim}
+To avoid over-interpreting weaker hydrogeologic settings, a conservative trusted validation subset was defined only after the full well-validation exercise had been completed on all 83 evaluated wells. It is therefore a post-validation interpretation subset rather than an a priori station-selection rule. A station entered the trusted subset if its best-matching grouped state was Groundwater, its best-lag anomaly correlation was at least 0.6, it had at least 10 matched observations, and it belonged to a hydrogeologic group showing consistently strong validation behavior across multiple stations. Under that rule, the trusted panel contains 6 hydrogeologic groups and 21 stations.
+\end{verbatim}
+
+\subsubsection*{E. Insert in the Figure 4 discussion paragraph}
+
+\begin{verbatim}
+The map panels in Figure~\ref{fig:grouped_result} are in millimeters, because the grouped posterior is reconstructed from W3RA storage anomalies through dimensionless correction factors. The displayed fields are full-grid reconstructions obtained by projecting the tiled posterior back onto the shared 22 x 24 overlap grid; they should therefore be interpreted as spatial reconstructions of the grouped estimator rather than as an independently estimated fine-resolution inversion.
+\end{verbatim}
+
+\subsection*{How to use this plan}
+
+If the figure files are copied into the main manuscript directory with the same names as in the \texttt{paper\_figures} folder, the LaTeX blocks above can be pasted directly into the manuscript and the placeholders can be replaced one-by-one.

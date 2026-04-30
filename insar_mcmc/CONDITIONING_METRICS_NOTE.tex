@@ -1,0 +1,379 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{hyperref}
+
+\title{Conditioning Diagnostics for the Bologna Inversion: Theory, Computation, and Results}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose}
+
+This note formalizes the conditioning diagnostics used to quantify why the original real-data layered inversion was ill-conditioned, and how the grouped balanced multisensor Stage~1 improved the inverse problem. The diagnostics were computed from the saved runs using
+\texttt{conditioning\_diagnostics.py} and summarized in
+\texttt{outputs\_conditioning\_diagnostics/conditioning\_diagnostics\_summary.json}.
+
+\section{Inverse-problem setting}
+
+\subsection{Old deformation-space Stage~1 formulation}
+
+The original real-data deformation-space formulation can be written schematically as
+\begin{equation}
+Y_{t,p} = Z_{t,p}\,\theta_{t,p} + \varepsilon_{t,p},
+\end{equation}
+where $Y_{t,p}$ is observed deformation, $Z_{t,p}$ is the forward-converted W3RA predictor in deformation space, and $\theta_{t,p}$ is a latent correction coefficient. In the layered case,
+\begin{equation}
+Z_{t,p}
+=
+\begin{bmatrix}
+u^{(S0)}_{t,p} &
+u^{(Ss)}_{t,p} &
+u^{(Sd)}_{t,p} &
+u^{(Sg)}_{t,p} &
+u^{(Sr)}_{t,p}
+\end{bmatrix},
+\end{equation}
+while in the earlier grouped patch case,
+\begin{equation}
+Z_{t,p}^{\mathrm{grp}}
+=
+\begin{bmatrix}
+u^{(\mathrm{LoadTotal})}_{t,p} &
+u^{(Sg)}_{t,p}
+\end{bmatrix}.
+\end{equation}
+
+To analyze conditioning, all valid space--time rows were stacked into a single design matrix,
+\begin{equation}
+J_{\mathrm{stack}}
+=
+\begin{bmatrix}
+Z_{1,1} \\
+Z_{1,2} \\
+\vdots \\
+Z_{T,P}
+\end{bmatrix}.
+\end{equation}
+
+\subsection{Current grouped balanced multisensor Stage~1}
+
+The current real-data grouped Stage~1 uses the grouped state
+\begin{equation}
+x_t =
+\begin{bmatrix}
+\mathrm{ShallowLoad}_t\\
+\mathrm{DeepLoad}_t\\
+\mathrm{Groundwater}_t
+\end{bmatrix}
+=
+\begin{bmatrix}
+S0_t + Ss_t\\
+Sd_t + Sr_t\\
+Sg_t
+\end{bmatrix},
+\end{equation}
+with dynamic correction factors
+\begin{equation}
+\theta_t = \phi \theta_{t-1} + (1-\phi)\theta_{\mathrm{ref}} + \eta_t,
+\qquad
+x_t = \theta_t \odot z_t.
+\end{equation}
+
+At each time $t$, the available observations are represented by one or more rows of a balanced observation operator $H_t$. In our implementation:
+
+\paragraph{InSAR row}
+\begin{equation}
+h_t^{(\mathrm{InSAR})}
+=
+\frac{z_t^{(\mathrm{def})}}{s_{\mathrm{insar}}},
+\end{equation}
+where $z_t^{(\mathrm{def})}$ is the grouped deformation-side predictor and $s_{\mathrm{insar}}$ is the balancing scale.
+
+\paragraph{GRACE row}
+\begin{equation}
+h_t^{(\mathrm{GRACE})}
+=
+\frac{z_t^{(\mathrm{state})}}{s_{\mathrm{grace}}},
+\end{equation}
+where $z_t^{(\mathrm{state})}$ is the grouped state prior.
+
+\paragraph{SMAP row}
+\begin{equation}
+h_t^{(\mathrm{SMAP})}
+=
+\frac{1}{s_{\mathrm{smap}}}
+\begin{bmatrix}
+\beta_{\mathrm{smap}} z_{t,\mathrm{shallow}} & 0 & 0
+\end{bmatrix}.
+\end{equation}
+
+\paragraph{SWOT row}
+\begin{equation}
+h_t^{(\mathrm{SWOT})}
+=
+\frac{1}{s_{\mathrm{swot}}}
+\begin{bmatrix}
+\beta_{\mathrm{swot}} z_{t,\mathrm{shallow}} & 0 & 0
+\end{bmatrix}.
+\end{equation}
+
+All valid rows across all times were stacked as
+\begin{equation}
+J_{\mathrm{stack}}
+=
+\begin{bmatrix}
+H_1\\
+H_2\\
+\vdots\\
+H_T
+\end{bmatrix}.
+\end{equation}
+
+\section{Conditioning metrics}
+
+\subsection{Column-scale spread}
+
+For column $k$ of the stacked operator $J$,
+\begin{equation}
+c_k = \|J_{:,k}\|_2.
+\end{equation}
+The column-scale spread is
+\begin{equation}
+\mathrm{spread}(J)
+=
+\frac{\max_k c_k}{\min_k c_k}.
+\end{equation}
+This is a direct measure of scale imbalance. Large spread means that some state directions are much more visible to the observations than others. This is especially important when comparing load-driven and groundwater-driven deformation responses.
+
+The use of matrix norms, singular values, condition numbers, and numerical rank follows standard numerical linear algebra treatments such as \cite{higham2002accuracy,golub2013matrix}.
+
+\subsection{Singular values and operator condition number}
+
+Let the singular values of $J$ be
+\begin{equation}
+\sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0.
+\end{equation}
+The operator condition number is
+\begin{equation}
+\kappa(J)
+=
+\frac{\sigma_{\max}(J)}{\sigma_{\min}(J)}
+=
+\frac{\sigma_1}{\sigma_r}.
+\end{equation}
+Large $\kappa(J)$ indicates that the inverse problem is highly sensitive to perturbations in the data or model \cite{higham2002accuracy,golub2013matrix}.
+
+\subsection{Thresholded numerical rank}
+
+We used a thresholded singular-value rank,
+\begin{equation}
+r_{\mathrm{num}}(\tau)
+=
+\#\left\{i : \sigma_i > \tau \sigma_1\right\},
+\end{equation}
+with $\tau = 10^{-6}$ and $\tau = 10^{-4}$. If $r_{\mathrm{num}}$ is lower than the nominal state dimension, then one or more state directions are practically lost. This is a standard numerical-rank diagnostic in matrix computation \cite{golub2013matrix}.
+
+\subsection{Information matrix / Gauss--Newton Hessian}
+
+For a least-squares or Gaussian likelihood,
+\begin{equation}
+\mathcal{L}(x)
+=
+\frac{1}{2}(y-h(x))^\top R^{-1}(y-h(x)).
+\end{equation}
+Linearizing about a reference state gives the Gauss--Newton approximation
+\begin{equation}
+H_{\mathrm{GN}}
+\approx
+J^\top R^{-1}J.
+\end{equation}
+This same matrix is the data-information matrix
+\begin{equation}
+\mathcal{I}
+=
+J^\top R^{-1}J.
+\end{equation}
+
+In the old static diagnostics we used the unweighted version $J^\top J$ to diagnose raw operator conditioning. In the grouped state-space model we used the sensor-weighted sum
+\begin{equation}
+\mathcal{I}
+=
+\sum_{t,m}
+\frac{1}{r_m^2}
+h_t^{(m)\top}h_t^{(m)},
+\end{equation}
+where $m$ indexes the available sensors at time $t$. This is the natural Hessian-like information matrix for the balanced grouped problem \cite{stuart2010bayesianinverse}.
+
+Let its eigenvalues be
+\begin{equation}
+\lambda_1 \le \lambda_2 \le \cdots \le \lambda_n.
+\end{equation}
+Then the information-matrix condition number is
+\begin{equation}
+\kappa(\mathcal{I})
+=
+\frac{\lambda_{\max}}{\lambda_{\min}}.
+\end{equation}
+Since $\mathcal{I}=J^\top J$ in the simplest case,
+\begin{equation}
+\kappa(\mathcal{I}) \approx \kappa(J)^2.
+\end{equation}
+
+\subsection{Column correlation / separability}
+
+For columns $i$ and $j$ of $J$, we computed
+\begin{equation}
+\rho_{ij}
+=
+\mathrm{corr}(J_{:,i}, J_{:,j}).
+\end{equation}
+If $|\rho_{ij}|$ is close to $1$, then the two state directions generate very similar observation responses and are therefore hard to separate. This is not itself a formal condition number, but it is a direct practical separability diagnostic for layered or grouped states.
+
+\subsection{Observability Gramian}
+
+For the dynamic state-space model
+\begin{equation}
+x_t = A x_{t-1} + \eta_t,
+\qquad
+y_t = H_t x_t + \epsilon_t,
+\end{equation}
+the observability Gramian over the full window is
+\begin{equation}
+W_o
+=
+\sum_{t=1}^{T}
+\Phi_{t,0}^\top H_t^\top R_t^{-1} H_t \Phi_{t,0},
+\end{equation}
+where $\Phi_{t,0}$ is the state transition from the initial time to time $t$. This is the standard observability construction in linear systems theory \cite{kalman1960general}.
+
+In our grouped Kalman model,
+\begin{equation}
+A = \phi I,
+\end{equation}
+so
+\begin{equation}
+\Phi_{t,0} = \phi^t I.
+\end{equation}
+Therefore the Gramian reduces to
+\begin{equation}
+W_o
+=
+\sum_{t=1}^{T}
+\phi^{2(T-t)} H_t^\top R_t^{-1} H_t.
+\end{equation}
+Its condition number is
+\begin{equation}
+\kappa(W_o)
+=
+\frac{\lambda_{\max}(W_o)}{\lambda_{\min}(W_o)}.
+\end{equation}
+This metric quantifies whether the grouped state directions remain dynamically observable over the full assimilation window.
+
+\section{How the diagnostics were computed from our data}
+
+\subsection{Old layered and grouped patch runs}
+
+For the old Stage~1 patch runs:
+\begin{enumerate}
+    \item We loaded the saved W3RA patch state cube $z_{\mathrm{layers}}(t,k,y,x)$.
+    \item We forward-converted each layer to deformation-space components using the same elastic and poroelastic physics used in the inversion.
+    \item We stacked the resulting component responses over all valid $(t,y,x)$ rows.
+    \item We computed the metrics twice:
+    \begin{enumerate}
+        \item on the raw operator, to diagnose the actual physical scaling problem,
+        \item on the column-standardized operator, to separate scale imbalance from pure collinearity.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{Current grouped multisensor Stage~1}
+
+For the current grouped Kalman model:
+\begin{enumerate}
+    \item We rebuilt the balanced observation rows used in the regional grouped inversion:
+    \begin{equation}
+    h_t^{(\mathrm{InSAR})},\;
+    h_t^{(\mathrm{GRACE})},\;
+    h_t^{(\mathrm{SMAP})},\;
+    h_t^{(\mathrm{SWOT})}.
+    \end{equation}
+    \item We stacked all valid rows across times to form $J_{\mathrm{stack}}$.
+    \item We computed:
+    \begin{enumerate}
+        \item singular values and $\kappa(J_{\mathrm{stack}})$,
+        \item the weighted information matrix $\mathcal{I}$,
+        \item the observability Gramian $W_o$.
+    \end{enumerate}
+\end{enumerate}
+
+\section{Result tables}
+
+\begin{table}[ht]
+\centering
+\caption{Raw-operator conditioning before and after grouping/constraints.}
+\begin{tabular}{lcccc}
+\toprule
+Formulation & $\kappa(J)$ & $\kappa(\mathcal{I})$ & numerical rank & scale spread \\
+\midrule
+Old 5-layer patch & $2.16\times 10^6$ & $8.81\times 10^{10}$ & $4/5$ & $1.26\times 10^6$ \\
+Old grouped patch & $4.54\times 10^4$ & $2.06\times 10^9$ & $2/2$ & $3.01\times 10^4$ \\
+Current grouped multisensor Kalman & $6.99\times 10^1$ & $4.88\times 10^3$ & $3/3$ & $6.70\times 10^1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Column-standardized static operators. This shows that the old five-layer failure was driven primarily by extreme scale imbalance, with additional correlation structure on top.}
+\begin{tabular}{lccc}
+\toprule
+Formulation & $\kappa(J_{\mathrm{std}})$ & $\kappa(\mathcal{I}_{\mathrm{std}})$ & numerical rank \\
+\midrule
+Old 5-layer patch & $5.09$ & $25.88$ & $5/5$ \\
+Old grouped patch & $2.63$ & $6.93$ & $2/2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Separability and dynamic observability diagnostics.}
+\begin{tabular}{lcc}
+\toprule
+Formulation & max $|\rho_{ij}|$ off diagonal & $\kappa(W_o)$ \\
+\midrule
+Old 5-layer patch & $0.808$ & -- \\
+Old grouped patch & $0.749$ & -- \\
+Current grouped multisensor Kalman & $0.259$ & $2.12\times 10^4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Interpretation}
+
+These diagnostics support the following statements.
+
+\begin{enumerate}
+    \item The original real-data layered deformation-space inversion was genuinely ill-conditioned, not merely inconvenient. Its raw stacked sensitivity operator had an extreme column-scale disparity, a very large condition number, and a loss of practical rank.
+    \item Grouping the state reduced the problem substantially, but the old grouped patch was still poorly scaled because the load-related response remained much smaller than the groundwater-related response.
+    \item The current grouped balanced multisensor Stage~1 improved the problem in three ways:
+    \begin{enumerate}
+        \item the operator condition number dropped by several orders of magnitude,
+        \item the state directions became fully ranked,
+        \item the inter-column correlations became much smaller, so the grouped state directions are materially more separable.
+    \end{enumerate}
+    \item The observability Gramian of the current grouped model is not perfectly isotropic, but it is positive in all three grouped directions, showing that the balanced multisensor state is dynamically observable over the assimilation window.
+\end{enumerate}
+
+In short, the conditioning diagnostics quantitatively support the practical shift from an unconstrained real layered inversion to the current grouped balanced multisensor Stage~1.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

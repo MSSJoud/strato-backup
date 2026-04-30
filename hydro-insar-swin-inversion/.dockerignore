@@ -1,0 +1,12 @@
+.git
+__pycache__
+.ipynb_checkpoints
+.venv
+venv
+env
+outputs
+data
+tmp
+tmp_*
+scratch
+
