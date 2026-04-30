@@ -1,0 +1,15 @@
+numpy
+pandas
+matplotlib
+scipy
+xarray
+netCDF4
+h5py
+rasterio
+jupyter
+notebook
+nbformat
+ipywidgets
+scikit-learn
+torch
+

@@ -1,30 +1,107 @@
-# Ignore all folders
-*/
-# But allow these directories to be traversed
-!project_po/
-!project_po/scripts/
-# Allow specific types of files
-!*.py
-!*.ipynb
-!*.json
-!*.yml
-!*.yaml
-!*.txt
+# Code-only backup policy.
+# Include all folders by default and ignore binary/data/runtime artifacts.
 
-# Ignore common garbage
+# Python and notebook runtime cache
 __pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments and local tooling
+.venv/
+venv/
+env/
+.node-env/
+node_modules/
+.vscode/
+.idea/
+.codex
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Logs and temporary files
 *.log
 *.tmp
+*.swp
+*.swo
 
-*.h5
-*.csv
-
-# Ignore all large binary/data files
-*.dem.wgs84
-*.tif
-*.nc
-*.mat
-*.h5
-*.SAFE
+# Common archive and package binaries
 *.zip
 *.tar
+*.tar.gz
+*.tgz
+*.7z
+*.gz
+
+# Scientific/remote sensing large data binaries
+*.h5
+*.hdf5
+*.nc
+*.grib
+*.grb
+*.mat
+*.npy
+*.npz
+*.dem
+*.dem.wgs84
+*.SAFE
+
+# Raster/vector imagery and binaries
+*.tif
+*.tiff
+*.vrt
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Excluded folders not needed in backup
+EarthScope2024/Geo-SInC/
+ait/LLMgeoChat/
+isce2_xmls/
+bologna_sbas_ps_2023/
+slc_stack_test_subset/
+slc_test_2_subset/
+slc_test_3_subset/
+slc_test_subset/
+slc_tops_test_subset/
+topsout/
+aoi_bologna/
+aoi_3_02_Bologna/
+dem/
+inputs/
+gmtsar_test_1/
+gmtsar_test_2/
+project_po/data/
+project_po/stack/
+insar_mcmc/outputs/
+insar_mcmc/outputs*/
+insar-layered-groundwater-mcmc-swin/summaries/
+hydro-insar-swin-inversion/outputs/
+mintpy-playbook/outputs/
+punjab/outputs/
+
+# Secrets and local credentials
+.env
+.env.*
+.copernicus_dataspace_token
+/credentials.py
+/project_po/scripts/credentials_edl.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Model and compiled binaries
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.bin
+*.so
+*.dll
+*.dylib
+*.exe

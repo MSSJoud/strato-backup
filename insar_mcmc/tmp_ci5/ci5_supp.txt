@@ -1,0 +1,935 @@
+                                             Supplementary Material
+                                                                   for
+                      Physics-Constrained Multisensor Bayesian Inversion of
+                               Hydrologic Storage from InSAR Deformation
+                                                              Mehdi Joud
+                                                             April 19, 2026
+                   This document provides the supplementary appendices accompanying the main
+                                                              manuscript.
+                 The main paper presents the compact methodology, datasets, grouped multisensor real-data
+                 inversion, and principal validation results. This supplementary document contains the detailed
+                 mathematical proofs, forward formulations, conditioning analysis, and extended validation
+                 material that support the main manuscript.
+                 Contents
+                 A Bayesian Feasibility of the Constrained Deformation-Space Prior                                      3
+                     A.1 Functional setting and notation . . . . . . . . . . . . . . . . . . . . . . . . . . . .        3
+                     A.2 Forward deformation operator . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         3
+                     A.3 Linear-Gaussian state-space model . . . . . . . . . . . . . . . . . . . . . . . . . .          4
+                     A.4 Existence and uniqueness of the posterior . . . . . . . . . . . . . . . . . . . . . .          5
+                     A.5 Posterior mean and MAP estimator . . . . . . . . . . . . . . . . . . . . . . . . .             5
+                     A.6 Bayes-optimality under squared loss . . . . . . . . . . . . . . . . . . . . . . . . .          6
+                     A.7 Induced posterior estimate for the state . . . . . . . . . . . . . . . . . . . . . . .         6
+                     A.8 What cannot be claimed: non-identiĄability of the full Ąve-layer state           . . . . . .   6
+                     A.9 Constrained extension . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        7
+                     A.10 Real-data conditioning and the grouped Bologna formulation . . . . . . . . . . .              7
+                 B Forward Hydro-Mechanical Formulation and Observation Operators                                       8
+                     B.1 Full Ąve-layer hydrologic state . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      8
+                     B.2 Continuous forward deformation model . . . . . . . . . . . . . . . . . . . . . . . .           8
+                     B.3 LOS projection and deformation observation . . . . . . . . . . . . . . . . . . . . .           9
+                     B.4 Discrete operator form . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       9
+                     B.5 Grouped state used in the applied Bologna inversion . . . . . . . . . . . . . . . .          10
+                     B.6 Regional aggregation operators . . . . . . . . . . . . . . . . . . . . . . . . . . . .       10
+                     B.7 GRACE observation operator . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         10
+                     B.8 SMAP observation operator . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        11
+                     B.9 SWOTobservation operator . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         11
+                     B.10 Grouped multisensor observation model . . . . . . . . . . . . . . . . . . . . . . .         11
+                     B.11 State evolution in the grouped Bologna model . . . . . . . . . . . . . . . . . . . .        11
+                     B.12 Interpretation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+                                                                    1
+                  C Conditioning Diagnostics of the Bologna Inversion                                                     12
+                     C.1 Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        12
+                     C.2 Inverse-problem setting        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   12
+                           C.2.1    Old deformation-space Stage 1 formulation . . . . . . . . . . . . . . . . .           12
+                           C.2.2    Current grouped balanced multisensor Stage 1 . . . . . . . . . . . . . . .            13
+                     C.3 Conditioning metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         13
+                           C.3.1    Column-scale spread . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       13
+                           C.3.2    Singular values and operator condition number . . . . . . . . . . . . . . .           14
+                           C.3.3 Thresholded numerical rank . . . . . . . . . . . . . . . . . . . . . . . . . .           14
+                           C.3.4    Information matrix / GaussŰNewton Hessian . . . . . . . . . . . . . . . .             14
+                           C.3.5    Column correlation / separability . . . . . . . . . . . . . . . . . . . . . . .       15
+                           C.3.6    Observability Gramian . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       15
+                     C.4 How the diagnostics were computed from the saved runs . . . . . . . . . . . . . .                15
+                           C.4.1    Old layered and grouped patch runs . . . . . . . . . . . . . . . . . . . . .          15
+                           C.4.2    Current grouped multisensor Stage 1 . . . . . . . . . . . . . . . . . . . . .         16
+                     C.5 Result tables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        16
+                     C.6 Interpretation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       16
+                  D Synthetic Validation and External Well-Validation Details                                             17
+                     D.1 Synthetic validation protocol . . . . . . . . . . . . . . . . . . . . . . . . . . . . .          17
+                     D.2 External well-validation methodology . . . . . . . . . . . . . . . . . . . . . . . . .           18
+                     D.3 Overall well-validation results . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        19
+                     D.4 Depth dependence and best-state interpretation . . . . . . . . . . . . . . . . . . .             20
+                     D.5 Trusted validation subset        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   20
+                     D.6 Interpretation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       21
+                                                                      2
+            A Bayesian Feasibility of the Constrained Deformation-Space
+                 Prior
+            This appendix states the precise mathematical sense in which the Bayesian core of the proposed
+            framework yields a well-deĄned and optimal posterior estimate. The conclusions apply to the
+            linear-Gaussian Stage 1 model. They do not imply unique recovery of the full hydrologic truth
+            from deformation alone.
+            A.1 Functional setting and notation
+            Let Ω ⊂ R2 denote the spatial domain and let T ∈ N be the number of acquisition times. For
+            each t = 1,:::,T, deĄne the hydrologic state
+                                           S0 (s)
+                                              t
+                                           Sst(s)
+                                                
+                                                
+                                     x (s) = Sd (s) , s ∈ Ω:                     (S1)
+                                      t     t 
+                                                
+                                           Sg (s)
+                                            Srt(s)
+                                              t
+            WedeĄne the state space                 
+                                          X:= L2(Ω) 5,                           (S2)
+            equipped with the norm
+                        2       2        2         2         2        2
+                      ∥x∥ =∥S0∥ 2   +∥Ss∥ 2  +∥Sd∥ 2   +∥Sg∥ 2   +∥Sr∥ 2  :      (S3)
+                        X       L (Ω)    L (Ω)     L (Ω)     L (Ω)    L (Ω)
+            The observation space is
+                                           Y := L2(Ω),                           (S4)
+            with its usual norm.
+               After discretization on a spatial grid with P cells, the state and observation spaces become
+                                       X =R5P,    Y =RP:                         (S5)
+                                        h          h
+            The time-stacked spaces are
+                                      X =R5PT,    Y =RPT:                        (S6)
+                                       h           h
+               For each time t, let the discretized W3RA prior state be
+                                          z ∈X =R5P:                             (S7)
+                                           t   h
+            Wewrite                       (S0)
+                                          z
+                                          t  
+                                          (Ss)
+                                          z
+                                          t       (·)
+                                     z = (Sd),   z  ∈RP:                       (S8)
+                                             
+                                      t   zt        t
+                                          (Sg)
+                                         z   
+                                          t  
+                                           (Sr)
+                                          z
+                                           t
+            A.2 Forward deformation operator
+            DeĄne the continuous linear forward operator
+                                            A:X→Y                                (S9)
+            by                                           
+                           A(x ) = G  ∗ S0 +Ss +Sd +Sr +G       ∗Sg :           (S10)
+                              t    load   t    t    t   t    poro   t
+                                                3
+                        After discretization this becomes
+                                                                         A :X →Y ,                     A ∈RP×5P:                                                    (S11)
+                                                                           h       h        h             h
+                              Tomodelmultiplicative correction of the W3RA prior state, deĄne the diagonal multiplication
+                        operator
+                                                                 D(z ) : R5P → X ,                    D(z )θ = θ ⊙z ,                                               (S12)
+                                                                        t                   h                t   t       t       t
+                        where ⊙ denotes elementwise multiplication and
+                                                                                           θ ∈R5P:                                                                  (S13)
+                                                                                             t
+                        Hence the Stage 1 prior state estimate is
+                                                                                     xprior = D(z )θ :                                                              (S14)
+                                                                                       t                t    t
+                              The resulting observation model is therefore
+                                                                                  y =A D(z)θ +ε:                                                                    (S15)
+                                                                                    t       h       t    t      t
+                        A.3 Linear-Gaussian state-space model
+                        DeĄne
+                                                                        H :=A D(z ),                    H ∈RP×5P:                                                   (S16)
+                                                                           t         h       t             t
+                        Then for each t = 1,:::,T, the deformation-space observation equation is
+                                                                       y =Hθ +ε,                       ε ∼N(0,R),                                                   (S17)
+                                                                         t        t  t       t          t                 t
+                        where Rt ∈ RP×P is symmetric positive deĄnite.
+                              The temporal evolution is modeled as
+                                                                       θ =θ           +η,             η ∼N(0,Q),                                                    (S18)
+                                                                         t       t−1        t           t                 t
+                        where Qt ∈ R5P×5P is symmetric positive deĄnite.
+                              The initial prior is assumed proper Gaussian:
+                                                                            θ ∼N(m ,P ),                     P ≻0:                                                  (S19)
+                                                                              1             0    0             0
+                        Assumptions. Throughout this appendix we assume:
+                            1. R ≻0 for all t,
+                                    t
+                            2. Qt ≻ 0 for all t,
+                            3. P0 ≻ 0,
+                            4. the discretized model is Ąnite-dimensional.
+                                                                                                 4
+                A.4 Existence and uniqueness of the posterior
+                DeĄne the stacked latent vector
+                                                         θ1
+                                                          .             5PT
+                                                    Θ=.∈X =R ,                                             (S20)
+                                                            .       h
+                                                           θT
+                and the stacked observation vector
+                                                         y 
+                                                             1
+                                                          .             PT
+                                                     y= . ∈Y =R :                                          (S21)
+                                                            .       h
+                                                           y
+                                                            T
+                The linear-Gaussian state dynamics induce a proper Gaussian prior
+                                                  Θ∼N(m,Σ),             Σ ≻0,                                (S22)
+                                                             0   0        0
+                and the likelihood is Gaussian:
+                                                       y♣Θ∼N(KΘ,R),                                          (S23)
+                where K is the stacked observation operator and R is block diagonal with blocks Rt.
+                Proposition 1. Under the assumptions above, the posterior distribution π(Θ ♣ y) exists, is
+                unique, and has Ąnite Ąrst and second moments.
+                Proof. By BayesŠ theorem,
+                                                     1              2     1           2   
+                                    π(Θ♣y)∝exp − ∥y−KΘ∥ −1− ∥Θ−m ∥ −1 :                                      (S24)
+                                                        2            R     2         0 Σ0
+                Since R ≻ 0 and Σ ≻ 0, both quadratic forms are coercive. Because R ≻ 0 and Σ ≻ 0, the
+                                    0                                                                   0
+                matrices R−1 and Σ−1 are positive deĄnite. In particular, the prior term
+                                     0
+                                                         1∥Θ−m ∥2
+                                                                   0   −1
+                                                                     Σ
+                                                         2             0
+                grows quadratically as ∥Θ∥ → ∞, so the negative log-posterior is coercive. Hence the posterior
+                density is integrable and deĄnes a proper Gaussian measure on the Ąnite-dimensional space X .
+                                                                                                                 h
+                Therefore the right-hand side deĄnes a proper Gaussian density on the Ąnite-dimensional space
+                X , and hence the posterior exists, is unique, and has Ąnite Ąrst and second moments.
+                  h
+                A.5 Posterior mean and MAP estimator
+                Because the posterior is Gaussian, it has the form
+                                                                  ˆ
+                                                      Θ♣y∼N(Θ,Σpost),                                        (S25)
+                with                                                       −1
+                                                 Σpost = K⊤R−1K+Σ−1             ,                            (S26)
+                                                                          0
+                and                                                            
+                                                ˆ             ⊤ −1        −1
+                                                Θ=Σ         K R y+Σ m :                                      (S27)
+                                                       post               0    0
+                Proposition 2. In the linear-Gaussian Stage 1 model, the posterior mean and the MAP estimator
+                coincide.
+                                                                                                             ˆ
+                Proof. A Gaussian density attains its unique maximum at its mean. Hence the vector Θ in
+                (S27) is both the posterior mean and the unique maximizer of the posterior density.
+                                                                5
+                      A.6 Bayes-optimality under squared loss
+                      Theorem 1. Let the loss function be
+                                                                               ˜              ˜          2
+                                                                          L2(Θ,Θ)=∥Θ−Θ∥2:                                                              (S28)
+                      Then the Bayes estimator is the posterior mean:
+                                                                                ˜∗
+                                                                                Θ =E[Θ♣y]:                                                             (S29)
+                      Proof. Let                                                 ¯
+                                                                                Θ:=E[Θ♣y]:                                                             (S30)
+                      Then
+                                                                   ˜          2       ˜      ¯ 2               ¯ 2
+                                                                ∥Θ−Θ∥ =∥Θ−Θ∥ +∥Θ−Θ∥
+                                                                              2         
+        2                2
+                                                                                          ˜      ¯          ¯
+                                                                                   −2 Θ−Θ,Θ−Θ :                                                        (S31)
+                      Taking conditional expectation given y yields
+                                                         h                  i                          h                  i
+                                                            ˜          2            ˜      ¯ 2                   ¯ 2
+                                                      E ∥Θ−Θ∥ y =∥Θ−Θ∥ +E ∥Θ−Θ∥ y ,                                                                  (S32)
+                                                                       2                        2                     2
+                                                                                                                               ˜
+                      because the cross term vanishes. The second term does not depend on Θ, so the minimum is
+                                                     ˜       ¯
+                      attained uniquely at Θ = Θ.
+                      Theorem 2. The MAP estimator minimizes the negative log-posterior
+                                                                         J(Θ):=−logπ(Θ♣y),                                                             (S33)
+                      equivalently the penalized least-squares objective
+                                                                  1                2         1                2
+                                                      J(Θ)= ∥y−KΘ∥ −1+ ∥Θ−m ∥ −1+const:                                                                (S34)
+                                                                  2                R         2             0 Σ0
+                      Proof. This follows directly from (S24), since maximizing the posterior density is equivalent to
+                      minimizing its negative logarithm.
+                      A.7 Induced posterior estimate for the state
+                      The Stage 1 posterior state is                      prior             ˆ      ˆ
+                                                                       x        =D(z)θ =θ ⊙z:                                                          (S35)
+                                                                         t               t   t       t      t
+                                                                                        ˆ
+                      Since D(z ) is linear in θ once z is Ąxed, if θ is the posterior mean then
+                                     t                    t           t                  t
+                                                                           ˆprior
+                                                                          x        =D(zt)E[θt ♣ y]                                                     (S36)
+                                                                            t
+                      is the corresponding posterior mean in the transformed parameterization. Therefore the Stage 1
+                      state estimate is a proper posterior estimator induced by the Bayesian model.
+                      A.8 What cannot be claimed: non-identiĄability of the full Ąve-layer state
+                      Proposition 3. The full Ąve-layer hydrologic state is not uniquely identiĄable from deformation
+                      alone without additional structure.
+                                                                                          6
+                        Proof. The forward operator depends on the load-driven components only through the sum
+                                                                                S0 +Ss +Sd +Sr:                                                                     (S37)
+                                                                                     t        t         t         t
+                        Therefore any perturbation satisfying
+                                                               δS0 +δSs +δSd +δSr =0,                                  δSg =0,                                      (S38)
+                                                                    t           t          t           t                     t
+                        lies in the null space of the load contribution and leaves the predicted deformation unchanged.
+                        Hence the inverse problem is non-injective on the full Ąve-layer state space.
+                              The mathematically correct statement is therefore not that the method recovers the unique
+                        physical truth, but that it yields a proper posterior and Bayes-optimal conditional estimates
+                        under the assumed model.
+                        A.9 Constrained extension
+                        Let c denote any additional observation or constraint data, for example external hydrologic
+                        information. Then the constrained posterior is
+                                                                      π(Θ♣y,c)∝π(y♣Θ)π(c♣Θ)π(Θ):                                                                    (S39)
+                        Equivalently, the negative log-posterior becomes
+                                                                        J         (Θ)=J             (Θ)+J (Θ):                                                      (S40)
+                                                                          constr               pure              ext
+                        Proposition 4. If the additional likelihood π(c ♣ Θ) is proper Gaussian, or more generally if
+                        Jext is proper, lower-semicontinuous, and coercive, then the constrained posterior remains proper
+                        and the same conclusions on posterior existence, MAP optimality, and Bayes-optimality under
+                        squared loss continue to hold.
+                        Proof. The additional term augments the posterior kernel by another proper penalty/likelihood
+                        factor. Under the stated regularity assumptions, the total negative log-posterior remains coercive,
+                        so the posterior remains proper. The MAP again minimizes the augmented negative log-posterior,
+                        and the posterior mean remains the Bayes estimator under squared loss.
+                        A.10 Real-data conditioning and the grouped Bologna formulation
+                        The previous results establish existence and Bayesian optimality under the assumed model, but
+                        they do not guarantee that every applied real-data discretization is numerically well-conditioned.
+                        In the Bologna case, some columns of the full layered real deformation design can become
+                        extremely small relative to the observed InSAR signal. The posterior may still exist, but the
+                        inferred coefficients can become numerically unstable or physically uninformative.
+                              This motivates the grouped applied real-data state
+                                                                              ShallowLoad                  S0 +Ss 
+                                                                     grp                           t        t             t
+                                                                   x      =       DeepLoad               = Sd +Sr :                                                 (S41)
+                                                                     t                           t          t             t
+                                                                                Groundwater                         Sg
+                                                                                                    t                   t
+                        The rest of the Bayesian formulation then follows on a better-conditioned grouped state space.
+                        This does not change the mathematical structure of the inference problem; it changes only the
+                        applied parameterization. The grouped formulation is therefore interpreted as the practically
+                        supported real-data estimator for Bologna, while the unconstrained full layered inversion remains
+                        a theoretically meaningful but empirically unstable formulation in the current setting.
+                                                                                                 7
+               B Forward Hydro-Mechanical Formulation and Observation Op-
+                    erators
+               This appendix gives the forward hydro-mechanical formulation used to map hydrologic storage
+               states to deformation-space observations and deĄnes the observation operators used in the
+               grouped multisensor Bologna inversion.
+               B.1   Full Ąve-layer hydrologic state
+               At time t and spatial location s ∈ Ω, let the hydrologic state be
+                                                           S0 (s)
+                                                              t
+                                                           Ss (s)
+                                                            t 
+                                                                 
+                                                   x (s) = Sd (s) ,                                (S42)
+                                                    t       t 
+                                                                 
+                                                           Sg (s)
+                                                            Srt(s)
+                                                              t
+               where S0, Ss, Sd, Sg, and Sr denote top-layer soil storage, shallow soil storage, deep soil storage,
+               groundwater storage, and surface-water storage, respectively.
+                  For the full deformation-space construction, the load-driven branch is formed from
+                                                                                
+                                     ∆ℓ (s) = ρ  S0 (s)+Ss (s)+Sd (s)+Sr (s) ,                     (S43)
+                                       t       w    t       t        t       t
+               while the groundwater-pressure branch is represented by
+                                                               Sg (s)
+                                                  ∆p(s)=ρ g      t   ,                             (S44)
+                                                    t       w   Seff
+               whereρw is water density, g is gravitational acceleration, and Seff is an effective storage parameter.
+               B.2   Continuous forward deformation model
+               Let G     denote the elastic loading GreenŠs operator and let Gporo denote the poroelastic
+                     load
+               groundwater-response operator. The load-driven and poroelastic displacements are
+                                                uload(s) = G   [∆ℓ ](s),                           (S45)
+                                                 t          load  t
+                                                uporo(s) = Gporo[∆pt](s),                          (S46)
+                                                 t
+               and the total displacement is
+                                              utot(s) = uload(s) + uporo(s):                       (S47)
+                                               t        t         t
+                  Equivalently, in kernel form,
+                                           uload(s) = Z Kload(s,ξ)∆ℓt(ξ)dξ,                        (S48)
+                                             t        Ω
+                                           uporo(s) = Z K    (s,ξ)∆p (ξ)dξ,                        (S49)
+                                            t         Ω poro         t
+               where Kload and Kporo are the corresponding GreenŠs kernels.
+                                                           8
+               B.3    LOS projection and deformation observation
+               The observable InSAR signal is the line-of-sight (LOS) deformation
+                                                           h toti      I
+                                               d (s) = P    u    (s) +ε (s),                          (S50)
+                                                t       LOS  t         t
+               where P     (·) denotes the radar projection operator and εI is the InSAR observation error.
+                       LOS                                                t
+               Under a dominant-vertical approximation,
+                                                              tot      I
+                                               dt(s) ≈ cos(θ)u  (s) +ε (s),                           (S51)
+                                                              z;t      t
+               with incidence angle θ and vertical displacement component utot.
+                                                                           z;t
+               B.4    Discrete operator form
+               After discretization on a grid with P cells, all Ąelds become vectors in RP. Let
+                                                        x(S0)
+                                                         t   
+                                                        x(Ss)
+                                                         t   
+                                                   x = (Sd)∈R5P,                                    (S52)
+                                                    t   x    
+                                                         t   
+                                                        x(Sg)
+                                                         t   
+                                                          x(Sr)
+                                                           t
+               where each block belongs to RP.
+                   DeĄne the discrete loading and poroelastic operators
+                                             A    ∈RP×P,       A     ∈RP×P,                           (S53)
+                                              load               poro
+               and the LOS projection matrix
+                                                      P     ∈RP×P:                                    (S54)
+                                                       LOS
+               Then the full discrete deformation model is
+                                       h      (S0)    (Ss)    (Sd)   (Sr)         (Sg)i   I
+                            d =P        A     x     +x     +x      +x      +A x          +ε:          (S55)
+                              t    LOS   load   t      t       t      t        poro t       t
+                   For the deformation-space Bayesian construction, one may also deĄne component-wise
+               deformation predictors,
+                                    u(S0) = P   A x(S0),       u(Ss) = P    A x(Ss),                  (S56)
+                                     t       LOS load t          t       LOS load t
+                                    u(Sd) = PLOSAloadx(Sd),    u(Sr) = PLOSAloadx(Sr),                (S57)
+                                     t                 t         t                t
+                                                 u(Sg) = P    A    x(Sg):                             (S58)
+                                                   t       LOS poro t
+               At each grid cell p, the corresponding deformation-side predictor vector is
+                                        Z =h (S0)       (Ss)   (Sd)  (Sg)   (Sr)i:                    (S59)
+                                          t;p   ut;p   ut;p  ut;p   ut;p   ut;p
+               This is the design used by the full deformation-space Stage 1 Bayesian model.
+                                                            9
+                        B.5        Grouped state used in the applied Bologna inversion
+                        Because the unconstrained full Ąve-layer real-data inversion was found to be poorly conditioned
+                        in the Bologna case, the applied real-data estimator uses the grouped state
+                                                                              ShallowLoad                  S0 +Ss 
+                                                                     grp                           t        t             t
+                                                                   x      =       DeepLoad               = Sd +Sr ,                                                 (S60)
+                                                                     t                           t          t             t
+                                                                                Groundwater                         Sg
+                                                                                                    t                   t
+                        where
+                                             ShallowLoad ∈ RP,                      DeepLoad ∈RP,                      Groundwater ∈ RP:                            (S61)
+                                                                 t                                  t                                       t
+                              The grouped forward deformation model is therefore
+                                                                                                                                                         I
+                                         d =P            [A       (ShallowLoad +DeepLoad )+A                                Groundwater ]+ε :                       (S62)
+                                           t       LOS       load                       t                    t        poro                       t       t
+                              In compact operator form,                                            grp
+                                                                                    d =HIx              +εI,                                                        (S63)
+                                                                                       t        t  t          t
+                        with                                                      h                               i
+                                                                HI =P               A          A          A          ∈RP×3P:                                        (S64)
+                                                                   t        LOS       load       load        poro
+                        B.6        Regional aggregation operators
+                        Several external observations enter the grouped multisensor inversion only after spatial aggrega-
+                        tion over the Bologna overlap domain. Let
+                                                                                          M∈R1×P                                                                    (S65)
+                        denote a regional averaging operator over the shared Bologna domain. Then for any gridded
+                        state variable v ∈ RP, the corresponding regional mean is
+                                                t
+                                                                                          v¯  =Mv:                                                                  (S66)
+                                                                                            t           t
+                        B.7        GRACEobservation operator
+                        GRACEprovides a coarse regional total-storage-type anomaly. In the grouped formulation, the
+                        corresponding observation equation is
+                                                                                     G         G grp          G
+                                                                                   y =H x +ε ,                                                                      (S67)
+                                                                                     t         t    t         t
+                        where                                                        h                   i
+                                                                           HG= M M M ∈R1×3P,                                                                        (S68)
+                                                                              t
+                        and
+                                                                                       G                  G
+                                                                                      ε ∼N(0,R ):                                                                   (S69)
+                                                                                       t                  t
+                        Thus the grouped state is linked to a regional total-storage anomaly through the sum of the
+                        grouped storage components.
+                                                                                                10
+                        B.8        SMAPobservation operator
+                        SMAPis used as an external shallow hydrologic constraint. In the grouped formulation, the
+                        simplest observation equation is                                           grp
+                                                                                      S        S              S
+                                                                                    y =H x +ε ,                                                                     (S70)
+                                                                                      t        t   t          t
+                        with                                                         h                  i
+                                                                           HS= c M 0 0 ∈R1×3P,                                                                      (S71)
+                                                                              t         S
+                        where cS is a scaling factor converting the grouped shallow-load state into the SMAP-compatible
+                        anomaly space, and
+                                                                                      εS ∼ N(0,RS):                                                                 (S72)
+                                                                                        t                 t
+                        More elaborate observation operators can be used if a different mapping between grouped storage
+                        and retrieved surface soil moisture is desired.
+                        B.9        SWOTobservation operator
+                        SWOTistreated as an exploratory external surface-water constraint. Because the grouped state
+                        does not isolate Sr separately, SWOT enters through a grouped approximation,
+                                                                                  yW=HWxgrp+εW,                                                                     (S73)
+                                                                                    t         t     t         t
+                        with                                                         h                   i
+                                                                          HW= 0 c M 0 ∈R1×3P,                                                                       (S74)
+                                                                             t               W
+                        where cW is an effective scaling coefficient reĆecting the fact that the grouped deep-load state
+                        contains the surface-water contribution through the Sd+Sr block. The SWOT error term is
+                                                                                       W                  W
+                                                                                     ε     ∼N(0,R ):                                                                (S75)
+                                                                                       t                  t
+                        In the current Bologna experiments, SWOT is technically integrated but remains sparse in time
+                        and therefore acts only as an exploratory added constraint rather than a major driver of the
+                        Ąnal result.
+                        B.10         Grouped multisensor observation model
+                        The grouped multisensor Bologna inversion can therefore be written in stacked form as
+                                                                                            I                   I 
+                                                                                  dt            H                     ε
+                                                                                            t                   t 
+                                                                                   G               G                   G
+                                                                               y           H  grp              ε 
+                                                                       y = t = t x                         + t :                                              (S76)
+                                                                         t      S           S t                 S
+                                                                                  y             H                     ε
+                                                                                   t               t                   t
+                                                                                   W              W                    W
+                                                                                 y             H                     ε
+                                                                                   t              t                    t
+                        Equivalently,                                                              grp
+                                                                                    y =H x +ε,                                                                      (S77)
+                                                                                      t        t   t          t
+                        where Ht is the full grouped multisensor observation operator and εt is the corresponding stacked
+                        error vector.
+                        B.11         State evolution in the grouped Bologna model
+                        The applied grouped state evolves according to a linear stochastic dynamics model,
+                                                                                   xgrp = Axgrp +η ,                                                                (S78)
+                                                                                     t              t−1        t
+                        where A ∈ R3P×3P is the grouped transition operator and
+                                                                                       η ∼N(0,Q):                                                                   (S79)
+                                                                                         t                t
+                        In practice, the grouped balanced multisensor Stage 1 model corrects the grouped W3RA prior
+                        state under this multisensor observation system and provides the current best supported Bologna
+                        estimator.
+                                                                                                11
+                       B.12        Interpretation
+                       The equations above deĄne two related operator families:
+                           1. the full Ąve-layer deformation-space operator used to formulate the general inversion
+                               framework and the synthetic validation problem;
+                           2. the grouped three-state multisensor operator used in the practically supported Bologna
+                               inversion.
+                            The Ąrst is the theoretically richer model. The second is the currently validated real-data
+                       formulation because it yields physically plausible grouped posteriors, stable internal multisensor
+                       Ąt, and meaningful independent support from groundwater wells.
+                       C Conditioning Diagnostics of the Bologna Inversion
+                       This appendix formalizes the conditioning diagnostics used to explain why the original real-data
+                       layered inversion was ill-conditioned and how the grouped balanced multisensor Stage 1 improved
+                       the inverse problem. The diagnostics were computed from the saved runs using the conditioning
+                       workĆow and summarized in the corresponding JSON outputs.
+                       C.1       Purpose
+                       The role of this appendix is to quantify, in operator form, the difference between:
+                           1. the earlier unconstrained layered real-data deformation-space inversion,
+                           2. the earlier grouped patch formulation, and
+                           3. the current grouped balanced multisensor Stage 1 formulation.
+                            The key question is whether the practical shift to the grouped Bologna model is justiĄed only
+                       heuristically, or whether it is also supported by explicit conditioning diagnostics. The results
+                       below show that the grouped balanced multisensor formulation improves the inverse problem by
+                       several orders of magnitude in conditioning and restores practical rank.
+                       C.2       Inverse-problem setting
+                       C.2.1        Old deformation-space Stage 1 formulation
+                       The original real-data deformation-space formulation may be written schematically as
+                                                                              Y     =Z θ +ε ,                                                               (S80)
+                                                                                t;p       t;p  t;p      t;p
+                       where Yt;p is observed deformation, Zt;p is the forward-converted W3RA predictor in deformation
+                       space, and θt;p is a latent correction coefficient.
+                            In the full layered case,
+                                                              Z =h (S0)              (Ss)       (Sd)      (Sg)      (Sr)i,                                  (S81)
+                                                                t;p      u         u          u         u         u
+                                                                           t;p       t;p        t;p       t;p       t;p
+                       while in the earlier grouped patch case,
+                                                                        Zgrp = h (LoadTotal)              (Sg)i:                                            (S82)
+                                                                          t;p        u                  u
+                                                                                       t;p                t;p
+                            To analyze conditioning, all valid spaceŰtime rows were stacked into a single design matrix,
+                                                                                             Z 
+                                                                                              1;1
+                                                                                             Z 
+                                                                                 J       = 1;2:                                                           (S83)
+                                                                                  stack       . 
+                                                                                                  .
+                                                                                              . 
+                                                                                               ZT;P
+                                                                                           12
+                        C.2.2         Current grouped balanced multisensor Stage 1
+                        The current real-data grouped Stage 1 uses the grouped state
+                                                                            ShallowLoad                  S0 +Ss 
+                                                                                                  t       t             t
+                                                                    x =          DeepLoad              = Sd +Sr ,                                                   (S84)
+                                                                      t                        t          t             t
+                                                                              Groundwater                         Sg
+                                                                                                   t                  t
+                        with dynamic correction factors
+                                                              θ =ϕθ            +(1−ϕ)θ +η,                         x =θ ⊙z:                                         (S85)
+                                                                t         t−1                  ref       t           t       t      t
+                              At each time t, the available observations are represented by one or more rows of a balanced
+                        observation operator Ht.
+                        InSAR row                                                                       (def)
+                                                                                       (InSAR)        zt
+                                                                                    h             =            ,                                                    (S86)
+                                                                                       t              sinsar
+                        where z(def) is the grouped deformation-side predictor and sinsar is the balancing scale.
+                                    t
+                        GRACErow                                                                        (state)
+                                                                                     (GRACE)          zt
+                                                                                   h              =              ,                                                  (S87)
+                                                                                     t                 sgrace
+                        where z(state) is the grouped state prior.
+                                    t
+                        SMAProw                                                         1     h                               i
+                                                                     (SMAP)                    β        z              0 0
+                                                                   h            =                smap t;shallow                 :                                   (S88)
+                                                                     t              ssmap
+                        SWOTrow                                                         1     h                               i
+                                                                     (SWOT)                    β       z               0 0
+                                                                   h             =               swot t;shallow                 :                                   (S89)
+                                                                     t               sswot
+                              All valid rows across all times were stacked as
+                                                                                                   H1
+                                                                                                   H 
+                                                                                                    2
+                                                                                      Jstack =  . :                                                               (S90)
+                                                                                                    . 
+                                                                                                    . 
+                                                                                                     HT
+                        C.3        Conditioning metrics
+                        C.3.1         Column-scale spread
+                        For column k of the stacked operator J, deĄne
+                                                                                        c =∥J ∥ :                                                                   (S91)
+                                                                                          k         :;k  2
+                        The column-scale spread is                                                   max c
+                                                                                 spread(J) =                k k:                                                    (S92)
+                                                                                                      min c
+                                                                                                            k k
+                        This directly measures scale imbalance. Large spread indicates that some state directions are
+                        much more visible to the observations than others.
+                              The use of matrix norms, singular values, condition numbers, and numerical rank follows
+                        standard numerical linear algebra treatments such as [1, 2].
+                                                                                                13
+                 C.3.2     Singular values and operator condition number
+                 Let the singular values of J be
+                                                         σ ≥σ ≥···≥σ >0:                                             (S93)
+                                                          1     2            r
+                 The operator condition number is
+                                                         κ(J) = σmax(J) = σ1:                                        (S94)
+                                                                  σmin(J)      σr
+                 Large κ(J) indicates high sensitivity of the inverse problem to perturbations in the data or
+                 model [1, 2].
+                 C.3.3     Thresholded numerical rank
+                 Weused a thresholded singular-value rank,
+                                                       r    (τ) = #¶i : σ > τσ ♢,                                    (S95)
+                                                        num                i      1
+                              −6              −4
+                 with τ = 10      and τ = 10     . If r    is smaller than the nominal state dimension, then one or
+                                                      num
+                 more state directions are practically lost.
+                 C.3.4     Information matrix / GaussŰNewton Hessian
+                 For a least-squares or Gaussian likelihood,
+                                                           1            ⊤ −1
+                                                  L(x) = 2(y −h(x)) R (y−h(x)):                                      (S96)
+                 Linearizing around a reference state gives the GaussŰNewton approximation
+                                                             HGN≈J⊤R−1J:                                             (S97)
+                 This same matrix is the data-information matrix
+                                                               I =J⊤R−1J:                                            (S98)
+                     In the old static diagnostics we used the unweighted version J⊤J to diagnose raw operator
+                 conditioning. In the grouped state-space model we used the sensor-weighted sum
+                                                               X1 (m)⊤ (m)
+                                                          I =         h      h    ,                                  (S99)
+                                                                   r2   t     t
+                                                               t;m  m
+                 where m indexes the available sensors at time t. This is the natural Hessian-like information
+                 matrix for the balanced grouped problem [4].
+                     Let the eigenvalues of I be           λ ≤λ ≤···≤λ :                                            (S100)
+                                                             1     2           n
+                 Then the information-matrix condition number is
+                                                               κ(I) = λmax:                                         (S101)
+                                                                       λmin
+                 Since I = J⊤J in the simplest case,
+                                                                            2
+                                                              κ(I) ≈ κ(J) :                                         (S102)
+                                                                     14
+                             C.3.5           Column correlation / separability
+                             For columns i and j of J, we computed
+                                                                                                    ρ =corr(J ,J ):                                                                                 (S103)
+                                                                                                       ij                  :;i    :;j
+                             If ♣ρij♣ is close to 1, then the corresponding state directions generate very similar observation
+                             responses and are difficult to separate. This is not itself a condition number, but it is a direct
+                             practical separability diagnostic for layered or grouped states.
+                             C.3.6           Observability Gramian
+                             For the dynamic state-space model
+                                                                                    x =Ax                 +η,                y =Hx +ϵ,                                                              (S104)
+                                                                                       t            t−1          t             t          t   t       t
+                             the observability Gramian over the full time window is
+                                                                                                         T
+                                                                                            Wo=XΦ⊤H⊤R−1HtΦt;0,                                                                                      (S105)
+                                                                                                                 t;0     t     t
+                                                                                                        t=1
+                             where Φt;0 is the state transition from the initial time to time t. This is the standard observability
+                             construction in linear systems theory [3].
+                                    In the grouped Kalman formulation,
+                                                                                                               A=ϕI,                                                                                (S106)
+                             so
+                                                                                                            Φt;0 = ϕtI:                                                                             (S107)
+                             Therefore the Gramian reduces to
+                                                                                                          T
+                                                                                            W =Xϕ2(T−t)H⊤R−1H:                                                                                      (S108)
+                                                                                                 o                             t      t       t
+                                                                                                        t=1
+                             Its condition number is                                                                  λ        (W )
+                                                                                                    κ(W ) = max                     o :                                                             (S109)
+                                                                                                            o         λ       (W )
+                                                                                                                        min         o
+                             This metric quantiĄes whether the grouped state directions remain dynamically observable over
+                             the full assimilation window.
+                             C.4          How the diagnostics were computed from the saved runs
+                             C.4.1           Old layered and grouped patch runs
+                             For the old Stage 1 patch runs:
+                                  1. the saved W3RA patch state cube zlayers(t,k,y,x) was loaded;
+                                  2. each layer was forward-converted to deformation-space components using the same elastic
+                                        and poroelastic physics used in the inversion;
+                                  3. the resulting component responses were stacked over all valid (t,y,x) rows;
+                                  4. the diagnostics were computed twice:
+                                          (a) on the raw operator, to quantify the actual physical scaling problem,
+                                         (b) on the column-standardized operator, to separate scale imbalance from pure collinear-
+                                                 ity.
+                                                                                                                    15
+               C.4.2   Current grouped multisensor Stage 1
+               For the current grouped Kalman model:
+                 1. the balanced observation rows used in the regional grouped inversion were rebuilt:
+                                             (InSAR)  (GRACE)   (SMAP)   (SWOT)
+                                           h       , h       , h      , h      ;                  (S110)
+                                             t        t         t        t
+                 2. all valid rows across time were stacked to form Jstack;
+                 3. the following were then computed:
+                     (a) singular values and κ(Jstack),
+                     (b) the weighted information matrix I,
+                     (c) the observability Gramian W .
+                                                    o
+               C.5   Result tables
+                Table S1: Raw-operator conditioning before and after grouping and multisensor balancing.
+                Formulation                             κ(J)        κ(I)      numerical rank  scale spread
+                                                              6           10                            6
+                Old 5-layer patch                    2:16×104    8:81×109          4/5         1:26×104
+                Old grouped patch                    4:54×10      2:06×10          2/2         3:01×10
+                                                              1           3                             1
+                Current grouped multisensor Kalman   6:99×10      4:88×10          3/3         6:70×10
+               Table S2: Column-standardized static operators. This shows that the old Ąve-layer failure was
+               driven primarily by extreme scale imbalance, with additional correlation structure on top.
+                                 Formulation         κ(Jstd)  κ(Istd)  numerical rank
+                                 Old 5-layer patch     5:09    25:88        5/5
+                                 Old grouped patch     2:63    6:93         2/2
+                              Table S3: Separability and dynamic observability diagnostics.
+                        Formulation                           max ♣ρij♣ off diagonal  κ(Wo)
+                        Old 5-layer patch                            0:808              Ű
+                        Old grouped patch                            0:749              Ű
+                        Current grouped multisensor Kalman           0:259          2:12 ×104
+               C.6   Interpretation
+               These diagnostics support the following conclusions.
+                 1. The original real-data layered deformation-space inversion was genuinely ill-conditioned,
+                    not merely inconvenient. Its raw stacked sensitivity operator had extreme column-scale
+                    disparity, a very large condition number, and a loss of practical rank.
+                 2. Grouping the state reduced the problem substantially, but the old grouped patch formula-
+                    tion was still poorly scaled because the load-related response remained much smaller than
+                    the groundwater-related response.
+                                                          16
+                        3. The current grouped balanced multisensor Stage 1 improved the problem in three main
+                            ways:
+                              (a) the operator condition number dropped by several orders of magnitude,
+                             (b) the grouped state directions became fully ranked,
+                              (c) the inter-column correlations became much smaller, so the grouped state directions
+                                   are materially more separable.
+                        4. The observability Gramian of the current grouped model is not perfectly isotropic, but it
+                            is positive in all three grouped directions, showing that the balanced multisensor state is
+                            dynamically observable over the assimilation window.
+                         In summary, the conditioning diagnostics quantitatively support the practical shift from
+                     an unconstrained real layered inversion to the current grouped balanced multisensor Stage 1
+                     Bologna formulation.
+                     D Synthetic Validation and External Well-Validation Details
+                     This appendix documents the synthetic validation protocol used to test the inversion machinery
+                     under controlled conditions and the external groundwater-well validation used to assess the
+                     grouped Bologna posterior against independent observations. The appendix complements the
+                     main paper by providing the detailed setup, quantitative summaries, and placeholder locations
+                     for the extended Ągures that support the interpretation of the real-data results.
+                     D.1 Synthetic validation protocol
+                     Before applying the inversion to the Bologna overlap, the method was tested in a controlled
+                     synthetic setting in which the latent hydrologic state is known. The purpose of this pre-stage
+                     was not to claim that synthetic success guarantees real-data identiĄability, but to verify that
+                     the deformation-space Bayesian machinery can recover known signals under model-consistent
+                     conditions.
+                         The synthetic workĆow consisted of:
+                        1. generating smooth W3RA-like storage Ąelds for the Ąve components
+                                                                          ¶S0,Ss,Sd,Sg,Sr♢,
+                        2. converting these storage Ąelds into deformation-space predictors using the same forward
+                            hydro-mechanical operators used in the real formulation,
+                        3. constructing synthetic observations of the form
+                                                                          Y     =Z θ +ε ,                                                  (S111)
+                                                                            t;p      t;p t;p      t;p
+                        4. running Stage 1 Bayesian recovery to obtain posterior states, and
+                        5. testing whether Stage 2 residual learning can improve the Stage 1 posterior when the true
+                            residual is known.
+                         The principal clean validation setup used:
+                        • 24 time steps,
+                        • a 12×12 spatial grid,
+                                                                                   17
+                                                Figure placeholder
+                                         Synthetic validation summary panel.
+                  Suggested content: truth-versus-recovered summary for the clean Ąve-layer synthetic run,
+                   together with a compact performance panel for deformation, Loadtotal, TWS, and Sg.
+              Figure S1: Synthetic validation summary. This Ągure should show the main clean-case synthetic
+              feasibility result that justiĄes the deformation-space inversion machinery before real-data appli-
+              cation.
+                 • the full Ąve-layer synthetic state,
+                 • and noise_scale = 0:0.
+                  As summarized in Table S4, the clean synthetic run showed strong state recovery across the
+              key aggregated quantities and for groundwater. In particular, the clean Stage 1 synthetic run
+              reached approximately R2 ≈ 0:976 for Loadtotal, R2 ≈ 0:980 for total water storage, R2 ≈ 0:980
+              for deformation reconstruction, and R2 ≈ 0:981 for Sg. These results justify the use of the
+              synthetic block as a pre-stage feasibility test for the inversion machinery.
+              Table S4: Clean synthetic Stage 1 validation summary used as the main synthetic feasibility
+              anchor.
+                                     Quantity                    Metric  Value
+                                     Loadtotal state               R2     0:976
+                                     TWSstate                      R2     0:980
+                                     Deformation reconstruction    R2     0:980
+                                     Sg state                      R2     0:981
+                  As shown conceptually in Figure S1, the clean synthetic case is the correct anchor for
+              evaluating whether the inverse machinery works under model-consistent conditions. The noisy
+              synthetic variants remain useful as stress tests, but the current paper uses the clean benchmark
+              as the main synthetic evidence because the real applied contribution of the study lies in the
+              grouped Bologna result rather than in a noise-robust learned benchmark.
+              D.2 External well-validation methodology
+              The strongest external validation available for the grouped Bologna posterior is the independent
+              groundwater-well network. Since the grouped posterior is a storage-like latent estimate while
+              the wells measure hydraulic head, validation was carried out in anomaly space rather than by
+              direct equality of units.
+                  The well-validation workĆow was:
+                 1. interpolate the grouped posterior Ąelds from the Kalman tile/grid support to each well
+                    location,
+                 2. align the posterior and well series by nearest date,
+                                                         18
+                                                    Figure placeholder
+                                               Well-validation summary panel.
+                     Suggested content: histogram or ranked distribution of best-match well correlations,
+                                trusted subset indicator, and grouped-state best-match counts.
+                   Figure S2: Extended well-validation summary panel for the grouped Bologna posterior.
+                  3. compute anomaly time series,
+                  4. search over a discrete lag set
+                                         L =¶−90,−60,−30,−14,0,14,30,60,90♢ days,                       (S112)
+                                          lag
+                  5. and record the best state / best lag match for each station.
+                   This lag-aware anomaly validation is important because the grouped posterior and the
+                well-head response need not be synchronous at all locations. It also allows the grouped state
+                interpretation to remain physically reasonable in a coupled deformation system in which different
+                grouped components may dominate at different stations.
+                D.3 Overall well-validation results
+                The overall validation summary is given in Table S5. A total of 83 station series were evaluated.
+                After best-state and best-lag matching, all 83 stations showed positive correlation, 74 stations
+                had correlation at least 0:3, and 62 stations had correlation at least 0:5. The median anomaly
+                correlation was approximately 0:704, while the top-10 mean correlation was approximately 0:947.
+                                Table S5: Overall grouped-posterior well-validation summary.
+                                         Validation statistic                   Value
+                                         Evaluated station series                83
+                                         Positive best-match correlations        83
+                                         Stations with correlation ≥ 0:3         74
+                                         Stations with correlation ≥ 0:5         62
+                                         Median best-match correlation          0:704
+                                         Top-10 mean best-match correlation     0:947
+                                         Trusted stations                        21
+                                         Trusted hydrogeologic groups             6
+                   The overall distribution of well-validation performance should be visualized in Figure S2.
+                That panel is intended to serve as the supplementary counterpart of the main paperŠs shorter
+                well-validation Ągure and should summarize the correlation distribution, the trusted subset, and
+                the best-state counts.
+                                                              19
+                                                         Figure placeholder
+                                                     Depth-class validation panel.
+                     Suggested content: boxplots or grouped summary of best-match correlations for shallow,
+                                                     intermediate, and deep wells.
+                   Figure S3: Depth-stratiĄed well-validation performance for the grouped Bologna posterior.
+                 D.4 Depth dependence and best-state interpretation
+                 The depth-stratiĄed summary is reported in Table S6. The grouped posterior is supported across
+                 depth classes, with the strongest median anomaly correlations in the shallow and intermediate
+                 ranges. This pattern is physically plausible because shallower and intermediate wells are more
+                 likely to respond directly to storage changes reĆected in the grouped posterior at the spatial and
+                 temporal scales considered here.
+                     In addition, the best-state counts show that the grouped groundwater component is the
+                 best match for the largest number of stations, but not for all stations. This is also physically
+                 reasonable: in a coupled hydro-mechanical system, the observed local behavior can reĆect not
+                 only grouped groundwater but also loading-related grouped states.
+                 Table S6: Depth-stratiĄed validation and best-state interpretation for the grouped Bologna
+                 posterior.
+                                      Category                             Statistic         Value
+                                      Shallow wells                   median correlation     0:767
+                                      Intermediate wells              median correlation     0:731
+                                      Deep wells                      median correlation     0:617
+                                      Best state = Groundwater           station count         42
+                                      Best state = ShallowLoad           station count         25
+                                      Best state = DeepLoad              station count         16
+                     The depth-class breakdown can be illustrated in Figure S3, while representative station-level
+                 comparisons can be shown in Figure S4. These Ągures are especially useful for supplementary
+                 interpretation because they provide local examples without overloading the main paper.
+                 D.5 Trusted validation subset
+                 To avoid over-interpreting hydrogeologic settings with weaker support, a conservative trusted
+                 subset was deĄned. The trusted subset contains 21 stations across 6 hydrogeologic groups, listed
+                 in Table S7. This subset is the strongest external-validation panel and should be used for the
+                 most conservative interpretation of the grouped groundwater signal.
+                     The spatial distribution of the trusted subset should be shown in Figure S5. This Ągure
+                 should overlay the trusted stations on the Bologna inversion domain and, if useful, distinguish
+                 the trusted hydrogeologic groups by symbol or color.
+                                                                   20
+                                               Figure placeholder
+                                        Representative well time-series panel.
+                     Suggested content: 4Ű6 representative stations showing observed well anomalies,
+                                    best-matched grouped state, and selected lag.
+              Figure S4: Representative station-level anomaly comparisons between the grouped posterior and
+              independent wells.
+               Table S7: Trusted hydrogeologic groups used for the conservative external-validation subset.
+                            Index   Trusted hydrogeologic group
+                            1       Pianura Alluvionale Appenninica - conĄnato superiore
+                            2       Freatico di pianura Ćuviale
+                            3       Conoide Zena-Idice - conĄnato superiore
+                            4       Conoide Reno-Lavino - libero
+                            5       Conoide Reno-Lavino - conĄnato inferiore
+                            6       Conoidi montane e Sabbie gialle orientali
+              D.6 Interpretation
+              The synthetic and well-validation results in this appendix support the following interpretation.
+                 First, the synthetic validation block demonstrates that the inversion machinery is internally
+              coherent and able to recover known signals in a model-consistent setting, as summarized in
+              Table S4 and Ągure S1. Second, the external well-validation results in Tables S5 to S7 show
+              that the grouped Bologna posterior is not merely reproducing InSAR internally, but is also
+              consistent with independent groundwater behavior over a substantial fraction of the well network.
+              Third, the trusted subset provides a conservative basis for interpretation and should therefore
+              be preferred whenever the paper needs to make the strongest external-validation statement.
+                 In summary, the current external evidence supports the grouped balanced multisensor
+              Stage 1 model as the strongest real-data estimator in the Bologna application, while the earlier
+              unconstrained full layered inversion remains unsupported and the current Stage 2 Swin reĄnement
+              remains exploratory.
+              References
+              [1] Gene H. Golub and Charles F. Van Loan. Matrix Computations. Johns Hopkins University
+                 Press, Baltimore, 4 edition, 2013.
+              [2] Nicholas J. Higham. Accuracy and Stability of Numerical Algorithms. Society for Industrial
+                 and Applied Mathematics, Philadelphia, 2 edition, 2002. doi: 10.1137/1.9780898718027.
+              [3] Rudolf E. Kalman. On the general theory of control systems. In Proceedings of the First
+                 International Congress on Automatic Control, pages 481Ű492, London, 1960. Butterworths.
+                                                       21
+                       Figure placeholder
+                        Trusted wells map.
+         Suggested content: Bologna overlap domain, all wells, trusted wells highlighted, and
+                    optional hydrogeologic-group symbols.
+          Figure S5: Trusted external-validation subset for the grouped Bologna posterior.
+       [4] Andrew M. Stuart. Inverse problems: A Bayesian perspective. Acta Numerica, 19:451Ű559,
+         2010. doi: 10.1017/S0962492910000061.
+                            22

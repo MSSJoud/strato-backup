@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hydro-insar-swin-inversion"
+version = "0.1.0"
+description = "Container-oriented framework for hydrologic storage inversion from InSAR and multisensor constraints."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  {name = "Mehdi Joud"},
+  {name = "Chandrakanta Ojha"},
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "scipy",
+  "xarray",
+  "netCDF4",
+  "h5py",
+  "rasterio",
+  "pyyaml",
+  "jupyterlab",
+  "nbformat",
+  "ipywidgets",
+]
+
+[project.scripts]
+hisi = "hydro_insar_swin_inversion.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

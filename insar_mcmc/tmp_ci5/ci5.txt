@@ -1,0 +1,438 @@
+              SUBMITTED TO IEEE TGRS                                                                                                                          1
+                                      Hybrid MCMC and Physics-Aware
+              Transformer-Based Inversion of Layered Hydrologic
+                  Storage from InSAR Deformation: Case Study of
+                                                       Emilia-Romagna, Italy
+                                                    Mehdi Joud, Member, IEEE,              and Chandrakanta Ojha
+                 AbstractÐA novel hybrid machine-learning framework based               Groundwater change is directly tied to agricultural produc-
+              on MCMC and Swin3D U-Net transformers is presented to                     tivity, drought resilience, environmental management, and, in
+              directly invert layered hydrologic storage from InSAR time series         stressed aquifer systems, to compaction and subsidence [1]±
+              of land deformation. The motivation is the need for groundwater-          [3]. This need has intensified in the current Earth-observation
+              related storage estimates at spatial scales relevant to aquifer           era, where gravimetry, hydrologic models, soil-moisture prod-
+              systems, where existing large-scale water-storage products re-
+              main too coarse and direct subsurface observations are sparse.            ucts, surface-water missions, and dense radar deformation
+              However, the observed InSAR signal is often noisy, spatially              measurements coexist, but differ strongly in spatial support
+              heterogeneous, and influenced by non-hydrologic processes. To             and physical meaning.
+              address this, the proposed framework combines deformation-                   At continental to regional scales, GRACE and GRACE-
+              space Bayesian inversion, forward hydro-mechanical consistency,           FO have transformed observation of terrestrial water storage
+              and transformer-based residual learning within a multisensor
+              setting. The framework is first evaluated in a synthetic five-layer       (TWS),buttheir effective support remains too coarse for direct
+              setting to test identifiability under controlled conditions, and          aquifer-scale diagnosis in heterogeneous and intensively man-
+              is then applied to Emilia-Romagna, Italy, where the strongest             aged settings [4]±[6]. Bayesian data-assimilation frameworks
+              supported real-data result is obtained through a grouped bal-             have therefore been developed to fuse large-scale observa-
+              anced multisensor Stage 1 formulation constrained by SMAP,                tions with hydrologic models. In particular, Mehrnegar et al.
+              with SWOT included as an exploratory surface-water constraint
+              and groundwater wells used for independent validation, sum-               formulated a Markov Chain Monte Carlo data-assimilation
+              maries over the shared period 2017-01-04 to 2024-08-01. The               framework (MCMC-DA) that integrates GRACE total water
+              strongest supported real-data result is the grouped posterior state       storage changes with W3RA to update groundwater and soil-
+              [S0 +Ss, Sd+Sr, Sg], which remains physically plausible in                water storage components [4]. Their formulation replaces the
+              magnitude and is independently supported by groundwater-well              fixed temporal dependence of the earlier DMDA approach
+              anomalies across the Bologna monitoring network. Independent
+              validation against Bologna groundwater wells further supports             with dynamic Bayesian estimation of time-varying coefficients
+              the grouped groundwater signal, with 83 evaluated station series,         and innovation covariance via Gibbs sampling and forward-
+              a median best-match anomaly correlation of about 0.704, and a             filtering backward-smoothing [7]±[12]. This provides a rigor-
+              conservative trusted subset of 21 stations across 6 hydrogeologic         ous and uncertainty-aware assimilation model, but it is built
+              groups. To our knowledge, this is the first approach to directly          for a setting in which observations and model outputs are both
+              invert layered water storage from land deformation without
+              requiring prior explicit isolation of a purely groundwater-related        storage-related quantities.
+              signal. These results show that high-resolution layered hydrologic           The InSAR case is fundamentally different. In the InSAR
+              storage can be inferred from mixed InSAR deformation when                 setting, the observations are line-of-sight surface deformation,
+              embedded in a hybrid MCMC and physics-aware transformer-                  whereas W3RA provides latent hydrologic storage states. The
+              based framework.                                                          storage must therefore first be mapped through a forward
+                 Index TermsÐInSAR deformation, layered soil water content,             hydromechanical operator before the Bayesian assimilation
+              groundwater storage, hydrologic storage inversion, Bayesian               logic can be transferred. This is the key methodological shift
+              state-space modeling, Markov chain Monte Carlo, physics-aware             of the present work: instead of regressing storage against
+              transformers, Swin3D U-Net, multisensor assimilation.
+                                                                                        storage, we formulate a deformation-space Bayesian prior in
+                                       I. INTRODUCTION                                  which W3RA compartments are converted into deformation
+                                                                                        predictors through elastic loading and poroelastic response
+                       ATER security increasingly requires monitoring sys-              operators. In this way, both sides of Stage 1 live in deformation
+              Wtemsthatcanresolvenotonlybasin-scalemasschange,                          space, while the recovered latent variables remain tied to
+              but also compartment-level and aquifer-scale storage dynamics             physically interpretable storage components.
+              in regions affected by irrigation, drought, and land subsidence.             This shift is scientifically important because multi-temporal
+                                                                                        InSAR can resolve millimeter-scale land deformation at high
+                 M. Joud is with Aalborg University, Copenhagen, Institute for IT and   spatial resolution, making it attractive for studying local hy-
+              Design (e-mail: mshjo@plan.aau.dk).                                       drologic loading, aquifer compaction, and groundwater-related
+                 C. Ojha is with the Department of Earth and Environment Sciences, IISER
+              Mohali, India (e-mail: chandrakanta@iisermohali.ac.in).                   deformation signals that are inaccessible to GRACE and only
+             SUBMITTED TO IEEE TGRS                                                                                                             2
+             sparsely constrained by GNSS [5], [13]±[15]. Yet translat-          10.2 to 12.5 and latitude 43.8 to 45.9. The shared overlap is
+             ing deformation into groundwater storage remains a difficult        represented on the native W3RA grid of 22 × 24 cells over the
+             inverse problem: it is spatially heterogeneous, temporally          period 2017-01-04 to 2024-08-01, yielding 362 shared dates
+             complex, often nonlinear, and strongly affected by subsurface       [27], [28]. Figure 1 is reserved for the study-area map, overlap
+             structure and mixed signal sources [1], [15], [16]. Existing        grid, and validation-well locations. For the reader, the essential
+             studies address parts of this problem but not the full work-        data products and their role in the workflow are summarized
+             flow required here. Classical geodetic approaches use elastic       in Table I.
+             and poroelastic Green’s functions to relate deformation to            The hydrogeologic interpretation is not based on a single
+             hydrologic mass change [1], [15], [17], [18]. Machine-learning      homogeneous groundwater body. Instead, validation uses two
+             studies have linked InSAR deformation to groundwater level,         complementary categorizations: depth classes (shallow, inter-
+             withdrawal, or aquifer parameters [19]±[21]. At the same            mediate, deep) and hydrogeologic groups from the ARPAE
+             time, physically constrained deep learning and reproducible         monitoring framework, including Freatico di pianura flu-
+             modelling workflows are becoming more important across              viale, Pianura Alluvionale Appenninica ± confinato supe-
+             environmental modelling [22]±[25]. What remains missing             riore, Conoide Reno-Lavino ± libero, and related confined
+             is a compact framework that first tests identifiability under       and alluvial-cone units. These groups become important later
+             known hydro-mechanical physics, then transfers a Bayesian           because the grouped posterior is judged not only by fit
+             prior into deformation space, and only then uses learning           statistics, but also by whether it behaves consistently across
+             to recover structured residuals that the Bayesian layer alone       hydrogeologically meaningful well subsets.
+             cannot separate.                                                      The main InSAR observation stream is a Bologna MintPy
+                That gap is where the proposed hybrid framework is po-           time-series  product derived from Sentinel-1 and stored
+             sitioned. Stage 1 provides a stable physics-based posterior         locally as timeseries_SET_ERA5_ramp_demErr.h5.
+             prior by transferring the Mehrnegar-style dynamic Bayesian          The corrected product used here contains 394 acquisitions and
+             state-space model to deformation space. Synthetic experiments       555interferograms in descending geometry and includes solid-
+             show that this Bayesian stage can recover a strong posterior        Earth-tide correction, ERA5 correction, DEM-error correction,
+             state under clean and noisy controlled settings, but it does not    and quadratic deramping. The product was aggregated from
+             fully separate the layerwise parameter structure. The Bayesian      its native scene to the W3RA grid and converted to anomalies
+             prior is therefore useful, but not sufficient by itself. Stage 2    before assimilation. The W3RA source product is the local
+             addresses this limitation by learning the structured residuals      NetCDF model run W3RA_2010_2024_.nc, from which
+             that Stage 1 misses using a Swin-based spatiotemporal residual      the five layers S0,Ss,Sd,Sg,Sr were extracted and aligned
+             model [26]. Stage 3 then enforces deformation consistency by        to the shared period. The overlap construction is cited in
+             mapping the corrected state back through the same forward           the workflow described in Section IV; see also Figure 2.
+             hydromechanical operator. In the constrained version of the         Table I reports the product names, coverage, variables, and
+             framework, auxiliary satellite observations such as SMAP and        preprocessing for all data streams.
+             SWOTareintroducednotasreplacementsforthedeformation-
+             space Bayesian model, but as compartment-specific constraints         GRACE/GRACE-FO is used here as a coarse regional
+             that reduce posterior ambiguity for weakly identifiable state       external storage constraint through the JPL RL06.3 CRI
+             components.                                                         mascon product [29], [30]. In the Bologna workflow,
+                The framework does not claim unique recovery of the full         lwe_thickness anomalies were extracted as regional
+             hydrologic truth from deformation alone. Rather, it yields a        means over the overlap bounding box and aligned to the
+             physically constrained posterior estimate under explicit prior,     362-date overlap timeline. SMAP is used as a near-surface
+             forward-model, and loss assumptions, with residual learn-           hydrologic constraint via the NSIDC enhanced L3 radiome-
+             ing used to improve structured recovery beyond the linear-          ter daily soil-moisture product SPL3SMP_E [31]. One daily
+             Gaussian Bayesian core. In the present Bologna applica-             granule was queried per InSAR date, regional means were
+             tion, the strongest supported real-data estimator is a grouped      computed over the overlap box, and 254 valid dates survived
+             multisensor Bayesian posterior rather than a fully resolved         the final alignment. SWOT is included as an exploratory
+             layered inversion; the latter remains the longer-term goal of       external surface-water constraint using the RiverSP reach and
+             the framework. The paper is organized as follows. Section II        LakeSP products [32], [33]. Over the Bologna overlap subset,
+             introduces the study area and datasets, Section III presents        33 river times and 34 lake times were prepared, but only
+             the general and applied formulations, Section IV describes the      9 matched dates per stream survived the final nearest-date
+             synthetic and real-data workflows, Section V reports the main       fusion, which is why SWOT remains exploratory in the present
+             results, and Section VI discusses their implications.               paper rather than a main driver of the best result. Finally,
+                                                                                 independent groundwater-well observations from the ARPAE
+                           II. STUDY AREA AND DATASETS                           manual and automatic networks are used for validation. After
+                                                                                 metadata merge, UTM-to-lon/lat conversion, anomaly con-
+                The applied study domain is the Bologna overlap area             struction, and temporal filtering, 83 well time series were
+             extracted from the broader Emilia±Romagna region in northern        retained for overlap-period validation. Their role is central
+             Italy. In the corrected MintPy/W3RA overlap used for the            in the interpretation of the grouped groundwater posterior, as
+             final grouped inversion, the working bounding box is longitude      discussed in Section V.
+                 SUBMITTED TO IEEE TGRS                                                                                                                                                    3
+                                                                                                 TABLE I
+                  SUMMARYOFTHEMAINDATASETSUSEDINTHISSTUDY.TABLEIISCITEDINSECTIONS II AND IV WHEN THE WORKFLOW AND PREPROCESSING ARE
+                                                                                               INTRODUCED.
+                   Dataset             Product / file used in this study    Source                   Coverage used here        Variables used              Role in study              Processing before assimila-
+                                                                                                                                                                                      tion
+                   InSAR               timeseries_SET_ERA5_ramp_demErr.h5Local       MintPy     /    2017-01-04 to 2025-       deformation time se-        Main      observation      MintPy inversion, aggrega-
+                                                                            Sentinel-1               06-27; 394 acquisi-       ries                        stream                     tion to W3RA grid, anomaly
+                                                                                                     tions                                                                            conversion
+                   InSAR stack         inputs/ifgramStack.h5                Local MintPy in-         555 interferograms        unwrapped phase, co-        Documents network          Used to report network prop-
+                                                                            puts                                               herence                     construction               erties
+                   W3RA                W3RA_2010_2024_.nc                   Local        W3RA        overlap with InSAR:       S0,Ss,Sd,Sg,Sr              Prior      hydrologic      overlap   extraction,   regrid-
+                                       and overlap products                 model run                2017-01-04 to 2024-                                   state                      ding, anomaly generation
+                                                                                                     08-01
+                   GRACE               JPL RL06.3 CRI mascon                NASA / JPL               aligned to 362 over-      lwe_thickness               Regional       storage     Regional mean over Bologna
+                                                                                                     lap dates                 anomalies                   constraint                 bounding     box,     anomaly
+                                                                                                                                                                                      alignment
+                   SMAP                SPL3SMP_E matched gran-              NASA / NSIDC             358          matched      surface soil moisture       External      shallow-     One daily granule per In-
+                                       ules                                                          downloads,        254                                 hydrologic constraint      SAR date, regional mean
+                                                                                                     valid dates                                                                      over bounding box
+                   SWOT                RiverSP reach 2.0 and LakeSP         NASA/PO.DAAC             River 33 times; lake      river/lake     surface-     Exploratory surface-       bbox subset and nearest-date
+                                       obs 2.0                                                       34 times; 9 matched       water summaries             water constraint           matching with 14-day toler-
+                                                                                                     dates per stream after                                                           ance
+                                                                                                     fusion
+                   Wells               ARPAE groundwater level ta-          ARPAE       Emilia±      2009-01-01 to 2024-       piezometric       head,     Independent valida-        metadata merge, UTM-to-
+                                       bles                                 Romagna                  12-18;      validation    depth to water              tion                       lon/lat conversion, anomaly-
+                                                                                                     overlap   2017-01-04                                                             space matching
+                                                                                                     to 2024-08-01
+                                                                                                        while the groundwater-pressure contribution is
+                                                                                                                                                       Sg
+                                                                                                                                       ∆p =ρ g t.                                       (3)
+                                                                                                                                            t      w S
+                                                                                                                                                         eff
+                                     Placeholder for study-area map.                                    The corresponding displacement branches are
+                       Suggested content: Bologna overlap domain, W3RA
+                                                                                                                                      load
+                                                                                                                                    u       =G ∗∆ℓ,
+                   native 22 × 24 grid, well locations, and inset showing the                                                         t           load        t                         (4)
+                         broader Emilia±Romagna / northern Italy context.                                                             poro
+                                                                                                                                    u       =G          ∗∆p ,
+                                                                                                                                      t           poro         t
+                                                                                                        so that the total modeled deformation is
+                                                                                                                                      tot       load       poro
+                                                                                                                                    u     =u         +u         .                       (5)
+                                                                                                                                      t         t          t
+                 Fig. 1. Study area and validation setting. Figure 1 should show the Bologna            For the Bayesian formulation, we construct a component-wise
+                 overlap domain used in the grouped inversion, the native shared W3RA grid,             deformation design vector
+                 and the ARPAE well network used for external validation. The working                                       h                                                  i
+                 bounding box is longitude 10.2±12.5 and latitude 43.8±45.9, and the shared                       Z = (S0)                (Ss)       (Sd)      (Sg)       (Sr) ,        (6)
+                 MintPy/W3RA overlap spans 2017-01-04 to 2024-08-01.                                                 t,p      u         u          u          u         u
+                                                                                                                                t,p       t,p        t,p       t,p        t,p
+                                                                                                        where the four load-driven compartments are propagated
+                                                                                                        through G              and the groundwater compartment through
+                                                 III. METHOD                                                           load
+                                                                                                        Gporo. Stage 1 then uses the deformation-space observation
+                 A. General five-layer formulation                                                      model
+                    Let                                                                                         YInSAR = Z θ               +ε ,            ε     ∼N(0,R ), (7)
+                                                                                                                t,p             t,p  t,p      t,p          t,p               t,p
+                                                        S0
+                                                            t,p                                         with temporal evolution
+                                                      Ss 
+                                                       t,p
+                                            x     =Sd ∈R5                                      (1)               θ     =θ           +η ,             η      ∼N(0,Q ).                 (8)
+                                              t,p      t,p                                                         t,p       t−1,p        t,p          t,p                t,p
+                                                      Sg 
+                                                            t,p                                         The Stage 1 posterior prior state is
+                                                        Sr
+                                                            t,p
+                                                                                                                                     xprior = θ        ⊙z ,                             (9)
+                 denote the W3RA storage state at time t and pixel p. Because                                                          t,p         t,p      t,p
+                 InSAR measures deformation rather than storage, the W3RA                               where z         is the original W3RA state and ⊙ denotes elemen-
+                 state is first mapped through an elastic±poroelastic forward                                      t,p
+                 model. The load-driven contribution is                                                 twise multiplication.
+                                                                                                            Stage 2 does not replace Stage 1. It learns the residual
+                                 ∆ℓ =ρ (S0 +Ss +Sd +Sr ),                                        (2)                                 r     =x −xprior                                  (10)
+                                      t      w       t        t        t        t                                                      t,p      t,p       t,p
+                SUBMITTED TO IEEE TGRS                                                                                                                                                4
+                                                                           Placeholder for workflow schematic.
+                       Suggested content: synthetic five-layer pre-stage → forward physics → Stage 1 Bayesian prior → optional Stage 2
+                      residual learning; real-data branch with MintPy InSAR, W3RA grouped states, GRACE, SMAP, exploratory SWOT,
+                                                                                      and well validation.
+                Fig. 2.  Overall workflow used in this study. Figure 2 should distinguish the synthetic five-layer validation block from the applied Bologna estimator. The
+                synthetic branch validates the deformation-space inversion machinery under known truth, whereas the real-data branch uses the grouped state in (14), assimilates
+                InSAR, GRACE, and refreshed SMAP (with SWOT as an exploratory add-on), and validates the grouped groundwater posterior against independent ARPAE
+                well anomalies.
+                from local spatiotemporal context,                                                   A. Overlap construction and preprocessing
+                    ˆ                                            prior       prior                     The Bologna overlap construction begins from the MintPy
+                    rt,p = fϕ I                     , C       , x        , Σ            ,   (11)
+                                    t−w+1:t,N(p)        N(p)      t,N(p)      t,N(p)                 time-series product and the local W3RA model run. The
+                and the corrected state is                                                           corrected MintPy scene used in this study contains 394 ac-
+                                             final      prior    ˆ                                   quisitions and 555 interferograms. The deformation product
+                                           xt,p    =xt,p +rt,p.                             (12)     was aggregated from its original scene to the native shared
+                Thefinal estimate must remain deformation-consistent through                         W3RAgridof 22 × 24 cells, and the shared overlap was then
+                                           ˆInSAR             final                                 restricted to the period 2017-01-04 to 2024-08-01, producing
+                                          Y           =F x             .                    (13)
+                                            t,p                 t,p                                  362 shared dates. W3RA preprocessing extracted the five
+                B. Applied grouped Bologna estimator                                                 layers S0,Ss,Sd,Sg,Sr, intersected them with the corrected
+                    The full five-layer formulation above is the general frame-                      InSAR dates, and saved both raw overlap states and anomaly
+                work and the synthetic validation setting. However, the real                         overlap states. GRACE regional means, refreshed SMAP re-
+                Bologna problem is not practically well-conditioned in un-                           gional means, and exploratory SWOT summaries were aligned
+                constrained five-layer form. The validated applied estimator                         to the same overlap timeline, although only 9 matched SWOT
+                is therefore a three-component grouped balanced multisensor                          dates per stream survived the final bundle fusion. The complete
+                state-space model with state                                                         product-level summary is already given in Table I.
+                                      ShallowLoad               S0 +Ss 
+                                                           t            t        t                   B. Synthetic validation workflow
+                              grp                                              
+                            x      =       DeepLoad            = Sd +Sr .                   (14)
+                              t                          t              t        t
+                                        Groundwater                      Sg                              The synthetic stage is a pre-stage validation block, not
+                                                           t                 t
+                This grouping preserves a dedicated groundwater compo-                               the final applied result. It verifies that the inversion ma-
+                nent while improving numerical conditioning and physical                             chinery can recover known signals under model-consistent
+                interpretability. In the current implementation, the grouped                         conditions. Smooth W3RA-like storage fields are generated for
+                W3RA prior is corrected through a balanced Kalman-type                               S0,Ss,Sd,Sg,Sr, converted to deformation-space predictors
+                state-space model driven by four possible observation streams:                       using the same forward physics later used in the real inversion,
+                InSAR deformation anomalies, GRACE regional anomalies,                               and then used to construct synthetic observations of the form
+                refreshed SMAP surface soil moisture, and exploratory SWOT                                                     Y     =Z θ +ε .                                   (15)
+                summaries. Figure 2 should summarize both the full five-layer                                                    t,p       t,p t,p      t,p
+                framework and the applied grouped Bologna implementation.                            Stage 1 MCMC is first tested for posterior recovery, after
+                       IV. EXPERIMENTS AND PROCESSING WORKFLOW                                       which Stage 2 is tested only as a residual-learning refinement
+                                                                                                     under known truth. The synthetic setup uses 24 time steps,
+                    The recommended paper logic is to first present the study                        a 12 × 12 grid, five layers, and a clean reference run with
+                area and datasets (Section II), then explain how the overlap                         noise_scale = 0.0. The key synthetic result is that the
+                products were built, then summarize the synthetic validation                         inversion machinery works strongly in a model-consistent syn-
+                block, and only after that present the grouped multisensor                           thetic setting, but synthetic success alone does not guarantee
+                real-data inversion and the independent well validation. This                        identifiability in real data. Figure 3 is reserved for a compact
+                ordering makes the workflow transparent and is the same                              synthetic summary and is cited here because the synthetic
+                ordering followed in Figure 2 and Table I.                                           stage is part of the methodological justification of the paper.
+                 SUBMITTED TO IEEE TGRS                                                                                                                                                   5
+                                                     TABLE II                                           the main grouped posterior maps and regional fit summary,
+                     SYNTHETIC AND REAL EXPERIMENT BLOCKS USED IN THIS STUDY.                           and Table III summarizes the central quantitative metrics.
+                      TABLE II IS CITED IN SECTION IV TO CLARIFY THE DISTINCTION                           On the corrected overlap run, the grouped posterior im-
+                       BETWEEN THE GENERAL FRAMEWORK, THE APPLIED GROUPED                               proves all three observation streams relative to the grouped
+                                  ESTIMATOR, AND THE VALIDATION STAGES.
+                                                                                                        prior. Regional posterior skill reaches approximately R2 ≈
+                   Block             State formulation        Observation              Output           0.971 for InSAR, R2 ≈ 0.487 for GRACE, and R2 ≈ 0.618
+                                                              streams                                   for SMAP, while at the tiled level the grouped posterior
+                   Synthetic         five-layer               synthetic deforma-       posterior prior achieves an InSAR posterior R2 ≈ 0.905. An important
+                   Stage 1           (S0,Ss,Sd,Sg,Sr) tion                             recovery         practical outcome is that posterior grouped magnitudes re-
+                   Synthetic         five-layer   residual    synthetic deforma-       residual-        main physically plausible rather than exploding numerically:
+                   Stage 2           refinement               tion + prior             learning
+                                                                                       diagnostic       ShallowLoad has an absolute maximum of about 52.1mm,
+                   Real grouped      grouped                  InSAR + GRACE            validated        DeepLoad about 88.1mm, and Groundwater about 48.1mm.
+                   Stage 1           (S0+Ss,Sd+Sr,Sg)+ SMAP + ex-                      applied          This is a major improvement over the earlier unconstrained
+                                                              ploratory SWOT           posterior
+                   External vali-    grouped                  ARPAE            well    lag-aware        real-data layered inversions, which were numerically unstable
+                   dation            groundwater              anomalies                anomaly          and physically uninterpretable.
+                                     vs wells                                          correlation         The grouped posterior was then tested against independent
+                                                                                                        Bologna groundwater wells. Since the model output is a
+                                                                                                        storage-like grouped posterior and the wells measure hydraulic
+                                                                                                        head, the comparison was performed in anomaly space rather
+                              Placeholder for synthetic validation figure.                              than by direct one-to-one unit equality. The validation used
+                       Suggested content: truth vs posterior summaries for                              spatial interpolation from the grouped Kalman tile grid to each
+                    Stage 1, deformation reconstruction skill, and a compact                            well, nearest-date temporal alignment, and a lag search over
+                    note that Stage 2 is technically feasible but not the main                          −90,−60,−30,−14,0,14,30,60,90 days. Under this setup,
+                                       driver of the real-data result.                                  83 well time series were evaluated, all 83 had positive best-
+                                                                                                        match anomaly correlation, 74 had correlation at least 0.3,
+                                                                                                        62 had correlation at least 0.5, the median correlation was
+                                                                                                        about 0.704, and the top-10 mean was about 0.947. Depth-
+                                                                                                        stratified validation gives a physically interpretable pattern,
+                 Fig. 3.  Synthetic validation summary. Figure 3 should show that the five-             with median correlations of about 0.767 for shallow wells,
+                 layer deformation-space inversion machinery works strongly under model-                0.731 for intermediate wells, and 0.617 for deep wells. Fig-
+                 consistent synthetic conditions and serves as a pre-stage validation block
+                 before the grouped real-data application.                                              ure 5 should summarize these well-validation results and the
+                                                                                                        trusted validation panel.
+                 C. Grouped multisensor Bologna inversion                                                  When wells are allowed to match the best-performing
+                                                                                                        grouped state after lag search, Groundwater is the best state
+                    For the real Bologna application, the final workflow is:                            for 42 stations, ShallowLoad for 25, and DeepLoad for 16.
+                 process the MintPy time series, aggregate the product to the                           To avoid over-interpreting weaker hydrogeologic settings, a
+                 native W3RA grid, build the shared overlap period, prepare                             conservative trusted validation subset was defined, containing
+                 external constraints (GRACE, SMAP, exploratory SWOT, and                               6 hydrogeologic groups and 21 stations. This trusted subset is
+                 wells), run the grouped balanced multisensor Stage 1 model in                          the strongest external evidence supporting the grouped ground-
+                 (14), and validate the grouped groundwater posterior against                           water posterior and should therefore anchor the interpretation
+                 wells. The grouped real-data model uses a balanced Kalman-                             of the applied result.
+                 type state-space formulation in which the grouped W3RA prior
+                 is corrected through multiplicative state factors. SWOT was                                                          VI. DISCUSSION
+                 successfully prepared and tested, but it does not materially                              Detailed mathematical proofs, forward-operator derivations,
+                 improve the current Bologna grouped inversion because the                              conditioning diagnostics, and extended validation results are
+                 matched time overlap with the other streams is too sparse.                             provided in the Supplementary Material. The paper supports
+                 This point should be visible later in the Results section and                          three main conclusions. First, the synthetic five-layer pre-stage
+                 should not be overstated in the paper.                                                 shows that the deformation-space inversion machinery works
+                                                  V. RESULTS                                            under model-consistent controlled conditions, so the core
+                                                                                                        Bayesian formulation is justified as an inversion engine rather
+                    The strongest real-data result obtained in this study is not                        than only as a heuristic fit. Second, the unconstrained real-data
+                 the original unconstrained layered inversion, but a grouped bal-                       five-layer inversion is not practically stable in the Bologna
+                 anced multisensor Stage 1 model over the corrected Bologna                             case, which is why the grouped balanced multisensor Stage 1
+                 MintPy/W3RA overlap period from 2017-01-04 to 2024-08-                                 formulation in (14) becomes the validated applied estimator.
+                 01. The grouped posterior state is given by (14) and is                                Third, the grouped posterior is not merely an internal InSAR-
+                 inferred by combining InSAR deformation anomalies, GRACE                               fitting artifact: it is physically plausible in magnitude, fits
+                 regional anomalies, and refreshed SMAP surface soil moisture                           InSAR, GRACE, and SMAP jointly, and is independently
+                 in a balanced state-space formulation. Figure 4 is reserved for                        supported by well-head anomalies across the Bologna network.
+               SUBMITTED TO IEEE TGRS                                                                                                                            6
+                                                               Placeholder for main grouped-result figure.
+                              Suggested content: grouped posterior maps for ShallowLoad, DeepLoad, and Groundwater; regional
+                    observed-vs-prior-vs-posterior timeseries for InSAR, GRACE, and SMAP; note that SWOT is exploratory and not a
+                                                                      major driver of the best result.
+               Fig. 4. Main grouped Bologna result. Figure 4 should show the grouped posterior maps and the internal multisensor fit summary for InSAR, GRACE, and
+               SMAP over the shared overlap period. This is the central applied-result figure of the paper.
+                                              TABLE III
+               MAINQUANTITATIVE RESULTS FOR THE GROUPED BOLOGNA ESTIMATOR.
+                TABLE III IS CITED IN SECTION V WHEN THE INTERNAL MULTISENSOR
+                      FIT AND EXTERNAL WELL VALIDATION ARE SUMMARIZED.
+                            Metric block          Value                                                 Placeholder for well-validation figure.
+                            Regional    InSAR     ≈0.971                                         Suggested content: summary panel of best-match
+                            posterior R2                                                     correlations, trusted-wells map, and compact depth-class
+                            Regional GRACE        ≈0.487                                                                 summary.
+                            posterior R2
+                            Regional    SMAP      ≈0.618
+                            posterior R2
+                            Tiled InSAR poste-    ≈0.905
+                            rior R2
+                            Max                   52.1mm
+                            |ShallowLoad|                                                 Fig. 5.  Independent well validation of the grouped groundwater posterior.
+                            Max |DeepLoad|        88.1mm                                  Figure 5 should summarize the lag-aware anomaly correlation against ARPAE
+                            Max                   48.1mm                                  wells and highlight the conservative trusted subset of stations and hydrogeo-
+                            |Groundwater|                                                 logic groups used for interpretation.
+                            Evaluated wells       83
+                            Median well corre-    0.704
+                            lation
+                            Wells with corr. ≥    74                                      setting, while the Bologna real-data application is solved with
+                            0.3                                                           a grouped balanced multisensor Stage 1 estimator. The applied
+                            Wells with corr. ≥    62                                      study domain covers longitude 10.2±12.5 and latitude 43.8±
+                            0.5
+                            Trusted hydrogeo-     6                                       45.9 on a native 22 × 24 overlap grid over the period 2017-
+                            logic groups                                                  01-04 to 2024-08-01. The current best real-data result is the
+                            Trusted stations      21                                      grouped posterior [S0 + Ss, Sd + Sr, Sg], obtained from
+                                                                                          InSAR deformation anomalies, GRACE regional anomalies,
+                 These conclusions also clarify the role of SWOT and                      and refreshed SMAP surface soil moisture, with exploratory
+               Stage 2 in the current paper. SWOT is a real data stream                   SWOTintegration and independent validation against ARPAE
+               in the workflow and should appear in Table I and in the                    wells. The grouped posterior remains physically sane in scale
+               methodological description, but it should not be overstated in             and is supported by a strong well-anomaly validation panel,
+               the results because only 9 matched dates per stream survive the            including a conservative trusted subset of 21 stations across
+               current overlap fusion. Similarly, Stage 2 remains theoretically           6 hydrogeologic groups. The full layered real-data inversion
+               justified and useful as a nonlinear residual-learning module,              is therefore not the validated result yet; it remains the longer-
+               but it is not yet the main applied estimator in the Bologna case.          term objective, with grouped multisensor Bayesian inference
+               The present real-data evidence supports it as an exploratory               providing the currently supported operational estimator.
+               lag/mismatch learner rather than an operational improvement                                            REFERENCES
+               over the grouped Stage 1 posterior.
+                                                                                           [1] G. Modoni, G. Darini, R. Spacagna, M. Saroli, G. Russo, and P. Croce,
+                                       VII. CONCLUSION                                         ªSpatial analysis of land subsidence induced by groundwater with-
+                                                                                               drawal,º Engineering geology, vol. 167, pp. 59±71, 2013.
+                 Thepaperpresents a hybrid hydrologic-inversion framework                  [2] C. Ojha, S. Werth, and M. Shirzaei, ªGroundwater loss and aquifer
+               in which a full five-layer deformation-space Bayesian formu-                    system compaction in san joaquin valley during 2012±2015 drought,º
+                                                                                               Journal of Geophysical Research: Solid Earth, vol. 124, no. 3, pp. 3127±
+               lation is retained as the general model and synthetic validation                3143, 2019.
+               SUBMITTED TO IEEE TGRS                                                                                                                               7
+                [3] A. Elsaidy, E. A. Yimer, Y. Mogheir, M. Huysmans, L. Villani, and            tural landscapes of the upper mississippi river basin,º Environmental
+                    A. Van Griensven, ªGroundwater drought and anthropogenic amplifiers:         Modelling & Software, vol. 192, p. 106588, 2025.
+                    A review of assessment and response strategies in arid and semi-arid    [24] C. J. Chawanda, C. George, W. Thiery, A. van Griensven, J. Tech,
+                    areas,º Science of the Total Environment, vol. 978, p. 179406, 2025.         J. Arnold, and R. Srinivasan, ªUser-friendly workflows for catchment
+                [4] N. Mehrnegar, O. Jones, M. B. Singer, M. Schumacher, T. Jagdhuber,           modelling: Towards reproducible SWAT+ model studies,º Environmental
+                    B. R. Scanlon, A. Rateb, and E. Forootan, ªExploring groundwater and         Modelling & Software, vol. 134, p. 104812, 2020.
+                    soil water storage changes across the conus at 12.5 km resolution by    [25] N. Jadidoleslam, R. Goska, R. Mantilla, and W. F. Krajewski, ªHydro-
+                    a bayesian integration of grace data into w3ra,º Science of the Total        vise: A non-proprietary open-source software for hydrologic model and
+                    Environment, vol. 758, p. 143579, 2021.                                      data visualization and evaluation,º Environmental Modelling & Software,
+                [5] Y. Fu, B. F. Thomas, and E. Chaussard, ªLarge-scale terrestrial water        vol. 134, p. 104853, 2020.
+                    storage changes sensed by geodesy,º in Remote Sensing for Charac-       [26] Z. Liu, Y. Lin, Y. Cao, H. Hu, Y. Wei, Z. Zhang, S. Lin, and
+                    terization of Geohazards and Natural Resources.   Springer, 2024, pp.        B. Guo, ªSwin transformer: Hierarchical vision transformer using shifted
+                    473±491.                                                                     windows,º in Proceedings of the IEEE/CVF International Conference on
+                [6] Y. Xiong, W. Feng, H. Bai, W. Chen, Z. Jiang, and M. Zhong,                  Computer Vision (ICCV), 2021.
+                    ªHigh-resolution terrestrial water storage anomalies and components in  [27] Arpae   Emilia-Romagna,    ªRete   Regionale   Monitoraggio   Acque
+                    china from grace/gfo via joint inversion downscaling,º Water Resources       Sotterranee 2009-2024. Livelli rilievo manuale,º 2025, dataset page
+                    Research, vol. 61, no. 7, p. e2024WR038996, 2025.                            accessed 2026-04-06. [Online]. Available: https://dati.arpae.it/dataset/
+                [7] N. Mehrnegar, O. Jones, M. B. Singer, M. Schumacher, P. Bates, and           293d6da1-b9f5-47e5-b5a9-8d9c8eeda8b1
+                    E. Forootan, ªComparing global hydrological models and combining        [28] ÐÐ, ªRete Regionale Monitoraggio Acque Sotterranee 2009-2022.
+                    them with GRACE by dynamic model data averaging (DMDA),º Ad-                 Livelli rilievo automatico,º 2025, dataset page located through Dati
+                    vances in Water Resources, vol. 138, p. 103528, 2020.                        Arpae; downloaded via linked CSV resources and Google Sheets
+                [8] A. E. Gelfand and A. F. Smith, ªSampling-based approaches to calculat-       exports used in this study. Accessed 2026-04-06. [Online]. Available:
+                    ing marginal densities,º Journal of the American statistical association,    https://dati.arpae.it/dataset/?license id=cc-zero&q=sotterranee
+                    vol. 85, no. 410, pp. 398±409, 1990.                                    [29] M. M. Watkins, D. N. Wiese, D.-N. Yuan, C. Boening, and F. W.
+                [9] A. F. M. Smith and G. O. Roberts, ªBayesian computation via the gibbs        Landerer, ªImproved methods for observing Earth’s time variable mass
+                    sampler and related markov chain monte carlo methods,º Journal of the        distribution with GRACE using spherical cap mascons,º Journal of
+                    Royal Statistical Society: Series B, vol. 55, no. 1, pp. 3±23, 1993.         Geophysical Research: Solid Earth, vol. 120, no. 4, pp. 2648±2671,
+               [10] C. K. Carter and R. Kohn, ªOn gibbs sampling for state space models,º        2015.
+                    Journal of Time Series Analysis, vol. 15, no. 6, pp. 341±349, 1994.     [30] F.  Landerer,  ªJPL GRACE/GRACE-FO Gridded-AOD1B Water-
+               [11] G. Kitagawa, ªNon-gaussian stateÐspace modeling of nonstationary             Equivalent-Thickness Surface-Mass Anomaly RL06.3 dataset for Tellus
+                    time series,º Journal of the American statistical association, vol. 82,      Level-3 mascon 0.5-degree grid,º 2020, version RL06.3. Dataset
+                    no. 400, pp. 1032±1041, 1987.                                                accessed 2026-04-06. [Online]. Available: https://podaac.jpl.nasa.gov/
+               [12] R. E. Kalman, ªA new approach to linear filtering and prediction             dataset/GRC-GFO GRIDDED AOD1B JPL MASCON RL06.3
+                    problems,º Journal of Basic Engineering, vol. 82, no. 1, pp. 35±45,     [31] P. E. O’Neill, S. Chan, E. G. Njoku, T. Jackson, and R. Bindlish,
+                    1960.                                                                        ªSMAP Enhanced L3 Radiometer Global Daily 9 km EASE-Grid Soil
+               [13] P. Berardino, G. Fornaro, R. Lanari, and E. Sansosti, ªA new algorithm       Moisture,º 2016, SPL3SMP E, Version 1. Dataset accessed 2026-04-06.
+                    for surface deformation monitoring based on small baseline differential      [Online]. Available: https://nsidc.org/data/SPL3SMP E/versions/1
+                    SAR interferograms,º IEEE Transactions on Geoscience and Remote         [32] Surface Water Ocean Topography (SWOT), ªSWOT Level 2 River
+                    Sensing, vol. 40, no. 11, pp. 2375±2383, 2002.                               Single-Pass Vector Reach Data Product, Version C,º 2024, version 2.0.
+               [14] A. Ferretti, C. Prati, and F. Rocca, ªPermanent scatterers in SAR            Dataset accessed 2026-04-06. [Online]. Available: https://podaac.jpl.
+                    interferometry,º IEEE Transactions on Geoscience and Remote Sensing,         nasa.gov/dataset/SWOT L2 HR RiverSP reach 2.0
+                    vol. 39, no. 1, pp. 8±20, 2001.                                         [33] ÐÐ, ªSWOT Level 2 Lake Single-Pass Vector Data Product, Version
+               [15] G. Carlson, S. Werth, and M. Shirzaei, ªJoint inversion of gnss and grace    C,º 2024, version 2.0. Dataset accessed 2026-04-06. [Online]. Available:
+                    for terrestrial water storage change in california,º Journal of Geophysical  https://podaac.jpl.nasa.gov/dataset/SWOT L2 HR LakeSP 2.0
+                    Research: Solid Earth, vol. 127, no. 3, p. e2021JB023135, 2022.
+               [16] S. Majumdar, R. Smith, J. J. B. Jr., and V. Lakshmi, ªGroundwater
+                    withdrawal prediction using integrated multitemporal remote sensing
+                    data sets and machine learning,º Water Resources Research, vol. 56,
+                    no. 11, p. e2020WR028059, 2020.
+               [17] H. Wang, Theory of linear poroelasticity with applications to geome-
+                    chanics and hydrogeology.   Princeton university press, 2000, vol. 2.
+               [18] R. Dill, V. Klemann, Z. Martinec, and M. Tesauro, ªApplying local
+                    green’s functions to study the influence of the crustal structure on
+                    hydrological loading displacements,º Journal of Geodynamics, vol. 88,
+                    pp. 14±22, 2015.
+               [19] G. Fu, W. Schmid, and P. Castellazzi, ªUnderstanding the spatial
+                    variability of the relationship between insar-derived deformation and
+                    groundwater level using machine learning,º Geosciences, vol. 13, no. 5,
+                    p. 133, 2023.
+               [20] S. Majumdar, R. Smith, B. D. Conway, and V. Lakshmi, ªAdvancing
+                    remote sensing and machine learning-driven frameworks for ground-
+                    water withdrawal estimation in arizona: Linking land subsidence to
+                    groundwater withdrawals,º Hydrological Processes, vol. 36, no. 11, p.
+                    e14757, 2022.
+               [21] S. Wu, G. Liu, X. Wang, H. Jia, Y. Ding, B. Zhang, and W. Mao,
+                    ªAssessing groundwater level change and aquifer parameters across los
+                    angeles and orange county using insar measurements and machine learn-
+                    ing,º IEEE Journal of Selected Topics in Applied Earth Observations and
+                    Remote Sensing, vol. 18, pp. 12559±12571, 2025.
+               [22] L. Wang, P. Hu, H. Zheng, J. Bai, Y. Liu, X. Cao, O. Hellwich,
+                    T. Liu, A. Bao, and X. Chen, ªA physics-constrained deep learning
+                    framework for actual evapotranspiration estimation using ground station
+                    observations and remote sensing data,º Environmental Modelling &
+                    Software, vol. 192, p. 106585, 2025.
+               [23] A. Risal, R. Karki, and J. Qi, ªIntegrating remote sensing data with
+                    watershed-scale ecohydrological modeling in diverse forest and agricul-

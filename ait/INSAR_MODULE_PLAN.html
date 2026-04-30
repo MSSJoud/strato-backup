@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InSAR Analysis Module — HarpiaMapper | AID Platform</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a0f;
+    --surface: #0d1520;
+    --surface2: #111d2e;
+    --border: #1e3050;
+    --accent: #00d4ff;
+    --accent2: #00ff9d;
+    --accent3: #ff4d6d;
+    --text: #c8dff5;
+    --text-dim: #5a7a9e;
+    --text-bright: #e8f4ff;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    position: relative;
+    padding: 60px 0 50px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,212,255,0.04) 0%, transparent 100%);
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'InSAR';
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-size: 220px;
+    font-weight: 800;
+    color: rgba(0,212,255,0.03);
+    font-family: var(--sans);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .toc {
+    margin: 50px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .toc-title {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+
+  .toc a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    transition: color 0.2s;
+  }
+
+  .toc a:hover { color: var(--accent); }
+  .toc a .num { color: var(--accent); min-width: 20px; }
+
+  .section { margin: 70px 0; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    min-width: 36px;
+  }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent2);
+    margin: 28px 0 14px;
+    letter-spacing: 0.02em;
+  }
+
+  p {
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 16px;
+    max-width: 760px;
+  }
+
+  .diagram-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+
+  .diagram-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .diagram-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .mermaid { display: flex; justify-content: center; }
+
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+
+  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:hover td { background: rgba(0,212,255,0.03); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: rgba(0,212,255,0.08);
+    color: var(--accent2);
+    padding: 2px 6px;
+    border: 1px solid rgba(0,212,255,0.15);
+  }
+
+  pre {
+    background: #070e17;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: #8ab4d4;
+  }
+
+  pre .kw { color: var(--accent); }
+  pre .str { color: var(--accent2); }
+  pre .cm { color: var(--text-dim); font-style: italic; }
+
+  .callout {
+    border: 1px solid;
+    padding: 18px 22px;
+    margin: 20px 0;
+    font-size: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .callout.info { border-color: var(--accent); background: rgba(0,212,255,0.04); }
+  .callout.warn { border-color: #ffaa00; background: rgba(255,170,0,0.04); }
+  .callout .icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout .body { color: var(--text); line-height: 1.6; }
+  .callout strong { color: var(--text-bright); }
+
+  .constraint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  .constraint-card { background: var(--surface); padding: 20px; }
+  .constraint-card .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .constraint-card .value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent2);
+    font-weight: 700;
+  }
+
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(30,48,80,0.5);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .checklist li::before { content: '\2610'; color: var(--accent); flex-shrink: 0; }
+
+  .checklist-group { margin: 20px 0; }
+  .checklist-group h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spec-table {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  .spec-row { display: contents; }
+  .spec-key, .spec-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .spec-key { color: var(--text-dim); background: var(--surface); }
+  .spec-val { color: var(--accent2); background: var(--bg); }
+
+  .phase-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+  .phase-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    font-weight: 700;
+  }
+  .phase-pill.p1 { background: rgba(0,255,157,0.1); color: var(--accent2); border: 1px solid var(--accent2); }
+  .phase-pill.p2 { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid var(--accent); }
+
+  .formula {
+    background: #04080e;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--accent2);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  footer {
+    margin-top: 100px;
+    padding: 32px 40px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  footer .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  footer .meta span { color: var(--accent); }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .toc { grid-template-columns: 1fr; }
+    header { padding: 40px 0 30px; }
+    .header-inner { padding: 0 20px; }
+    footer { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">AID Platform &middot; HarpiaMapper &middot; Zarvan Team</div>
+    <h1>InSAR Analysis<br><span>Module Plan</span></h1>
+    <p class="subtitle">// Technical Architecture Document &middot; v1.0 &middot; 2025</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <nav class="toc">
+    <div class="toc-title">// Table of Contents</div>
+    <a href="#s1"><span class="num">01</span> Overview</a>
+    <a href="#s2"><span class="num">02</span> Processing Pipeline</a>
+    <a href="#s3"><span class="num">03</span> Platform Integration</a>
+    <a href="#s4"><span class="num">04</span> Job Lifecycle &amp; State Machine</a>
+    <a href="#s5"><span class="num">05</span> Component Breakdown</a>
+    <a href="#s6"><span class="num">06</span> Phase 1 &mdash; Local Development</a>
+    <a href="#s7"><span class="num">07</span> Phase 2 &mdash; Production VM</a>
+    <a href="#s8"><span class="num">08</span> File &amp; Folder Structure</a>
+    <a href="#s9"><span class="num">09</span> API Contract</a>
+    <a href="#s10"><span class="num">10</span> Environment Variables</a>
+    <a href="#s11"><span class="num">11</span> External Dependencies</a>
+    <a href="#s12"><span class="num">12</span> Open Questions</a>
+  </nav>
+
+  <!-- 1. OVERVIEW -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01 /</span>
+      <h2>Overview</h2>
+    </div>
+
+    <p>This document defines the architecture and implementation plan for integrating an <strong>InSAR (Interferometric Synthetic Aperture Radar)</strong> analysis module into the HarpiaMapper platform.</p>
+
+    <p>The module processes Sentinel-1 SAR image pairs to detect ground surface deformation (e.g., subsidence, landslides, volcanic activity). The final output is a <strong>phase-unwrapped interferogram</strong> representing ground displacement in centimeters, displayed on the platform map.</p>
+
+    <h3>Key Constraints</h3>
+    <div class="constraint-grid">
+      <div class="constraint-card">
+        <div class="label">Processing Time</div>
+        <div class="value">2&ndash;6 hours / analysis</div>
+      </div>
+      <div class="constraint-card">
+        <div class="label">Execution Env</div>
+        <div class="value">Docker Containers</div>
+      </div>
+      <div class="constraint-card">
+        <div class="label">Platform Stack</div>
+        <div class="value">Next.js 15 App Router</div>
+      </div>
+      <div class="constraint-card">
+        <div class="label">Integration Pattern</div>
+        <div class="value">chat &rarr; tool &rarr; API route</div>
+      </div>
+      <div class="constraint-card">
+        <div class="label">Phase 1 Target</div>
+        <div class="value">Local Docker</div>
+      </div>
+      <div class="constraint-card">
+        <div class="label">Phase 2 Target</div>
+        <div class="value">Dedicated GCP VM</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PIPELINE -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02 /</span>
+      <h2>InSAR Processing Pipeline</h2>
+    </div>
+
+    <p>The full pipeline consists of <strong>6 sequential steps</strong> across 3 Docker services, ending in phase unwrapping to produce the displacement map.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Pipeline Architecture &mdash; flowchart</div>
+      <div class="mermaid">
+flowchart TD
+    START([User Request\nbbox + date range]) --> S1
+
+    subgraph STAC ["Service: stac-search"]
+        S1["Step 1\nsearch_insar_pair.py\nFind valid SAR pair\nvia Copernicus STAC API"]
+        S2["Step 2\ndownload_insar_pair_safe.py\nDownload .SAFE archives\nvia OAuth2"]
+        S3["Step 3\ndownload_orbit.py\nDownload .EOF orbit files\nfrom ESA STEP server"]
+    end
+
+    subgraph XMLGEN ["Worker Service (Node.js)"]
+        S4["Step 4\nGenerate XML configs\nreference.xml + secondary.xml\nbased on STAC pair IDs"]
+    end
+
+    subgraph ISCE2 ["Service: isce2-insar"]
+        S5["Step 5\ntopsApp.py\nISCE2 InSAR processing\n+ Phase Unwrapping\nsnaphu_mcf"]
+    end
+
+    subgraph ANALYZE ["Service: analyze-insar"]
+        S6["Step 6\nplot.py\nGenerate PNG outputs\nInterferogram + Displacement map"]
+    end
+
+    S1 -->|"data/stac/insar.csv\nSTAC JSONs"| S2
+    S2 -->|"data/safe/unzip/*.SAFE"| S3
+    S3 -->|"data/orbit/*.EOF"| S4
+    S4 -->|"input-files/\ntopsApp.xml\nreference.xml\nsecondary.xml"| S5
+    S5 -->|"output/merged/\nfilt_topophase.flat.vrt\nfilt_topophase.unw.vrt"| S6
+    S6 --> OUTPUT1["filt_topophase_flat.png\nAmplitude + Phase"]
+    S6 --> OUTPUT2["filt_topophase_unw.png\nDisplacement Map\nfinal output"]
+
+    OUTPUT2 --> UPLOAD["Upload to GCS Bucket"]
+    UPLOAD --> PLATFORM["Return public URL\nto HarpiaMapper"]
+
+    style START fill:#1a5c3a,color:#fff
+    style OUTPUT2 fill:#7a1a2a,color:#fff
+    style PLATFORM fill:#1a3a5c,color:#fff
+    style UPLOAD fill:#2a5a7a,color:#fff
+      </div>
+    </div>
+
+    <h3>Step Details</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Service</th><th>Script</th><th>Input</th><th>Output</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>stac-search</td><td><code>search_insar_pair.py</code></td><td>BBOX, date range</td><td><code>data/stac/insar.csv</code> + STAC JSONs</td></tr>
+          <tr><td>2</td><td>stac-search</td><td><code>download_insar_pair_safe.py</code></td><td>IDs from CSV</td><td><code>data/safe/unzip/*.SAFE</code></td></tr>
+          <tr><td>3</td><td>stac-search</td><td><code>download_orbit.py</code></td><td>STAC JSONs</td><td><code>data/orbit/*.EOF</code></td></tr>
+          <tr><td>4</td><td>Worker (Node.js)</td><td>XML generation</td><td>STAC pair IDs</td><td><code>input-files/reference.xml</code>, <code>secondary.xml</code></td></tr>
+          <tr><td>5</td><td>isce2-insar</td><td><code>topsApp.py</code></td><td>.SAFE + .EOF + XMLs</td><td><code>filt_topophase.flat.vrt</code> + <code>filt_topophase.unw.vrt</code></td></tr>
+          <tr><td>6</td><td>analyze-insar</td><td><code>plot.py</code></td><td>.vrt files</td><td><code>filt_topophase_flat.png</code> + <code>filt_topophase_unw.png</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Phase Unwrapping</h3>
+    <p><code>topsApp.xml</code> must have unwrapping <strong>enabled</strong> for the final displacement output:</p>
+    <pre><span class="kw">&lt;property name=</span><span class="str">"do unwrap"</span><span class="kw">&gt;</span>True<span class="kw">&lt;/property&gt;</span>
+<span class="kw">&lt;property name=</span><span class="str">"unwrapper name"</span><span class="kw">&gt;</span>snaphu_mcf<span class="kw">&lt;/property&gt;</span></pre>
+
+    <p>The unwrapped file <code>filt_topophase.unw.vrt</code> contains phase values in radians. <code>plot.py</code> must convert these to centimeters using:</p>
+    <div class="formula">displacement_cm = (phase / 4&pi;) &times; &lambda; &times; 100 &nbsp;|&nbsp; &lambda; = 0.05546 m (Sentinel-1 C-band)</div>
+  </section>
+
+  <!-- 3. INTEGRATION -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03 /</span>
+      <h2>Platform Integration Architecture</h2>
+    </div>
+
+    <p>How the InSAR module connects to the existing HarpiaMapper platform.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">System Integration &mdash; flowchart LR</div>
+      <div class="mermaid">
+flowchart LR
+    USER["User\nChat Interface"] -->|"natural language\nrequest"| CHAT
+
+    subgraph NEXTJS ["HarpiaMapper - Next.js 15"]
+        CHAT["app/api/chat/route.ts\nGPT-4o + Vercel AI SDK"]
+        TOOLS["lib/database/chat/tools.ts"]
+        API_SUBMIT["api/insar/submit/route.ts"]
+        API_STATUS["api/insar/status/route.ts"]
+
+        CHAT -->|"calls tool"| TOOLS
+        TOOLS -->|"POST job params"| API_SUBMIT
+        TOOLS -->|"GET jobId status"| API_STATUS
+    end
+
+    subgraph WORKER ["InSAR Worker Service - Node.js/Express"]
+        direction TB
+        ROUTER["REST API\nPOST /jobs\nGET /jobs/:id"]
+        ORCHESTRATOR["Job Orchestrator\nsequential pipeline runner"]
+        DOCKER["Docker Compose\nchild_process.spawn()"]
+        XMLGEN2["XML Config Generator\nreference.xml / secondary.xml"]
+
+        ROUTER --> ORCHESTRATOR
+        ORCHESTRATOR --> XMLGEN2
+        ORCHESTRATOR --> DOCKER
+    end
+
+    subgraph INFRA ["Infrastructure"]
+        DB[("Supabase\njobs table\nstatus tracking")]
+        GCS["GCS Bucket\nresult PNGs\npublic URLs"]
+        CONTAINERS["Docker Containers\nstac-search\nisce2-insar\nanalyze-insar"]
+    end
+
+    API_SUBMIT -->|"HTTP POST"| ROUTER
+    API_STATUS -->|"HTTP GET"| ROUTER
+    ORCHESTRATOR <-->|"read/write status"| DB
+    DOCKER --> CONTAINERS
+    ORCHESTRATOR -->|"upload result"| GCS
+    GCS -->|"public URL"| API_STATUS
+      </div>
+    </div>
+
+    <h3>Chat Tool Flow &mdash; Sequence Diagram</h3>
+    <div class="diagram-wrap">
+      <div class="diagram-label">Chat &rarr; Worker &rarr; Response &mdash; sequenceDiagram</div>
+      <div class="mermaid">
+sequenceDiagram
+    actor User
+    participant Chat as chat/route.ts GPT-4o
+    participant Tools as tools.ts
+    participant API as /api/insar/*
+    participant Worker as InSAR Worker
+    participant DB as Supabase
+
+    User->>Chat: "Run InSAR analysis for this region, Jan-Mar 2021"
+    Chat->>Tools: requestInSARAnalysis({ bbox, startDate, endDate })
+    Tools->>API: POST /api/insar/submit
+    API->>Worker: POST /jobs { bbox, startDate, endDate }
+    Worker->>DB: INSERT job { status: queued }
+    Worker-->>API: { jobId: "abc-123" }
+    API-->>Tools: { jobId: "abc-123" }
+    Tools-->>Chat: { jobId, message: "Job submitted" }
+    Chat-->>User: "Analysis started (Job: abc-123). Est. time: 3-5h. Ask me for status anytime."
+
+    Note over User,DB: ... hours later ...
+
+    User->>Chat: "What is the status of my InSAR analysis?"
+    Chat->>Tools: checkInSARJobStatus({ jobId: "abc-123" })
+    Tools->>API: GET /api/insar/status?jobId=abc-123
+    API->>Worker: GET /jobs/abc-123
+    Worker->>DB: SELECT job WHERE id = "abc-123"
+    DB-->>Worker: { status: "done", resultUrl: "https://..." }
+    Worker-->>API: { status: "done", resultUrl, displacementPng }
+    API-->>Tools: result with image URL
+    Tools-->>Chat: structured result
+    Chat-->>User: "Analysis complete! Displacement map shows X cm subsidence."
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. STATE MACHINE -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04 /</span>
+      <h2>Job Lifecycle &amp; State Machine</h2>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Job States &mdash; stateDiagram</div>
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> queued : POST /jobs submitted
+
+    queued --> running_step1 : worker picks up job
+    running_step1 --> running_step2 : SAR pair found (insar.csv)
+    running_step2 --> running_step3 : SAFE files downloaded
+    running_step3 --> running_step4 : orbit files downloaded
+    running_step4 --> running_step5 : XML configs generated
+    running_step5 --> running_step6 : topsApp.py complete (unw.vrt exists)
+    running_step6 --> done : PNGs generated + uploaded to GCS
+
+    running_step1 --> failed : STAC search returns no valid pair
+    running_step2 --> failed : Download error / auth failure
+    running_step3 --> failed : Orbit not available
+    running_step5 --> failed : topsApp.py error
+    running_step6 --> failed : plot.py error
+
+    done --> [*]
+    failed --> [*]
+      </div>
+    </div>
+
+    <h3>Job Record Schema &mdash; Supabase</h3>
+    <pre><span class="kw">CREATE TABLE</span> insar_jobs (
+    id           <span class="str">UUID</span>        PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id      <span class="str">UUID</span>        REFERENCES auth.users(id),
+    status       <span class="str">TEXT</span>        NOT NULL DEFAULT <span class="str">'queued'</span>,
+    <span class="cm">-- queued | running_step1..6 | done | failed</span>
+    step         <span class="str">INTEGER</span>     DEFAULT 0,
+    bbox         <span class="str">JSONB</span>       NOT NULL,   <span class="cm">-- [west, south, east, north]</span>
+    start_date   <span class="str">DATE</span>        NOT NULL,
+    end_date     <span class="str">DATE</span>        NOT NULL,
+    stac_pair    <span class="str">JSONB</span>,                <span class="cm">-- { first_id, second_id } once found</span>
+    result_url   <span class="str">TEXT</span>,                <span class="cm">-- GCS public URL for PNG</span>
+    error_msg    <span class="str">TEXT</span>,
+    workspace    <span class="str">TEXT</span>,                <span class="cm">-- local path: /jobs/{id}/</span>
+    created_at   <span class="str">TIMESTAMPTZ</span>  DEFAULT now(),
+    updated_at   <span class="str">TIMESTAMPTZ</span>  DEFAULT now()
+);</pre>
+  </section>
+
+  <!-- 5. COMPONENTS -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05 /</span>
+      <h2>Component Breakdown</h2>
+    </div>
+
+    <h3>5.1 InSAR Worker Service (New)</h3>
+    <p>A lightweight standalone Node.js/Express service responsible for managing the job queue, spawning Docker containers sequentially via <code>child_process</code>, generating XML configuration files dynamically, uploading results to GCS, and reporting status to Supabase.</p>
+    <div class="callout info">
+      <div class="icon">&#9881;&#65039;</div>
+      <div class="body"><strong>Tech stack:</strong> Node.js 20, Express, <code>child_process</code>, <code>@google-cloud/storage</code>. Each job gets an <strong>isolated workspace directory</strong> at <code>/jobs/{jobId}/</code> with volumes mounted per job to avoid collisions.</div>
+    </div>
+
+    <h3>5.2 Next.js API Routes (2 new files)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>File</th><th>Method</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>api/insar/submit/route.ts</code></td><td>POST</td><td>Validates request, forwards to Worker, returns jobId</td></tr>
+          <tr><td><code>api/insar/status/route.ts</code></td><td>GET</td><td>Polls Worker for job status and result URL</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>5.3 Chat Tools (2 new tools added to tools.ts)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tool</th><th>Parameters</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>requestInSARAnalysis</code></td><td><code>bbox</code>, <code>startDate</code>, <code>endDate</code>, <code>swaths?</code></td><td><code>{ jobId, estimatedDuration }</code></td></tr>
+          <tr><td><code>checkInSARJobStatus</code></td><td><code>jobId</code></td><td><code>{ status, step, resultUrl?, errorMsg? }</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>5.4 analyze-insar/plot.py (Modified)</h3>
+    <p>The existing <code>plot.py</code> must be extended to:</p>
+    <ul style="list-style:none; margin: 12px 0;">
+      <li style="padding: 6px 0; font-family: var(--mono); font-size: 12px; color: var(--text); display: flex; gap: 10px;"><span style="color:var(--accent2)">01</span> Also read <code>filt_topophase.unw.vrt</code> (unwrapped phase)</li>
+      <li style="padding: 6px 0; font-family: var(--mono); font-size: 12px; color: var(--text); display: flex; gap: 10px;"><span style="color:var(--accent2)">02</span> Convert phase radians &rarr; displacement in centimeters</li>
+      <li style="padding: 6px 0; font-family: var(--mono); font-size: 12px; color: var(--text); display: flex; gap: 10px;"><span style="color:var(--accent2)">03</span> Generate <code>filt_topophase_unw.png</code> with a diverging colormap (blue = uplift, red = subsidence)</li>
+      <li style="padding: 6px 0; font-family: var(--mono); font-size: 12px; color: var(--text); display: flex; gap: 10px;"><span style="color:var(--accent2)">04</span> Include a colorbar with cm scale</li>
+    </ul>
+  </section>
+
+  <!-- 6. PHASE 1 -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06 /</span>
+      <h2>Phase 1 &mdash; Local Development</h2>
+    </div>
+
+    <div class="phase-header">
+      <div class="phase-pill p1">PHASE 1</div>
+      <span style="font-family:var(--mono); font-size:12px; color:var(--text-dim)">Goal: end-to-end pipeline running on a developer machine</span>
+    </div>
+
+    <h3>Prerequisites</h3>
+    <ul class="checklist">
+      <li>Docker Desktop installed and running</li>
+      <li><code>isce/isce2:latest</code> image pulled from Docker Hub</li>
+      <li>Copernicus Dataspace account (free) with valid credentials</li>
+      <li>GCS bucket created for result storage (or use local filesystem for Phase 1)</li>
+      <li>Node.js 20+ installed</li>
+    </ul>
+
+    <div class="checklist-group">
+      <h4>Infrastructure</h4>
+      <ul class="checklist">
+        <li>Clone <code>isce2-playbook</code> into the repository at <code>services/insar-worker/isce2-playbook/</code></li>
+        <li>Verify manual pipeline runs end-to-end (all 5 existing steps work locally)</li>
+        <li>Confirm unwrapping works: enable <code>do unwrap</code> in <code>topsApp.xml</code>, re-run isce2-insar step</li>
+        <li>Extend <code>plot.py</code> to generate <code>filt_topophase_unw.png</code> with displacement in cm</li>
+      </ul>
+    </div>
+
+    <div class="checklist-group">
+      <h4>InSAR Worker Service</h4>
+      <ul class="checklist">
+        <li>Create <code>services/insar-worker/</code> Node.js project with Express</li>
+        <li>Implement <code>POST /jobs</code> &mdash; validates params, creates job directory, inserts to Supabase, starts pipeline</li>
+        <li>Implement <code>GET /jobs/:id</code> &mdash; reads status from Supabase</li>
+        <li>Implement job orchestrator running 6 pipeline steps sequentially via <code>child_process.spawn()</code></li>
+        <li>Implement XML config generator (<code>reference.xml</code>, <code>secondary.xml</code>) using STAC pair IDs</li>
+        <li>Implement workspace isolation: each job at <code>./jobs/{jobId}/</code></li>
+        <li>Log stdout/stderr of each Docker step to <code>./jobs/{jobId}/logs/step-{n}.log</code></li>
+        <li>Phase 1: serve result PNG directly as static file (skip GCS upload)</li>
+      </ul>
+    </div>
+
+    <div class="checklist-group">
+      <h4>Next.js Integration</h4>
+      <ul class="checklist">
+        <li>Create <code>app/(main)/api/insar/submit/route.ts</code></li>
+        <li>Create <code>app/(main)/api/insar/status/route.ts</code></li>
+        <li>Add <code>requestInSARAnalysis</code> tool to <code>lib/database/chat/tools.ts</code></li>
+        <li>Add <code>checkInSARJobStatus</code> tool to <code>lib/database/chat/tools.ts</code></li>
+        <li>Register both tools in <code>app/(main)/api/chat/route.ts</code></li>
+        <li>Add environment variable <code>INSAR_WORKER_URL=http://localhost:3001</code> to <code>.env.local</code></li>
+      </ul>
+    </div>
+
+    <div class="checklist-group">
+      <h4>Validation</h4>
+      <ul class="checklist">
+        <li>Full end-to-end test from chat: "Run InSAR analysis for [bbox] from Jan to Mar 2021"</li>
+        <li>Displacement PNG rendered on the map</li>
+        <li>Job status polling works correctly</li>
+        <li>Failed job returns a meaningful error message</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. PHASE 2 -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07 /</span>
+      <h2>Phase 2 &mdash; Production VM Deployment</h2>
+    </div>
+
+    <div class="phase-header">
+      <div class="phase-pill p2">PHASE 2</div>
+      <span style="font-family:var(--mono); font-size:12px; color:var(--text-dim)">Goal: InSAR Worker Service running on a dedicated GCP Compute Engine VM</span>
+    </div>
+
+    <h3>VM Specification</h3>
+    <div class="spec-table">
+      <div class="spec-row"><div class="spec-key">Machine type</div><div class="spec-val">e2-standard-4 (4 vCPU, 16 GB RAM)</div></div>
+      <div class="spec-row"><div class="spec-key">OS</div><div class="spec-val">Ubuntu 22.04 LTS</div></div>
+      <div class="spec-row"><div class="spec-key">Boot disk</div><div class="spec-val">100 GB SSD (SAFE files are ~4 GB each)</div></div>
+      <div class="spec-row"><div class="spec-key">Additional disk</div><div class="spec-val">500 GB persistent disk for /jobs/ workspace</div></div>
+      <div class="spec-row"><div class="spec-key">Network</div><div class="spec-val">Same VPC as App Engine / Cloud Run</div></div>
+    </div>
+
+    <div class="checklist-group">
+      <h4>VM Setup</h4>
+      <ul class="checklist">
+        <li>Provision GCP Compute Engine VM with the specs above</li>
+        <li>Install Docker Engine + Docker Compose v2</li>
+        <li>Install Node.js 20 via nvm</li>
+        <li>Pull Docker images: <code>isce/isce2:latest</code>, <code>python:3.11-bullseye</code>, <code>python:3.11-bookworm</code></li>
+        <li>Build stac-search and analyze-insar images on VM (or push to Artifact Registry)</li>
+        <li>Mount additional disk at <code>/jobs/</code></li>
+        <li>Configure VM startup script to auto-start the Worker Service</li>
+      </ul>
+    </div>
+
+    <div class="checklist-group">
+      <h4>Worker Service Deployment</h4>
+      <ul class="checklist">
+        <li>Set up Systemd service for the Worker (auto-restart on crash)</li>
+        <li>Store secrets in GCP Secret Manager: <code>COPERNICUS_USER</code>, <code>COPERNICUS_PASSWORD</code>, Supabase credentials</li>
+        <li>Configure GCS authentication via VM service account (no key file needed)</li>
+        <li>Enable GCS upload in Worker: results uploaded to <code>gs://{bucket}/insar/{jobId}/</code></li>
+        <li>Implement VM auto-start/stop logic: VM starts on job submit, stops after idle period</li>
+      </ul>
+    </div>
+
+    <div class="checklist-group">
+      <h4>Networking &amp; Security</h4>
+      <ul class="checklist">
+        <li>Create internal-only firewall rule: only App Engine/Cloud Run IPs can reach Worker port 3001</li>
+        <li>Add <code>INSAR_WORKER_URL</code> to production environment (App Engine <code>app.yaml</code> or Cloud Run env vars)</li>
+        <li>Add VM service account to Supabase allowed IPs (if restricted)</li>
+      </ul>
+    </div>
+
+    <div class="callout warn">
+      <div class="icon">&#128161;</div>
+      <div class="body"><strong>Cost Optimization:</strong> VM runs <code>e2-standard-4</code> only while processing (~$0.13/hr). Implement auto-shutdown: after job completion + 15 min idle, VM stops itself. VM is started via GCP Compute API from Next.js when a job is submitted.</div>
+    </div>
+  </section>
+
+  <!-- 8. FILE STRUCTURE -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08 /</span>
+      <h2>File &amp; Folder Structure</h2>
+    </div>
+
+    <pre>CarbonChatLLM/                          <span class="cm">-- existing Next.js project root</span>
+|
++-- app/(main)/api/
+|   +-- gee/                            <span class="cm">-- existing GEE routes</span>
+|   +-- insar/                          <span class="cm">-- NEW</span>
+|       +-- submit/
+|       |   +-- route.ts               <span class="cm">-- POST: submit job to Worker</span>
+|       +-- status/
+|           +-- route.ts               <span class="cm">-- GET: poll job status</span>
+|
++-- lib/
+|   +-- database/chat/
+|   |   +-- tools.ts                   <span class="cm">-- ADD: 2 new InSAR tools</span>
+|   +-- geospatial/
+|       +-- gee/                        <span class="cm">-- existing</span>
+|       +-- insar/                      <span class="cm">-- NEW</span>
+|           +-- types.ts               <span class="cm">-- TypeScript types for InSAR jobs</span>
+|
++-- services/
+    +-- insar-worker/                   <span class="cm">-- NEW standalone Node.js service</span>
+        +-- package.json
+        +-- .env.example
+        +-- src/
+        |   +-- index.ts               <span class="cm">-- Express entry point (port 3001)</span>
+        |   +-- routes/
+        |   |   +-- jobs.ts            <span class="cm">-- POST /jobs, GET /jobs/:id</span>
+        |   +-- orchestrator/
+        |   |   +-- pipeline.ts        <span class="cm">-- sequential step runner</span>
+        |   |   +-- steps/
+        |   |   |   +-- step1-search.ts
+        |   |   |   +-- step2-download-safe.ts
+        |   |   |   +-- step3-download-orbit.ts
+        |   |   |   +-- step4-generate-xml.ts
+        |   |   |   +-- step5-run-isce2.ts
+        |   |   |   +-- step6-analyze.ts
+        |   |   +-- xml-generator.ts   <span class="cm">-- builds reference.xml + secondary.xml</span>
+        |   +-- storage/
+        |   |   +-- gcs.ts             <span class="cm">-- upload result to GCS</span>
+        |   +-- db/
+        |       +-- supabase.ts        <span class="cm">-- job status updates</span>
+        +-- isce2-playbook/             <span class="cm">-- existing playbook (git submodule or copy)</span>
+            +-- docker-compose.yml
+            +-- stac-search/
+            +-- isce2-insar/
+            +-- analyze-insar/</pre>
+  </section>
+
+  <!-- 9. API -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09 /</span>
+      <h2>API Contract</h2>
+    </div>
+
+    <h3>POST /jobs</h3>
+    <pre><span class="cm">// Request body</span>
+{
+  <span class="str">"jobId"</span>:      <span class="str">"uuid-from-supabase"</span>,
+  <span class="str">"userId"</span>:     <span class="str">"user-uuid"</span>,
+  <span class="str">"bbox"</span>:       [-59.5938, 2.5704, -59.3955, 2.7478],
+  <span class="str">"startDate"</span>:  <span class="str">"2021-01-01"</span>,
+  <span class="str">"endDate"</span>:    <span class="str">"2021-03-01"</span>,
+  <span class="str">"swaths"</span>:     [1]
+}
+
+<span class="cm">// Response 202 Accepted</span>
+{
+  <span class="str">"jobId"</span>:            <span class="str">"uuid-from-supabase"</span>,
+  <span class="str">"status"</span>:           <span class="str">"queued"</span>,
+  <span class="str">"estimatedMinutes"</span>: 240
+}</pre>
+
+    <h3>GET /jobs/:id</h3>
+    <pre><span class="cm">// Response 200 (in progress)</span>
+{
+  <span class="str">"jobId"</span>:          <span class="str">"uuid"</span>,
+  <span class="str">"status"</span>:         <span class="str">"running_step5"</span>,
+  <span class="str">"step"</span>:           5,
+  <span class="str">"stepLabel"</span>:      <span class="str">"Running ISCE2 InSAR processing (topsApp.py)..."</span>,
+  <span class="str">"startedAt"</span>:      <span class="str">"2024-01-15T10:00:00Z"</span>,
+  <span class="str">"elapsedMinutes"</span>: 45,
+  <span class="str">"resultUrl"</span>:      null
+}
+
+<span class="cm">// Response 200 (completed)</span>
+{
+  <span class="str">"jobId"</span>:            <span class="str">"uuid"</span>,
+  <span class="str">"status"</span>:           <span class="str">"done"</span>,
+  <span class="str">"step"</span>:             6,
+  <span class="str">"resultUrl"</span>:        <span class="str">"https://storage.googleapis.com/bucket/insar/uuid/filt_topophase_unw.png"</span>,
+  <span class="str">"interferogramUrl"</span>: <span class="str">"https://storage.googleapis.com/.../filt_topophase_flat.png"</span>,
+  <span class="str">"stacPair"</span>:         { <span class="str">"firstId"</span>: <span class="str">"S1A_..."</span>, <span class="str">"secondId"</span>: <span class="str">"S1A_..."</span> },
+  <span class="str">"temporalBaseline"</span>: 12
+}</pre>
+
+    <h3>Next.js Routes</h3>
+    <div class="callout info">
+      <div class="icon">&#128274;</div>
+      <div class="body">
+        <strong>POST /api/insar/submit</strong> &mdash; Authenticated (Supabase session required). Validates bbox area limit, creates job in Supabase, forwards to Worker.<br><br>
+        <strong>GET /api/insar/status?jobId=uuid</strong> &mdash; Authenticated. Polls Worker and returns status to the chat tool.
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. ENV -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10 /</span>
+      <h2>Configuration &amp; Environment Variables</h2>
+    </div>
+
+    <h3>Next.js &mdash; .env.local</h3>
+    <pre><span class="cm"># InSAR Worker Service</span>
+<span class="kw">INSAR_WORKER_URL</span>=<span class="str">http://localhost:3001</span>          <span class="cm"># Phase 1: local</span>
+<span class="cm"># INSAR_WORKER_URL=http://10.128.x.x:3001       # Phase 2: internal VM IP</span></pre>
+
+    <h3>Worker Service &mdash; .env</h3>
+    <pre><span class="cm"># Copernicus Dataspace credentials</span>
+<span class="kw">COPERNICUS_USER</span>=<span class="str">your@email.com</span>
+<span class="kw">COPERNICUS_PASSWORD</span>=<span class="str">yourpassword</span>
+
+<span class="cm"># Supabase (job status tracking)</span>
+<span class="kw">SUPABASE_URL</span>=<span class="str">https://xxx.supabase.co</span>
+<span class="kw">SUPABASE_SERVICE_ROLE_KEY</span>=<span class="str">eyJ...</span>
+
+<span class="cm"># GCS (Phase 2)</span>
+<span class="kw">GCS_BUCKET_NAME</span>=<span class="str">harpiamapper-insar-results</span>
+<span class="kw">GCS_PROJECT_ID</span>=<span class="str">your-gcp-project</span>
+
+<span class="cm"># Worker config</span>
+<span class="kw">PORT</span>=<span class="str">3001</span>
+<span class="kw">JOBS_DIR</span>=<span class="str">/jobs</span>                     <span class="cm"># Phase 1: ./jobs; Phase 2: /jobs (mounted disk)</span>
+<span class="kw">MAX_CONCURRENT_JOBS</span>=<span class="str">1</span>              <span class="cm"># One at a time initially</span></pre>
+  </section>
+
+  <!-- 11. DEPENDENCIES -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11 /</span>
+      <h2>External Dependencies</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>URL</th><th>Auth Method</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Copernicus STAC API</td>
+            <td><code>catalogue.dataspace.copernicus.eu/stac</code></td>
+            <td>None (search)</td>
+            <td>Free</td>
+          </tr>
+          <tr>
+            <td>Copernicus Download</td>
+            <td><code>zipper.dataspace.copernicus.eu</code></td>
+            <td>OAuth2 Resource Owner</td>
+            <td>Free account needed</td>
+          </tr>
+          <tr>
+            <td>OAuth2 Token Endpoint</td>
+            <td><code>identity.dataspace.copernicus.eu/auth/...</code></td>
+            <td>user/pass &rarr; bearer token</td>
+            <td>CDSE client</td>
+          </tr>
+          <tr>
+            <td>ESA STEP Orbit Server</td>
+            <td><code>step.esa.int/auxdata/orbits/Sentinel-1/POEORB/</code></td>
+            <td>None (public)</td>
+            <td>POEORB preferred; RESORB fallback</td>
+          </tr>
+          <tr>
+            <td>Docker Hub</td>
+            <td><code>isce/isce2:latest</code></td>
+            <td>Docker Hub account</td>
+            <td>~8 GB image</td>
+          </tr>
+          <tr>
+            <td>Google Cloud Storage</td>
+            <td><code>storage.googleapis.com</code></td>
+            <td>GCP Service Account</td>
+            <td>For result storage (Phase 2)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 12. OPEN QUESTIONS -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12 /</span>
+      <h2>Open Questions &amp; Decisions</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Question</th><th>Status</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>One job at a time or queue multiple?</td><td style="color:#ffaa00">Open</td><td>Start with <code>MAX_CONCURRENT_JOBS=1</code>; revisit based on usage</td></tr>
+          <tr><td>2</td><td>VM auto-start/stop implementation</td><td style="color:#ffaa00">Open</td><td>GCP Compute API call from Next.js on job submit; needs ~60s VM start latency</td></tr>
+          <tr><td>3</td><td>SAFE file storage after job completes</td><td style="color:#ffaa00">Open</td><td>Delete workspace after upload to GCS (disk space management)</td></tr>
+          <tr><td>4</td><td>Swath selection (1, 2, 3 or all)</td><td style="color:#ffaa00">Open</td><td>Expose as optional parameter, default to <code>[1]</code></td></tr>
+          <tr><td>5</td><td>Maximum area (bbox) limit</td><td style="color:#ffaa00">Open</td><td>Define based on processing time; large areas dramatically increase topsApp.py time</td></tr>
+          <tr><td>6</td><td>Displacement colormap range</td><td style="color:#ffaa00">Open</td><td>Auto-range based on data min/max, or fixed &plusmn;5 cm?</td></tr>
+          <tr><td>7</td><td>Result persistence (how long to keep PNGs on GCS)</td><td style="color:#ffaa00">Open</td><td>Lifecycle policy: delete after 30 days?</td></tr>
+          <tr><td>8</td><td>Multiple analyses per user simultaneously</td><td style="color:#ffaa00">Open</td><td>Block in Phase 1; handle in Phase 2 with job queue</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- GANTT -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">// /</span>
+      <h2>Implementation Timeline</h2>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Gantt &mdash; InSAR Module Implementation Phases</div>
+      <div class="mermaid">
+gantt
+    title InSAR Module - Implementation Phases
+    dateFormat  YYYY-MM-DD
+    axisFormat  Week %W
+
+    section Phase 1 - Local
+    Validate manual pipeline + unwrapping     :p1a, 2025-01-01, 3d
+    Extend plot.py for displacement output    :p1b, after p1a, 2d
+    Build InSAR Worker Service Express        :p1c, after p1b, 5d
+    Next.js API routes submit + status        :p1d, after p1c, 2d
+    Add tools to chat tools.ts + route.ts     :p1e, after p1d, 2d
+    End-to-end local test                     :p1f, after p1e, 2d
+
+    section Phase 2 - Production VM
+    Provision GCP VM + Docker setup           :p2a, after p1f, 2d
+    Build Docker images on VM                 :p2b, after p2a, 1d
+    Deploy Worker Service Systemd             :p2c, after p2b, 2d
+    GCS integration for results               :p2d, after p2c, 2d
+    Networking + security firewall + IAM      :p2e, after p2d, 1d
+    VM auto-start/stop logic                  :p2f, after p2e, 2d
+    Production end-to-end test                :p2g, after p2f, 2d
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="meta">
+    <div>Document version: <span>1.0</span> &mdash; Initial architecture plan</div>
+    <div>Platform: <span>HarpiaMapper v0.6.4-alpha</span></div>
+    <div>Team: <span>AID Platform &middot; Zarvan</span></div>
+  </div>
+  <div class="meta" style="text-align:right">
+    <div>InSAR Analysis Module</div>
+    <div style="color:var(--accent)">HarpiaMapper Platform</div>
+  </div>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#0d1520',
+      primaryTextColor: '#c8dff5',
+      primaryBorderColor: '#1e3050',
+      lineColor: '#00d4ff',
+      secondaryColor: '#111d2e',
+      tertiaryColor: '#0a1628',
+      background: '#060a0f',
+      mainBkg: '#0d1520',
+      nodeBorder: '#1e3050',
+      clusterBkg: '#0a1020',
+      clusterBorder: '#1e3050',
+      titleColor: '#e8f4ff',
+      edgeLabelBackground: '#0d1520',
+      actorBkg: '#0d1520',
+      actorBorder: '#00d4ff',
+      actorTextColor: '#c8dff5',
+      actorLineColor: '#1e3050',
+      signalColor: '#00d4ff',
+      signalTextColor: '#c8dff5',
+      labelBoxBkgColor: '#0d1520',
+      labelBoxBorderColor: '#1e3050',
+      labelTextColor: '#c8dff5',
+      loopTextColor: '#c8dff5',
+      noteBorderColor: '#1e3050',
+      noteBkgColor: '#111d2e',
+      noteTextColor: '#c8dff5',
+      activationBorderColor: '#00d4ff',
+      activationBkgColor: '#0a1628',
+      sequenceNumberColor: '#060a0f',
+      sectionBkgColor: '#0a1020',
+      altSectionBkgColor: '#0d1520',
+      sectionBkgColor2: '#0a1020',
+      taskBorderColor: '#00d4ff',
+      taskBkgColor: '#0d1520',
+      activeTaskBorderColor: '#00ff9d',
+      activeTaskBkgColor: '#0a2a1a',
+      gridColor: '#1e3050',
+      doneTaskBkgColor: '#0a1a2a',
+      doneTaskBorderColor: '#1e3050',
+      critBorderColor: '#ff4d6d',
+      critBkgColor: '#2a0a12',
+      todayLineColor: '#00ff9d',
+      fontFamily: 'Space Mono, monospace',
+      fontSize: '13px'
+    },
+    flowchart: { curve: 'basis', padding: 20 },
+    sequence: { showSequenceNumbers: false },
+    gantt: { leftPadding: 150 }
+  });
+</script>
+</body>
+</html>

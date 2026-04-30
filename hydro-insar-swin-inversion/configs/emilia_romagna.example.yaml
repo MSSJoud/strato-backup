@@ -1,0 +1,18 @@
+project_name: hydro-insar-swin-inversion
+description: >
+  Example configuration for the Emilia-Romagna / Bologna grouped multisensor
+  workflow.
+
+study_area:
+  name: Bologna overlap
+  region: Emilia-Romagna, Italy
+  lon_min: 10.2
+  lon_max: 12.5
+  lat_min: 43.8
+  lat_max: 45.9
+
+runtime_paths:
+  raw_data_root: /data/raw
+  derived_data_root: /data/derived
+  output_root: /workspace/outputs
+

@@ -1,0 +1,6 @@
+pystac
+pystac-client
+stac-asset
+pandas
+beautifulsoup4
+requests

@@ -3,6 +3,7 @@ import netCDF4 as nc
 import numpy as np
 import os
 import subprocess
+import re
 
 
 """
@@ -60,11 +61,21 @@ def convert_w3ra_mat_to_netcdf(input_dir, latlon_file, output_file):
     if lat is None or lon is None:
         raise ValueError(f"Latitude or Longitude variable missing in {latlon_file}. Available keys: {list(latlon_data.keys())}")
 
-    # Get all .mat files and sort them by year
-    mat_files = sorted([f for f in os.listdir(input_dir) if f.endswith(".mat") and "LatLon" not in f])
-    
-    # Extract years from filenames
-    years = [int(f.split("_")[-1].split(".")[0]) for f in mat_files]  
+    # Get all .mat files and sort them by year. Some filenames may not end in year tokens
+    # (e.g., include grid descriptors like 10km), so parse the final 4-digit year robustly.
+    all_mat_files = sorted([f for f in os.listdir(input_dir) if f.endswith(".mat") and "LatLon" not in f])
+    mat_files = []
+    years = []
+    for f in all_mat_files:
+        m = re.search(r"(19|20)\d{2}(?=\.mat$)", f)
+        if m is None:
+            print(f"Skipping non-year MAT file: {f}")
+            continue
+        mat_files.append(f)
+        years.append(int(m.group(0)))
+
+    if not mat_files:
+        raise ValueError(f"No valid yearly W3RA MAT files found in {input_dir}")
     
     # Create NetCDF file
     with nc.Dataset(output_file, "w", format="NETCDF4") as ds:

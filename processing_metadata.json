@@ -1,5 +1,5 @@
 {
-    "updated": "2025-04-24 12:16:13.942389",
+    "updated": "2026-03-04 15:02:27.885346",
     "scripts": {
         "generate_topsApp_batch.py": {
             "timestamp": "2025-04-24 12:16:13.942365",
@@ -43,6 +43,61 @@
                     "name": "plot",
                     "value": false,
                     "description": "Show plot"
+                }
+            ]
+        },
+        "select_s1_pairs_from_postgres.py": {
+            "timestamp": "2026-03-04 09:31:52.667383",
+            "arguments": [
+                {
+                    "name": "db_name",
+                    "value": "bologna_2023",
+                    "description": "PostgreSQL database name"
+                },
+                {
+                    "name": "table_name",
+                    "value": "slc_data",
+                    "description": "Name of table inside DB"
+                },
+                {
+                    "name": "bmax",
+                    "value": 100.0,
+                    "description": "Max perpendicular baseline (m)"
+                },
+                {
+                    "name": "tmax",
+                    "value": 48,
+                    "description": "Max temporal baseline (days)"
+                }
+            ]
+        },
+        "generate_topsApp_batch_.py": {
+            "timestamp": "2026-03-04 15:02:27.885326",
+            "arguments": [
+                {
+                    "name": "pairs",
+                    "value": "bologna_sbas_ps_2023/pairs/ps_pairs_simple.csv",
+                    "description": "CSV with interferometric pair info"
+                },
+                {
+                    "name": "data_path",
+                    "value": "/mnt/data/po_plain_italy/raw/slc/S1/ASC",
+                    "description": "Root directory containing .zip SAFE files"
+                },
+                {
+                    "name": "output_dir",
+                    "value": "bologna_sbas_ps_2023/xml_ps",
+                    "description": "Directory for topsApp XML outputs"
+                },
+                {
+                    "name": "dry_run",
+                    "value": false,
+                    "description": "Simulate output without creating XML files"
+                },
+                {
+                    "name": "plot",
+                    "value": false,
+                    "description": "Show plots interactively"
                 }
             ]
         }

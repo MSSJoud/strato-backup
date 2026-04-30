@@ -1,0 +1,86 @@
+########## MintPy Template for Fernandina Volcano, Galápagos Islands
+########## Sentinel-1 A/B Descending Track 128
+########## Pre-processed with ISCE2/topsStack
+########## Reference: Yunjun et al. (2019), Computers & Geosciences
+##########
+########## Adapted for Docker Playbook — all paths are container-relative
+
+##————————————————————————————————————————————
+## 1. Load Data (--dostep load_data)
+##————————————————————————————————————————————
+mintpy.load.processor      = isce
+mintpy.load.autoPath       = no
+
+## Unwrapped interferograms
+mintpy.load.unwFile        = /data/FernandinaSenDT128/merged/interferograms/*/filt_fine.unw
+mintpy.load.corFile        = /data/FernandinaSenDT128/merged/interferograms/*/filt_fine.cor
+mintpy.load.connCompFile   = /data/FernandinaSenDT128/merged/interferograms/*/filt_fine.unw.conncomp
+
+## Geometry files
+mintpy.load.demFile        = /data/FernandinaSenDT128/merged/geom_reference/hgt.rdr
+mintpy.load.lookupYFile    = /data/FernandinaSenDT128/merged/geom_reference/lat.rdr
+mintpy.load.lookupXFile    = /data/FernandinaSenDT128/merged/geom_reference/lon.rdr
+mintpy.load.incAngleFile   = /data/FernandinaSenDT128/merged/geom_reference/los.rdr
+mintpy.load.azAngleFile    = /data/FernandinaSenDT128/merged/geom_reference/los.rdr
+mintpy.load.shadowMaskFile = /data/FernandinaSenDT128/merged/geom_reference/shadowMask.rdr
+mintpy.load.waterMaskFile  = /data/FernandinaSenDT128/merged/geom_reference/waterMask.rdr
+
+##————————————————————————————————————————————
+## 2. Subset (optional)
+##————————————————————————————————————————————
+## Use radar coordinates subset for faster processing
+mintpy.subset.lalo         = auto
+
+##————————————————————————————————————————————
+## 3. Reference Point
+##————————————————————————————————————————————
+mintpy.reference.lalo      = -0.30, -91.15
+
+##————————————————————————————————————————————
+## 4. Network Modification
+##————————————————————————————————————————————
+mintpy.network.coherenceBased  = auto
+mintpy.network.minCoherence    = auto
+
+##————————————————————————————————————————————
+## 5. Unwrapping Error Correction
+##————————————————————————————————————————————
+mintpy.unwrapError.method      = auto
+
+##————————————————————————————————————————————
+## 6. Network Inversion
+##————————————————————————————————————————————
+mintpy.networkInversion.weightFunc = auto
+
+##————————————————————————————————————————————
+## 7. Tropospheric Delay Correction
+##————————————————————————————————————————————
+## Set to 'no' if you don't have ERA5/ECMWF credentials configured
+## Options: auto (ERA5), no, pyaps (ERA5), height_correlation
+mintpy.troposphericDelay.method = no
+
+##————————————————————————————————————————————
+## 8. Phase Deramping
+##————————————————————————————————————————————
+mintpy.deramp               = auto
+
+##————————————————————————————————————————————
+## 9. Topographic Residual (DEM Error) Correction
+##————————————————————————————————————————————
+mintpy.topographicResidual  = auto
+
+##————————————————————————————————————————————
+## 10. Velocity Estimation
+##————————————————————————————————————————————
+mintpy.velocity.startDate   = auto
+mintpy.velocity.endDate     = auto
+
+##————————————————————————————————————————————
+## 11. Geocoding
+##————————————————————————————————————————————
+mintpy.geocode              = auto
+
+##————————————————————————————————————————————
+## 12. Google Earth Export
+##————————————————————————————————————————————
+mintpy.save.kmz             = yes

@@ -1,0 +1,104 @@
+# =============================================================================
+# MintPy Docker Playbook — Docker Compose
+# =============================================================================
+#
+# Services:
+#   mintpy     — Interactive shell or run scripts
+#   jupyter    — JupyterLab server for interactive analysis
+#   pipeline   — Run the complete pipeline end-to-end automatically
+#
+# Usage:
+#   docker compose run --rm mintpy bash              # Interactive shell
+#   docker compose up jupyter                         # Start Jupyter
+#   docker compose up pipeline                        # Run full pipeline
+#   docker compose run --rm mintpy smallbaselineApp.py /workspace/config/FernandinaSenDT128.txt
+#
+
+services:
+  # ── Interactive MintPy Shell ──────────────────────────────────────────────
+  mintpy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mintpy-playbook:latest
+    container_name: mintpy-shell
+    volumes:
+      - ./data:/data
+      - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
+      - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
+      - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - ./config:/workspace/config
+      - ./configs:/workspace/configs
+      - ./scripts:/workspace/scripts
+      - ./notebooks:/workspace/notebooks
+      - ./outputs:/workspace/outputs
+    working_dir: /data
+    env_file: .env
+    stdin_open: true
+    tty: true
+
+  # ── JupyterLab Server ────────────────────────────────────────────────────
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mintpy-playbook:latest
+    container_name: mintpy-jupyter
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    volumes:
+      - ./data:/data
+      - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
+      - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
+      - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - ./config:/workspace/config
+      - ./configs:/workspace/configs
+      - ./scripts:/workspace/scripts
+      - ./notebooks:/workspace/notebooks
+      - ./outputs:/workspace/outputs
+    working_dir: /workspace
+    env_file: .env
+    command: >
+      jupyter lab
+        --ip=0.0.0.0
+        --port=8888
+        --no-browser
+        --allow-root
+        --NotebookApp.token=''
+        --NotebookApp.password=''
+        --notebook-dir=/workspace
+
+  # ── Full Pipeline Runner ──────────────────────────────────────────────────
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mintpy-playbook:latest
+    container_name: mintpy-pipeline
+    volumes:
+      - ./data:/data
+      - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
+      - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
+      - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - ./config:/workspace/config
+      - ./configs:/workspace/configs
+      - ./scripts:/workspace/scripts
+      - ./notebooks:/workspace/notebooks
+      - ./outputs:/workspace/outputs
+    working_dir: /data
+    env_file: .env
+    command: >
+      bash -c "
+        echo '══════════════════════════════════════════════════════════════'
+        echo '  MintPy Docker Playbook — Full Pipeline'
+        echo '══════════════════════════════════════════════════════════════'
+        echo ''
+        bash /workspace/scripts/01_download_data.sh &&
+        bash /workspace/scripts/02_run_pipeline.sh &&
+        bash /workspace/scripts/03_post_analysis.sh &&
+        python /workspace/scripts/04_generate_figures.py &&
+        echo '' &&
+        echo '══════════════════════════════════════════════════════════════' &&
+        echo '  ✅ Pipeline complete! Check ./data and ./outputs' &&
+        echo '══════════════════════════════════════════════════════════════'
+      "

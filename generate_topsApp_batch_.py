@@ -23,22 +23,17 @@ from logger import log_script_arguments
 def generate_topsApp_xml(reference_zip, secondary_zip, output_path):
     content = f"""<topsApp>
     <component name="topsinsar">
-
         <property name="Sensor name">SENTINEL1</property>
-        <property name="Sentinel1 ZIP file">[{reference_zip}, {secondary_zip}]</property>
-        <property name="Swaths">[IW1, IW2, IW3]</property>
-        <property name="Polarizations">['VV']</property>
-        <property name="Processing mode">full</property>
-        <property name="Bbox">None</property>
-
-        <component name="Reference">
-            <property name="safe"> {reference_zip} </property>
+        <property name="swaths">[1, 2, 3]</property>
+        <property name="demFilename">demLat_N45_N46_Lon_E011_E012.dem.wgs84</property>
+        <component name="reference">
+            <property name="output directory">reference</property>
+            <property name="safe">{reference_zip}</property>
         </component>
-
-        <component name="Secondary">
-            <property name="safe"> {secondary_zip} </property>
+        <component name="secondary">
+            <property name="output directory">secondary</property>
+            <property name="safe">{secondary_zip}</property>
         </component>
-
     </component>
 </topsApp>
 """
