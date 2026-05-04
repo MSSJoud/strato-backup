@@ -18,6 +18,14 @@ def main() -> None:
     val_dir = Path(args.validation_dir)
     fig_dir = val_dir / "figures"
     fig_dir.mkdir(parents=True, exist_ok=True)
+    vec_dir = val_dir / "figures_vector"
+    vec_dir.mkdir(parents=True, exist_ok=True)
+
+    def savefig(fig: plt.Figure, stem: str) -> None:
+        """Save PNG (high-DPI) and PDF (vector) side-by-side."""
+        fig.savefig(fig_dir / f"{stem}.png", dpi=600, bbox_inches="tight")
+        fig.savefig(vec_dir / f"{stem}.pdf", bbox_inches="tight", format="pdf")
+        plt.close(fig)
 
     trusted = pd.read_csv(val_dir / "well_groundwater_validation_trusted_stations.csv")
     by_depth = pd.read_csv(val_dir / "well_groundwater_validation_by_depth.csv")
@@ -43,8 +51,7 @@ def main() -> None:
     ax.set_ylabel("Latitude")
     ax.set_title("Trusted wells panel")
     fig.colorbar(sc, ax=ax, shrink=0.8, label="anomaly correlation")
-    fig.savefig(fig_dir / "trusted_wells_map.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "trusted_wells_map")
 
     # 2. Lag histogram by best state
     fig, ax = plt.subplots(figsize=(9, 5), constrained_layout=True)
@@ -70,8 +77,7 @@ def main() -> None:
     ax.set_title("Best lag counts by best state")
     ax.set_xlabel("Best lag (days)")
     ax.set_ylabel("Number of stations")
-    fig.savefig(fig_dir / "lag_histogram_by_state.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "lag_histogram_by_state")
 
     # 3. Depth summary
     fig, ax = plt.subplots(figsize=(7, 5), constrained_layout=True)
@@ -80,8 +86,7 @@ def main() -> None:
     ax.set_title("Median well correlation by depth class")
     ax.set_ylabel("Median anomaly correlation")
     ax.set_xlabel("")
-    fig.savefig(fig_dir / "depth_class_summary.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "depth_class_summary")
 
     # 4. Trusted aquifer groups
     fig, ax = plt.subplots(figsize=(10, 6), constrained_layout=True)
@@ -91,8 +96,7 @@ def main() -> None:
     ax.set_title("Trusted aquifer groups")
     ax.set_xlabel("Median anomaly correlation")
     ax.set_ylabel("")
-    fig.savefig(fig_dir / "trusted_aquifer_groups.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "trusted_aquifer_groups")
 
     # 5. Best six station time-series panels
     top6 = trusted.sort_values(["corr_anom", "n_matches"], ascending=[False, False]).head(6)
@@ -108,8 +112,7 @@ def main() -> None:
     for ax in axes[2:]:
         ax.set_ylabel("z-anomaly")
     axes[0].legend()
-    fig.savefig(fig_dir / "top6_station_timeseries.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "top6_station_timeseries")
 
     # 6. Compact summary panel
     fig, axes = plt.subplots(2, 2, figsize=(12, 9), constrained_layout=True)
@@ -158,8 +161,7 @@ def main() -> None:
     ]
     axes[1, 1].text(0.0, 1.0, "\n".join(text_lines), va="top", family="monospace", fontsize=10)
     axes[1, 1].set_title("Top trusted stations")
-    fig.savefig(fig_dir / "well_validation_summary_panel.png", dpi=180)
-    plt.close(fig)
+    savefig(fig, "well_validation_summary_panel")
 
 
 if __name__ == "__main__":

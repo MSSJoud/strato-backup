@@ -3,7 +3,7 @@
 - `figure_1.png`: Study area and validation setting. Left: DTM background for the broader Bologna scene with the shared InSAR/W3RA overlap marked by a red box. Right: zoom on the overlap domain showing Bologna well stations, with the trusted validation subset highlighted by stars.
 - `figure_2.png`: Overall study workflow. The synthetic pre-stage validates the deformation-space inversion machinery under known truth, whereas the real-data branch uses the grouped state [S0+Ss, Sd+Sr, Sg], assimilates InSAR, GRACE, and refreshed SMAP (with SWOT as an exploratory extension), and validates the grouped groundwater posterior against wells.
 - `figure_3.png`: Compact synthetic validation summary. The deformation-space Stage 1 inversion achieves strong recovery in the model-consistent synthetic setting, especially for grouped states and deformation skill.
-- `figure_4.png`: Main grouped Stage 1 result for the Bologna overlap. Top: full-grid posterior reconstructions for ShallowLoad, DeepLoad, and Groundwater on the final overlap date, obtained by projecting the tiled grouped posterior back onto the shared 22 x 24 grid. Bottom: observed, prior, and posterior regional time-series comparisons for InSAR, GRACE, and SMAP.
+- `figure_4.png`: Main grouped Stage 1 temporal fit over the Bologna overlap. Panels show observed (black solid), prior (gray dashed), and posterior (blue solid) regional anomaly time-series for InSAR, GRACE, and SMAP; no in-panel legend is used to preserve readability at print size.
 - `figure_5.png`: Independent well validation of the grouped posterior. Gray dots show the broader Emilia-Romagna well network, while the trusted Bologna wells with correlation greater than or equal to 0.6 are highlighted as small colored dots and starred markers. The lower panel summarizes the best-lag / best-state distribution, and the upper-right panel summarizes depth-class validation.
 - `figure_6.png`: Representative well time-series comparisons for the strongest trusted stations. Blue curves denote the grouped model anomaly and orange curves denote standardized well-head anomalies.
 
@@ -15,6 +15,8 @@
 - `figure_s5.png`: SWOT overlap diagnostic showing the reduction from raw river/lake dates to matched dates retained in the nearest-date multisensor bundle.
 - `figure_s6.png`: Static overview of the Emilia-Romagna well network with the trusted Bologna subset highlighted.
 - `figure_s7.png`: Overview of nine selected trusted wells. Left: regional well network with the selected stations marked by red stars. Right: model-versus-well anomaly time-series comparisons for the same nine stations.
+- `figure_s8.png`: Grouped-state spatial diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record) plus the temporal mean map. Diverging color scale is state-wise and symmetric around zero.
+- `figure_s9.png`: Grouped-state long-term spatial diagnostics: temporal mean maps and linear trend maps (mm/yr) for ShallowLoad, DeepLoad, and Groundwater.
 
 ## Table 1
 

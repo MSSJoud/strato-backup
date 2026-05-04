@@ -21,6 +21,11 @@ from rasterio.warp import transform_bounds
 ROOT = Path("/home/ubuntu/work/insar_mcmc")
 OUTDIR = ROOT / "paper_figures"
 OUTDIR.mkdir(parents=True, exist_ok=True)
+VECDIR = ROOT / "paper_figures_vector"
+VECDIR.mkdir(parents=True, exist_ok=True)
+VECDIR_716 = ROOT / "paper_figures_vector_716"
+VECDIR_716.mkdir(parents=True, exist_ok=True)
+W_COL2 = 7.16  # GRSL double-column width in inches
 
 MPL_DIR = Path("/mnt/data/tmp/mpl_paper_figures")
 MPL_DIR.mkdir(parents=True, exist_ok=True)
@@ -28,13 +33,13 @@ MPL_DIR.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update(
     {
         "figure.dpi": 180,
-        "savefig.dpi": 300,
-        "font.size": 10,
-        "axes.titlesize": 12,
-        "axes.labelsize": 10,
-        "legend.fontsize": 9,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
+        "savefig.dpi": 600,
+        "font.size": 11,
+        "axes.titlesize": 13,
+        "axes.labelsize": 11,
+        "legend.fontsize": 10,
+        "xtick.labelsize": 10,
+        "ytick.labelsize": 10,
     }
 )
 
@@ -47,6 +52,14 @@ def load_json(path: Path) -> dict:
 def save(fig: plt.Figure, name: str) -> Path:
     path = OUTDIR / name
     fig.savefig(path, bbox_inches="tight")
+    # Vector PDF at original size
+    pdf_name = Path(name).stem + ".pdf"
+    fig.savefig(VECDIR / pdf_name, bbox_inches="tight", format="pdf")
+    # Vector PDF rescaled to GRSL double-column width (7.16")
+    w_orig, h_orig = fig.get_size_inches()
+    fig.set_size_inches(W_COL2, h_orig * W_COL2 / w_orig)
+    fig.savefig(VECDIR_716 / pdf_name, bbox_inches="tight", format="pdf")
+    fig.set_size_inches(w_orig, h_orig)  # restore before close
     plt.close(fig)
     return path
 
@@ -151,7 +164,6 @@ def figure_1_area_dtm(
         weight="bold",
         va="top",
     )
-    ax1.set_title("DTM background and overlap domain")
     ax1.set_xlabel("Longitude")
     ax1.set_ylabel("Latitude")
     ax1.set_xlim(8.0, 13.0)
@@ -173,7 +185,6 @@ def figure_1_area_dtm(
             lw=1.6,
         )
     )
-    ax2.set_title("Zoom on Bologna overlap and validation wells")
     ax2.set_xlabel("Longitude")
     ax2.set_ylabel("Latitude")
     ax2.legend(loc="lower left", frameon=True)
@@ -196,9 +207,9 @@ def figure_2_workflow() -> Path:
         (0.78, 0.17, 0.18, 0.21, "Grouped Stage 1 posterior\nIndependent well validation\nMain supported result"),
     ]
     for x, y, w, h, txt in boxes:
-        patch = FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02", fc="#f7f7f7", ec="#333333", lw=1.5)
+        patch = FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02", fc="#f7f7f7", ec="#333333", lw=1.2)
         ax.add_patch(patch)
-        ax.text(x + w / 2, y + h / 2, txt, ha="center", va="center", fontsize=11)
+        ax.text(x + w / 2, y + h / 2, txt, ha="center", va="center", fontsize=7)
 
     arrows = [
         ((0.21, 0.735), (0.28, 0.735)),
@@ -209,15 +220,15 @@ def figure_2_workflow() -> Path:
         ((0.71, 0.275), (0.78, 0.275)),
     ]
     for (x0, y0), (x1, y1) in arrows:
-        ax.annotate("", xy=(x1, y1), xytext=(x0, y0), arrowprops=dict(arrowstyle="->", lw=2))
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0), arrowprops=dict(arrowstyle="->", lw=1.5))
 
     ax.text(
         0.5,
         0.49,
-        "Synthetic pre-stage validates the inversion machinery; the applied Bologna estimator becomes grouped and is externally validated with wells.",
+        "Synthetic pre-stage validates the inversion machinery;\nthe Bologna estimator is grouped and validated against wells.",
         ha="center",
         va="center",
-        fontsize=12,
+        fontsize=8,
         fontweight="bold",
     )
     return save(fig, "figure_2_workflow_schematic.png")
@@ -232,12 +243,105 @@ def figure_3_synthetic(synth_summary: dict) -> Path:
             {"metric": "Deformation $R^2$", "value": synth_summary["deformation_metrics"]["r2"]},
         ]
     )
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), constrained_layout=True)
     axes[0].bar(rows["metric"], rows["value"], color=["#1b9e77", "#d95f02", "#7570b3", "#4c78a8"])
     axes[0].set_ylim(0, 1.05)
     axes[0].set_ylabel("$R^2$")
-    axes[0].set_title("Synthetic Stage 1 skill")
-    axes[0].tick_params(axis="x", rotation=20)
+    axes[0].tick_params(axis="x", rotation=40, labelsize=9)
+    axes[0].set_xticks(range(len(rows)))
+    axes[0].set_xticklabels(rows["metric"], ha="right")
+
+    txt = (
+        f"Grid: {synth_summary['shape']['height']} x {synth_summary['shape']['width']}\n"
+        f"Times: {synth_summary['shape']['time']}\n"
+        f"Layers: {synth_summary['shape']['layers']}\n"
+        f"Noise scale: {synth_summary['config']['noise_scale']}\n\n"
+        "Stage 1 recovers grouped synthetic states\n"
+        "strongly. Deformation reconstruction is\n"
+        "excellent. Synthetic success supports the\n"
+        "machinery but does not by itself prove\n"
+        "real-data identifiability."
+    )
+    axes[1].axis("off")
+    axes[1].text(0.02, 0.98, txt, va="top", ha="left", fontsize=9)
+    return save(fig, "figure_3_synthetic_validation.png")
+
+
+def figure_3_combined_manuscript(synth_summary: dict) -> Path:
+    """Manuscript Figure 3: workflow schematic (panel a) + synthetic validation (panel b).
+
+    This is the figure submitted to the journal, which merges the standalone
+    figure_2_workflow_schematic and figure_3_synthetic_validation into a single
+    two-panel figure for readability at full column width.
+    """
+    fig = plt.figure(figsize=(14, 12), constrained_layout=True)
+    sf_top, sf_bot = fig.subfigures(2, 1, height_ratios=[1.15, 0.85])
+
+    # ── panel (a): workflow schematic ─────────────────────────────────────
+    ax = sf_top.add_subplot(1, 1, 1)
+    ax.axis("off")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+
+    boxes = [
+        (0.03, 0.63, 0.18, 0.21, "Synthetic pre-stage\n5-layer W3RA-like states\n[S0, Ss, Sd, Sg, Sr]"),
+        (0.28, 0.63, 0.18, 0.21, "Forward hydro-\nmechanical physics\nDeformation-space predictors"),
+        (0.53, 0.63, 0.18, 0.21, "Synthetic Stage 1\nMCMC validation\nKnown-truth recovery"),
+        (0.78, 0.63, 0.18, 0.21, "Optional synthetic Stage 2\nResidual / lag diagnostic\nExploratory"),
+        (0.03, 0.17, 0.18, 0.21, "Real MintPy InSAR\nanomalies\nBologna overlap"),
+        (0.28, 0.17, 0.18, 0.21, "W3RA grouped prior\n[S0+Ss, Sd+Sr, Sg]\nShared 22 x 24 grid"),
+        (0.53, 0.17, 0.18, 0.21, "External constraints\nGRACE + SMAP\n+ exploratory SWOT"),
+        (0.78, 0.17, 0.18, 0.21, "Grouped Stage 1 posterior\nIndependent well validation\nMain supported result"),
+    ]
+    for x, y, w, h, txt in boxes:
+        patch = FancyBboxPatch(
+            (x, y), w, h, boxstyle="round,pad=0.02", fc="#f7f7f7", ec="#333333", lw=1.5
+        )
+        ax.add_patch(patch)
+        ax.text(x + w / 2, y + h / 2, txt, ha="center", va="center", fontsize=11)
+
+    arrows = [
+        ((0.21, 0.735), (0.28, 0.735)),
+        ((0.46, 0.735), (0.53, 0.735)),
+        ((0.71, 0.735), (0.78, 0.735)),
+        ((0.21, 0.275), (0.28, 0.275)),
+        ((0.46, 0.275), (0.53, 0.275)),
+        ((0.71, 0.275), (0.78, 0.275)),
+    ]
+    for (x0, y0), (x1, y1) in arrows:
+        ax.annotate(
+            "",
+            xy=(x1, y1),
+            xytext=(x0, y0),
+            arrowprops=dict(arrowstyle="->", lw=2),
+        )
+    ax.text(
+        0.5,
+        0.49,
+        "Synthetic pre-stage validates the inversion machinery; the applied Bologna estimator becomes grouped and is externally validated with wells.",
+        ha="center",
+        va="center",
+        fontsize=12,
+        fontweight="bold",
+    )
+    ax.set_title("(a)  Study workflow", fontsize=13, fontweight="bold", loc="left", pad=6)
+
+    # ── panel (b): synthetic Stage 1 skill ────────────────────────────────
+    ax_bar, ax_txt = sf_bot.subplots(1, 2)
+
+    rows = pd.DataFrame(
+        [
+            {"metric": "Sg state $R^2$", "value": synth_summary["state_metrics"]["Sg"]["r2"]},
+            {"metric": "Load total $R^2$", "value": synth_summary["derived_state_metrics"]["Load_total"]["r2"]},
+            {"metric": "TWS $R^2$", "value": synth_summary["derived_state_metrics"]["TWS"]["r2"]},
+            {"metric": "Deformation $R^2$", "value": synth_summary["deformation_metrics"]["r2"]},
+        ]
+    )
+    ax_bar.bar(rows["metric"], rows["value"], color=["#1b9e77", "#d95f02", "#7570b3", "#4c78a8"])
+    ax_bar.set_ylim(0, 1.05)
+    ax_bar.set_ylabel("$R^2$")
+    ax_bar.set_title("(b)  Synthetic Stage 1 skill", fontsize=13, fontweight="bold", loc="left", pad=6)
+    ax_bar.tick_params(axis="x", rotation=20)
 
     txt = (
         f"Grid: {synth_summary['shape']['height']} x {synth_summary['shape']['width']}\n"
@@ -249,9 +353,10 @@ def figure_3_synthetic(synth_summary: dict) -> Path:
         "- Deformation reconstruction is excellent\n"
         "- Synthetic success supports the machinery,\n  but does not by itself prove real-data identifiability"
     )
-    axes[1].axis("off")
-    axes[1].text(0.02, 0.98, txt, va="top", ha="left", fontsize=11)
-    return save(fig, "figure_3_synthetic_validation.png")
+    ax_txt.axis("off")
+    ax_txt.text(0.02, 0.98, txt, va="top", ha="left", fontsize=11)
+
+    return save(fig, "figure_3_combined_manuscript.png")
 
 
 def figure_4_grouped_results(
@@ -259,11 +364,36 @@ def figure_4_grouped_results(
     regional_npz: np.lib.npyio.NpzFile,
     w3ra_path: Path,
 ) -> Path:
-    state_names = [str(s) for s in tiled_npz["state_names"].tolist()]
-    fig, axes = plt.subplots(2, 3, figsize=(14, 8), constrained_layout=True)
-    t_idx = -1
+    _ = tiled_npz, w3ra_path  # kept for API compatibility; Figure 4 is temporal-only
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.6), constrained_layout=True)
+    ts = pd.to_datetime(regional_npz["time"])
+    for ax, obs_key, prior_key, post_key, title in [
+        (axes[0], "y_insar", "y_insar_prior", "y_insar_post", "InSAR"),
+        (axes[1], "y_grace", "y_grace_prior", "y_grace_post", "GRACE"),
+        (axes[2], "y_smap", "y_smap_prior", "y_smap_post", "SMAP"),
+    ]:
+        ax.plot(ts, regional_npz[obs_key], color="black", lw=1.6)
+        ax.plot(ts, regional_npz[prior_key], color="#7f7f7f", lw=1.2, ls="--")
+        ax.plot(ts, regional_npz[post_key], color="#1f77b4", lw=1.8)
+        ax.set_title(title)
+        ax.tick_params(axis="x", rotation=70, labelsize=9)
+    axes[0].set_ylabel("Regional anomaly")
+    return save(fig, "figure_4_grouped_stage1_results.png")
 
+
+def reconstruct_grouped_state_fields(
+    tiled_npz: np.lib.npyio.NpzFile,
+    w3ra_path: Path,
+) -> tuple[list[str], np.ndarray, np.ndarray, pd.DatetimeIndex, np.ndarray]:
+    """Reconstruct grouped posterior fields on the full grid for all times.
+
+    Returns state names, lat/lon vectors, timestamps, and full fields with shape
+    (time, state, lat, lon).
+    """
     import xarray as xr
+
+    state_names = [str(s) for s in tiled_npz["state_names"].tolist()]
+    theta_tiles = tiled_npz["theta_tiles"].astype(np.float64)
 
     with xr.open_dataset(w3ra_path) as ds:
         z_state = np.stack(
@@ -277,48 +407,124 @@ def figure_4_grouped_results(
         lat = ds["lat"].values.astype(np.float64)
         lon = ds["lon"].values.astype(np.float64)
 
-    _, _, h, w = z_state.shape
+    n_time, _, h, w = z_state.shape
     ny, nx = tiled_npz["lat_tiles"].shape
     y_pos = tile_positions(h, 8, 8)
     x_pos = tile_positions(w, 8, 8)
-    full_recon = np.zeros((len(state_names), h, w), dtype=np.float64)
-    full_count = np.zeros((len(state_names), h, w), dtype=np.float64)
-    for iy, y0 in enumerate(y_pos[:ny]):
-        for ix, x0 in enumerate(x_pos[:nx]):
-            y1 = min(y0 + 8, h)
-            x1 = min(x0 + 8, w)
-            theta_tile = tiled_npz["theta_tiles"][t_idx, :, iy, ix]
-            full_recon[:, y0:y1, x0:x1] += theta_tile[:, None, None] * z_state[t_idx, :, y0:y1, x0:x1]
-            full_count[:, y0:y1, x0:x1] += 1.0
-    full_recon = np.divide(full_recon, np.where(full_count == 0, np.nan, full_count))
 
-    for j, name in enumerate(state_names):
-        im = axes[0, j].pcolormesh(
+    full_recon = np.zeros((n_time, len(state_names), h, w), dtype=np.float64)
+    full_count = np.zeros((n_time, len(state_names), h, w), dtype=np.float64)
+
+    for t_idx in range(n_time):
+        for iy, y0 in enumerate(y_pos[:ny]):
+            for ix, x0 in enumerate(x_pos[:nx]):
+                y1 = min(y0 + 8, h)
+                x1 = min(x0 + 8, w)
+                theta_tile = theta_tiles[t_idx, :, iy, ix]
+                full_recon[t_idx, :, y0:y1, x0:x1] += theta_tile[:, None, None] * z_state[t_idx, :, y0:y1, x0:x1]
+                full_count[t_idx, :, y0:y1, x0:x1] += 1.0
+
+    with np.errstate(invalid="ignore", divide="ignore"):
+        full_recon = np.divide(full_recon, np.where(full_count == 0, np.nan, full_count))
+
+    ts = pd.to_datetime(tiled_npz["time"])
+    return state_names, lat, lon, ts, full_recon
+
+
+def figure_s8_spatial_three_dates_and_mean(
+    tiled_npz: np.lib.npyio.NpzFile,
+    w3ra_path: Path,
+) -> Path:
+    """Supplementary: grouped-state maps at three dates plus temporal mean."""
+    state_names, lat, lon, ts, full_recon = reconstruct_grouped_state_fields(tiled_npz, w3ra_path)
+
+    idx_list = [0, len(ts) // 2, len(ts) - 1]
+    col_titles = [ts[i].strftime("%Y-%m") for i in idx_list] + ["Temporal mean"]
+    valid_count = np.sum(np.isfinite(full_recon), axis=0)
+    mean_sum = np.nansum(full_recon, axis=0)
+    mean_map = np.full_like(mean_sum, np.nan)
+    np.divide(mean_sum, valid_count, out=mean_map, where=valid_count > 0)
+
+    fig, axes = plt.subplots(3, 4, figsize=(14, 10), constrained_layout=True)
+    for j, state_name in enumerate(state_names):
+        vmax = np.nanpercentile(np.abs(full_recon[:, j]), 99)
+        vmax = float(vmax) if np.isfinite(vmax) and vmax > 0 else 1.0
+        maps = [full_recon[idx_list[0], j], full_recon[idx_list[1], j], full_recon[idx_list[2], j], mean_map[j]]
+        for c, arr in enumerate(maps):
+            ax = axes[j, c]
+            im = ax.pcolormesh(lon, lat, arr, shading="auto", cmap="RdBu_r", vmin=-vmax, vmax=vmax)
+            if j == 0:
+                ax.set_title(col_titles[c])
+            if c == 0:
+                ax.set_ylabel(f"{state_name}\nLatitude")
+            if j == 2:
+                ax.set_xlabel("Longitude")
+        cbar = fig.colorbar(im, ax=axes[j, :], shrink=0.75)
+        cbar.ax.set_title("(mm)", fontsize=9)
+
+    return save(fig, "figure_s8_grouped_spatial_three_dates_mean.png")
+
+
+def figure_s9_spatial_mean_and_trend(
+    tiled_npz: np.lib.npyio.NpzFile,
+    w3ra_path: Path,
+) -> Path:
+    """Supplementary: grouped-state temporal mean and linear trend maps."""
+    state_names, lat, lon, ts, full_recon = reconstruct_grouped_state_fields(tiled_npz, w3ra_path)
+
+    valid_count = np.sum(np.isfinite(full_recon), axis=0)
+    mean_sum = np.nansum(full_recon, axis=0)
+    mean_map = np.full_like(mean_sum, np.nan)
+    np.divide(mean_sum, valid_count, out=mean_map, where=valid_count > 0)
+    t_years = np.asarray((ts - ts[0]).days, dtype=np.float64) / 365.25
+    t_mean = float(np.mean(t_years))
+    t_center = (t_years - t_mean)[:, None, None, None]
+    den = float(np.sum((t_years - t_mean) ** 2))
+
+    centered = full_recon - mean_map[None, ...]
+    slope_map = np.nansum(t_center * centered, axis=0) / den
+    slope_map[valid_count < 2] = np.nan
+
+    fig, axes = plt.subplots(3, 2, figsize=(12, 10), constrained_layout=True)
+    for j, state_name in enumerate(state_names):
+        vmax_mean = np.nanpercentile(np.abs(mean_map[j]), 99)
+        vmax_mean = float(vmax_mean) if np.isfinite(vmax_mean) and vmax_mean > 0 else 1.0
+        vmax_trend = np.nanpercentile(np.abs(slope_map[j]), 99)
+        vmax_trend = float(vmax_trend) if np.isfinite(vmax_trend) and vmax_trend > 0 else 1.0
+
+        im0 = axes[j, 0].pcolormesh(
             lon,
             lat,
-            full_recon[j],
+            mean_map[j],
             shading="auto",
             cmap="RdBu_r",
+            vmin=-vmax_mean,
+            vmax=vmax_mean,
         )
-        axes[0, j].set_title(f"{name} posterior reconstruction\n{pd.to_datetime(tiled_npz['time'][t_idx]).date()}")
-        axes[0, j].set_xlabel("Longitude")
-        axes[0, j].set_ylabel("Latitude")
-        cbar = plt.colorbar(im, ax=axes[0, j], shrink=0.8)
-        cbar.set_label("mm")
+        im1 = axes[j, 1].pcolormesh(
+            lon,
+            lat,
+            slope_map[j],
+            shading="auto",
+            cmap="RdBu_r",
+            vmin=-vmax_trend,
+            vmax=vmax_trend,
+        )
 
-    ts = pd.to_datetime(regional_npz["time"])
-    for ax, obs_key, prior_key, post_key, title in [
-        (axes[1, 0], "y_insar", "y_insar_prior", "y_insar_post", "InSAR"),
-        (axes[1, 1], "y_grace", "y_grace_prior", "y_grace_post", "GRACE"),
-        (axes[1, 2], "y_smap", "y_smap_prior", "y_smap_post", "SMAP"),
-    ]:
-        ax.plot(ts, regional_npz[obs_key], label="Observed", lw=1.7)
-        ax.plot(ts, regional_npz[prior_key], label="Prior", lw=1.0, alpha=0.8)
-        ax.plot(ts, regional_npz[post_key], label="Posterior", lw=1.7)
-        ax.set_title(title)
-        ax.tick_params(axis="x", rotation=25)
-    axes[1, 0].legend(loc="best")
-    return save(fig, "figure_4_grouped_stage1_results.png")
+        axes[j, 0].set_ylabel(f"{state_name}\nLatitude")
+        if j == 0:
+            axes[j, 0].set_title("Temporal mean")
+            axes[j, 1].set_title("Linear trend")
+        if j == 2:
+            axes[j, 0].set_xlabel("Longitude")
+            axes[j, 1].set_xlabel("Longitude")
+
+        cb0 = fig.colorbar(im0, ax=axes[j, 0], shrink=0.78)
+        cb0.ax.set_title("(mm)", fontsize=9)
+        cb1 = fig.colorbar(im1, ax=axes[j, 1], shrink=0.78)
+        cb1.ax.set_title("(mm/yr)", fontsize=9)
+
+    return save(fig, "figure_s9_grouped_spatial_mean_trend.png")
 
 
 def figure_5_well_validation_map(
@@ -371,10 +577,9 @@ def figure_5_well_validation_map(
     )
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
-    ax.set_title("Trusted well validation map")
     ax.legend(loc="lower left", frameon=True)
     cb = fig.colorbar(sc, ax=ax, shrink=0.78)
-    cb.set_label("Trusted-well correlation")
+    cb.ax.set_title("correlation", fontsize=9)
 
     order = ["deep", "intermediate", "shallow"]
     depth_vals = [
@@ -399,11 +604,9 @@ def figure_5_well_validation_map(
     ax2.set_xticklabels(order)
     ax2.set_ylim(0, 1.0)
     ax2.set_ylabel("Best-match anomaly correlation")
-    ax2.set_title("Validation by depth class")
 
     pivot = lag_state.pivot(index="best_lag_days", columns="best_state", values="n_series").fillna(0)
     pivot.plot(kind="bar", stacked=True, ax=ax3, colormap="tab10")
-    ax3.set_title("Best lag / best state counts")
     ax3.set_xlabel("Best lag (days)")
     ax3.set_ylabel("Number of wells")
     ax3.legend(title="Best state", fontsize=8, ncol=3, loc="upper center")
@@ -459,32 +662,128 @@ def figure_s7_selected_wells_overview(
         label="Selected top-9 wells",
         zorder=5,
     )
-    for _, row in top.iterrows():
-        ax_map.text(
-            row["lon"] + 0.03,
-            row["lat"] + 0.02,
-            row["station_code"],
-            color="#8b0000",
-            fontsize=8,
-            weight="bold",
-            zorder=6,
-        )
-    ax_map.set_title("Emilia-Romagna well network with selected stations")
     ax_map.set_xlabel("Longitude")
     ax_map.set_ylabel("Latitude")
-    ax_map.legend(loc="lower left", frameon=True)
+    # legend described in caption — keep map clean
 
-    for ax, (_, row) in zip(ts_axes, top.iterrows()):
+    for k, (ax, (_, row)) in enumerate(zip(ts_axes, top.iterrows())):
         path = station_series_dir / f"{row['station_code']}_{row['measurement_type']}.csv"
         ser = pd.read_csv(path, parse_dates=["date"])
-        ax.plot(ser["date"], ser["model_anom_z"], lw=1.5, color="#1f77b4", label="Model")
-        ax.plot(ser["date"], ser["obs_anom_z"], lw=1.5, color="#ff7f0e", label="Well")
-        ax.set_title(f"{row['station_code']} | corr={row['corr_anom']:.3f} | lag={int(row['best_lag_days'])}d")
-        ax.tick_params(axis="x", rotation=25)
-        ax.set_ylabel("z-anomaly")
-    ts_axes[0].legend(loc="best")
+        ax.plot(ser["date"], ser["model_anom_z"], lw=1.2, color="#1f77b4", label="Model")
+        ax.plot(ser["date"], ser["obs_anom_z"], lw=1.2, color="#ff7f0e", label="Well")
+        # Well name only as title
+        ax.set_title(row["station_code"], fontsize=8, pad=2)
+        # r and lag as in-frame annotation (top-left corner)
+        ax.text(
+            0.03, 0.96,
+            f"r={row['corr_anom']:.2f}  lag={int(row['best_lag_days'])}d",
+            transform=ax.transAxes,
+            fontsize=7,
+            va="top", ha="left",
+            bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.7),
+        )
+        row_idx = k // 3  # 0=top, 1=middle, 2=bottom
+        if row_idx < 2:
+            # upper two rows: ticks only, no year labels
+            ax.tick_params(axis="x", labelbottom=False, length=3)
+        else:
+            # bottom row: year labels, more vertical
+            ax.tick_params(axis="x", rotation=70, labelsize=7, length=3)
+        ax.tick_params(axis="y", labelsize=7)
+        if k % 3 == 0:  # leftmost column of time-series
+            ax.set_ylabel("z-anomaly", fontsize=8)
+    ts_axes[0].legend(loc="best", fontsize=7)
 
     return save(fig, "figure_s7_selected_wells_overview.png")
+
+
+def figure_7_well_validation_combined(
+    all_meta: pd.DataFrame,
+    trusted: pd.DataFrame,
+    well_summary: pd.DataFrame,
+    by_depth: pd.DataFrame,
+    lag_state: pd.DataFrame,
+    station_series_dir: Path,
+) -> Path:
+    """Main-paper Figure 7: wider map (all 3 rows) + 3×3 TS + violin/lag side-by-side at bottom."""
+    top9 = trusted.sort_values(["corr_anom", "n_matches"], ascending=[False, False]).head(9).copy()
+    trusted_plot = trusted[trusted["corr_anom"] >= 0.3].copy()
+
+    # 4 rows: rows 0-2 = map + TS grid; row 3 = full-width taller violin | lag strip
+    fig = plt.figure(figsize=(14, 13), constrained_layout=True)
+    gs = fig.add_gridspec(
+        4, 4,
+        width_ratios=[1.8, 1.0, 1.0, 1.0],
+        height_ratios=[1.0, 1.0, 1.0, 2.0],
+    )
+
+    # ── map (rows 0-2, col 0) — wider, no title ──────────────────────────
+    ax_map = fig.add_subplot(gs[0:3, 0])
+    ax_map.scatter(all_meta["lon"], all_meta["lat"], s=7, c="#9a9a9a", alpha=0.45, linewidths=0)
+    ax_map.scatter(trusted_plot["lon"], trusted_plot["lat"], s=18, c="#d62728",
+                   alpha=0.75, linewidths=0, zorder=4)
+    ax_map.scatter(top9["lon"], top9["lat"], s=130, marker="*", c="gold",
+                   edgecolors="black", linewidths=0.6, zorder=6)
+    ax_map.set_xlabel("Longitude")
+    ax_map.set_ylabel("Latitude")
+
+    # ── 3×3 time-series (rows 0-2, cols 1-3) ────────────────────────────
+    ts_positions = [(r, c) for r in range(3) for c in range(1, 4)]
+    ts_axes = [fig.add_subplot(gs[r, c]) for r, c in ts_positions]
+
+    for k, (ax, (_, row)) in enumerate(zip(ts_axes, top9.iterrows())):
+        path = station_series_dir / f"{row['station_code']}_{row['measurement_type']}.csv"
+        ser = pd.read_csv(path, parse_dates=["date"])
+        ax.plot(ser["date"], ser["model_anom_z"], lw=1.1, color="#1f77b4", label="Model")
+        ax.plot(ser["date"], ser["obs_anom_z"], lw=1.1, color="#ff7f0e", label="Well")
+        ax.set_title(row["station_code"], fontsize=8, pad=2)
+        ax.text(0.03, 0.96, f"r={row['corr_anom']:.2f}  lag={int(row['best_lag_days'])}d",
+                transform=ax.transAxes, fontsize=6.5, va="top", ha="left",
+                bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.7))
+        row_idx = ts_positions[k][0]
+        if row_idx < 2:
+            ax.tick_params(axis="x", labelbottom=False, length=3)
+        else:
+            ax.tick_params(axis="x", rotation=70, labelsize=7, length=3)
+        ax.tick_params(axis="y", labelsize=7)
+        if ts_positions[k][1] == 1:
+            ax.set_ylabel("z-anomaly", fontsize=8)
+    ts_axes[0].legend(loc="upper right", fontsize=6.5)
+
+    # ── bottom row: anchored to parent grid for exact alignment ──────────
+    ax_vln = fig.add_subplot(gs[3, 0])
+    order = ["deep", "intermediate", "shallow"]
+    depth_vals = [
+        well_summary.loc[well_summary["depth_class"] == d, "corr_anom"].dropna().values
+        for d in order
+    ]
+    parts = ax_vln.violinplot(depth_vals, positions=np.arange(1, 4), widths=0.75,
+                               showmeans=False, showmedians=True, showextrema=False)
+    for body, color in zip(parts["bodies"], ["#4c78a8", "#f58518", "#54a24b"]):
+        body.set_facecolor(color); body.set_edgecolor("black"); body.set_alpha(0.45); body.set_linewidth(0.7)
+    if "cmedians" in parts:
+        parts["cmedians"].set_color("black"); parts["cmedians"].set_linewidth(1.5)
+    for i, vals in enumerate(depth_vals, 1):
+        if len(vals):
+            jitter = np.linspace(-0.1, 0.1, len(vals)) if len(vals) > 1 else [0.0]
+            ax_vln.scatter(np.full(len(vals), i) + jitter, vals, s=10, c="black", alpha=0.35, linewidths=0, zorder=3)
+    ax_vln.set_xticks([1, 2, 3])
+    ax_vln.set_xticklabels(order, fontsize=8, rotation=20, ha="right")
+    ax_vln.set_ylim(0, 1.05)
+    ax_vln.set_ylabel("Anomaly correlation", fontsize=8)
+    ax_vln.tick_params(axis="y", labelsize=7)
+
+    # ── lag histogram (row 3, cols 1-3) ─────────────────────────────────
+    ax_lag = fig.add_subplot(gs[3, 1:4])
+    pivot = lag_state.pivot(index="best_lag_days", columns="best_state", values="n_series").fillna(0)
+    pivot.plot(kind="bar", stacked=True, ax=ax_lag, colormap="tab10", legend=False)
+    ax_lag.set_xlabel("Best lag (days)", fontsize=8)
+    ax_lag.set_ylabel("No. wells", fontsize=8)
+    ax_lag.tick_params(axis="x", rotation=45, labelsize=7)
+    ax_lag.tick_params(axis="y", labelsize=7)
+    ax_lag.legend(title="State", fontsize=6, title_fontsize=7, loc="upper right", ncol=1)
+
+    return save(fig, "figure_7_well_validation_combined.png")
 
 
 def figure_s1_trusted_aquifer_groups(trusted_gwb: pd.DataFrame) -> Path:
@@ -695,7 +994,7 @@ def make_tables_markdown(
         ("figure_1.png", "Study area and validation setting. Left: DTM background for the broader Bologna scene with the shared InSAR/W3RA overlap marked by a red box. Right: zoom on the overlap domain showing Bologna well stations, with the trusted validation subset highlighted by stars."),
         ("figure_2.png", "Overall study workflow. The synthetic pre-stage validates the deformation-space inversion machinery under known truth, whereas the real-data branch uses the grouped state [S0+Ss, Sd+Sr, Sg], assimilates InSAR, GRACE, and refreshed SMAP (with SWOT as an exploratory extension), and validates the grouped groundwater posterior against wells."),
         ("figure_3.png", "Compact synthetic validation summary. The deformation-space Stage 1 inversion achieves strong recovery in the model-consistent synthetic setting, especially for grouped states and deformation skill."),
-        ("figure_4.png", "Main grouped Stage 1 result for the Bologna overlap. Top: full-grid posterior reconstructions for ShallowLoad, DeepLoad, and Groundwater on the final overlap date, obtained by projecting the tiled grouped posterior back onto the shared 22 x 24 grid. Bottom: observed, prior, and posterior regional time-series comparisons for InSAR, GRACE, and SMAP."),
+        ("figure_4.png", "Main grouped Stage 1 temporal fit over the Bologna overlap. Panels show observed (black solid), prior (gray dashed), and posterior (blue solid) regional anomaly time-series for InSAR, GRACE, and SMAP; no in-panel legend is used to preserve readability at print size."),
         ("figure_5.png", "Independent well validation of the grouped posterior. Gray dots show the broader Emilia-Romagna well network, while the trusted Bologna wells with correlation greater than or equal to 0.6 are highlighted as small colored dots and starred markers. The lower panel summarizes the best-lag / best-state distribution, and the upper-right panel summarizes depth-class validation."),
         ("figure_6.png", "Representative well time-series comparisons for the strongest trusted stations. Blue curves denote the grouped model anomaly and orange curves denote standardized well-head anomalies."),
     ]
@@ -711,6 +1010,8 @@ def make_tables_markdown(
         ("figure_s5.png", "SWOT overlap diagnostic showing the reduction from raw river/lake dates to matched dates retained in the nearest-date multisensor bundle."),
         ("figure_s6.png", "Static overview of the Emilia-Romagna well network with the trusted Bologna subset highlighted."),
         ("figure_s7.png", "Overview of nine selected trusted wells. Left: regional well network with the selected stations marked by red stars. Right: model-versus-well anomaly time-series comparisons for the same nine stations."),
+        ("figure_s8.png", "Grouped-state spatial diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record) plus the temporal mean map. Diverging color scale is state-wise and symmetric around zero."),
+        ("figure_s9.png", "Grouped-state long-term spatial diagnostics: temporal mean maps and linear trend maps (mm/yr) for ShallowLoad, DeepLoad, and Groundwater."),
     ]
     for name, cap in supp_caps:
         parts.append(f"- `{name}`: {cap}\n")
@@ -801,6 +1102,8 @@ def make_notebook() -> None:
                     "    'figure_s5.png',\n",
                     "    'figure_s6.png',\n",
                     "    'figure_s7.png',\n",
+                    "    'figure_s8.png',\n",
+                    "    'figure_s9.png',\n",
                     "]:\n",
                     "    path = ROOT / name\n",
                     "    print(path)\n",
@@ -872,6 +1175,10 @@ def main() -> None:
     )
     figure_5_well_validation_map(all_meta, well_summary, trusted, by_depth, lag_state)
     figure_6_best_wells(trusted, ROOT / "outputs_well_validation" / "station_series")
+    figure_7_well_validation_combined(
+        all_meta, trusted, well_summary, by_depth, lag_state,
+        ROOT / "outputs_well_validation" / "station_series",
+    )
 
     figure_s1_trusted_aquifer_groups(trusted_gwb)
     figure_s2_lag_histogram(lag_state)
@@ -880,6 +1187,14 @@ def main() -> None:
     figure_s5_swot(swot_summary, bundle_full_summary)
     figure_s6_emilia_wells(all_meta, trusted)
     figure_s7_selected_wells_overview(trusted=trusted, all_meta=all_meta, station_series_dir=ROOT / "outputs_well_validation" / "station_series")
+    figure_s8_spatial_three_dates_and_mean(
+        tiled_npz,
+        ROOT / "outputs_bologna_2025_overlap" / "w3ra_on_mintpy2025_overlap_anom.nc",
+    )
+    figure_s9_spatial_mean_and_trend(
+        tiled_npz,
+        ROOT / "outputs_bologna_2025_overlap" / "w3ra_on_mintpy2025_overlap_anom.nc",
+    )
 
     captions = make_tables_markdown(
         regional_summary,
@@ -903,6 +1218,7 @@ def main() -> None:
         "figure_4_grouped_stage1_results.png": "figure_4.png",
         "figure_5_well_validation_map.png": "figure_5.png",
         "figure_6_best_well_timeseries.png": "figure_6.png",
+        "figure_7_well_validation_combined.png": "figure_7.png",
         "figure_s1_trusted_aquifer_groups.png": "figure_s1.png",
         "figure_s2_lag_histogram.png": "figure_s2.png",
         "figure_s3_depth_class_summary.png": "figure_s3.png",
@@ -910,9 +1226,19 @@ def main() -> None:
         "figure_s5_swot_overlap_summary.png": "figure_s5.png",
         "figure_s6_emilia_romagna_wells_overview.png": "figure_s6.png",
         "figure_s7_selected_wells_overview.png": "figure_s7.png",
+        "figure_s8_grouped_spatial_three_dates_mean.png": "figure_s8.png",
+        "figure_s9_grouped_spatial_mean_trend.png": "figure_s9.png",
     }
     for src_name, dst_name in alias_map.items():
+        # PNG aliases (paper_figures/)
         shutil.copyfile(OUTDIR / src_name, OUTDIR / dst_name)
+        # PDF aliases (paper_figures_vector/ and paper_figures_vector_716/)
+        pdf_src = Path(src_name).stem + ".pdf"
+        pdf_dst = Path(dst_name).stem + ".pdf"
+        if (VECDIR / pdf_src).exists():
+            shutil.copyfile(VECDIR / pdf_src, VECDIR / pdf_dst)
+        if (VECDIR_716 / pdf_src).exists():
+            shutil.copyfile(VECDIR_716 / pdf_src, VECDIR_716 / pdf_dst)
 
     make_notebook()
 
