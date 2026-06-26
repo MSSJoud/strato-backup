@@ -15,7 +15,7 @@
 - `figure_s5.png`: SWOT overlap diagnostic showing the reduction from raw river/lake dates to matched dates retained in the nearest-date multisensor bundle.
 - `figure_s6.png`: Static overview of the Emilia-Romagna well network with the trusted Bologna subset highlighted.
 - `figure_s7.png`: Overview of nine selected trusted wells. Left: regional well network with the selected stations marked by red stars. Right: model-versus-well anomaly time-series comparisons for the same nine stations.
-- `figure_s8.png`: Grouped-state spatial diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record) plus the temporal mean map. Diverging color scale is state-wise and symmetric around zero.
+- `figure_s8.png`: Grouped-state anomaly diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record). Diverging color scale is state-wise and symmetric around zero.
 - `figure_s9.png`: Grouped-state long-term spatial diagnostics: temporal mean maps and linear trend maps (mm/yr) for ShallowLoad, DeepLoad, and Groundwater.
 
 ## Table 1

@@ -27,6 +27,8 @@ services:
       - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
       - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
       - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - /mnt/data/punjab_2018_2025:/mnt/data/punjab_2018_2025
+      - /mnt/data/punjab_weather:/mnt/data/punjab_weather
       - ./config:/workspace/config
       - ./configs:/workspace/configs
       - ./scripts:/workspace/scripts
@@ -51,6 +53,8 @@ services:
       - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
       - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
       - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - /mnt/data/punjab_2018_2025:/mnt/data/punjab_2018_2025
+      - /mnt/data/punjab_weather:/mnt/data/punjab_weather
       - ./config:/workspace/config
       - ./configs:/workspace/configs
       - ./scripts:/workspace/scripts
@@ -80,6 +84,8 @@ services:
       - /mnt/data/sbas_vs_ps_test_bologna:/mnt/data/sbas_vs_ps_test_bologna
       - /mnt/data/aoi_3_bologna:/mnt/data/aoi_3_bologna
       - /mnt/data/aoi_3_bologna_weather:/mnt/data/aoi_3_bologna_weather
+      - /mnt/data/punjab_2018_2025:/mnt/data/punjab_2018_2025
+      - /mnt/data/punjab_weather:/mnt/data/punjab_weather
       - ./config:/workspace/config
       - ./configs:/workspace/configs
       - ./scripts:/workspace/scripts

@@ -61,6 +61,9 @@ node_modules/
 # Excluded folders not needed in backup
 EarthScope2024/Geo-SInC/
 ait/LLMgeoChat/
+hydroinsar-qgis/
+w3ra-hydroinsar-qgis/
+w3raexplorer_v01/
 isce2_xmls/
 bologna_sbas_ps_2023/
 slc_stack_test_subset/

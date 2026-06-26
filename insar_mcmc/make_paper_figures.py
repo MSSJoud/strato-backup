@@ -435,21 +435,17 @@ def figure_s8_spatial_three_dates_and_mean(
     tiled_npz: np.lib.npyio.NpzFile,
     w3ra_path: Path,
 ) -> Path:
-    """Supplementary: grouped-state maps at three dates plus temporal mean."""
+    """Supplementary: grouped-state anomaly maps at three representative dates."""
     state_names, lat, lon, ts, full_recon = reconstruct_grouped_state_fields(tiled_npz, w3ra_path)
 
     idx_list = [0, len(ts) // 2, len(ts) - 1]
-    col_titles = [ts[i].strftime("%Y-%m") for i in idx_list] + ["Temporal mean"]
-    valid_count = np.sum(np.isfinite(full_recon), axis=0)
-    mean_sum = np.nansum(full_recon, axis=0)
-    mean_map = np.full_like(mean_sum, np.nan)
-    np.divide(mean_sum, valid_count, out=mean_map, where=valid_count > 0)
+    col_titles = [ts[i].strftime("%Y-%m") for i in idx_list]
 
-    fig, axes = plt.subplots(3, 4, figsize=(14, 10), constrained_layout=True)
+    fig, axes = plt.subplots(3, 3, figsize=(12, 10), constrained_layout=True)
     for j, state_name in enumerate(state_names):
         vmax = np.nanpercentile(np.abs(full_recon[:, j]), 99)
         vmax = float(vmax) if np.isfinite(vmax) and vmax > 0 else 1.0
-        maps = [full_recon[idx_list[0], j], full_recon[idx_list[1], j], full_recon[idx_list[2], j], mean_map[j]]
+        maps = [full_recon[idx_list[0], j], full_recon[idx_list[1], j], full_recon[idx_list[2], j]]
         for c, arr in enumerate(maps):
             ax = axes[j, c]
             im = ax.pcolormesh(lon, lat, arr, shading="auto", cmap="RdBu_r", vmin=-vmax, vmax=vmax)
@@ -462,7 +458,7 @@ def figure_s8_spatial_three_dates_and_mean(
         cbar = fig.colorbar(im, ax=axes[j, :], shrink=0.75)
         cbar.ax.set_title("(mm)", fontsize=9)
 
-    return save(fig, "figure_s8_grouped_spatial_three_dates_mean.png")
+    return save(fig, "figure_s8_grouped_spatial_three_dates.png")
 
 
 def figure_s9_spatial_mean_and_trend(
@@ -1010,7 +1006,7 @@ def make_tables_markdown(
         ("figure_s5.png", "SWOT overlap diagnostic showing the reduction from raw river/lake dates to matched dates retained in the nearest-date multisensor bundle."),
         ("figure_s6.png", "Static overview of the Emilia-Romagna well network with the trusted Bologna subset highlighted."),
         ("figure_s7.png", "Overview of nine selected trusted wells. Left: regional well network with the selected stations marked by red stars. Right: model-versus-well anomaly time-series comparisons for the same nine stations."),
-        ("figure_s8.png", "Grouped-state spatial diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record) plus the temporal mean map. Diverging color scale is state-wise and symmetric around zero."),
+        ("figure_s8.png", "Grouped-state anomaly diagnostics: ShallowLoad, DeepLoad, and Groundwater maps at three representative dates (start, mid, end of record). Diverging color scale is state-wise and symmetric around zero."),
         ("figure_s9.png", "Grouped-state long-term spatial diagnostics: temporal mean maps and linear trend maps (mm/yr) for ShallowLoad, DeepLoad, and Groundwater."),
     ]
     for name, cap in supp_caps:
@@ -1226,7 +1222,7 @@ def main() -> None:
         "figure_s5_swot_overlap_summary.png": "figure_s5.png",
         "figure_s6_emilia_romagna_wells_overview.png": "figure_s6.png",
         "figure_s7_selected_wells_overview.png": "figure_s7.png",
-        "figure_s8_grouped_spatial_three_dates_mean.png": "figure_s8.png",
+        "figure_s8_grouped_spatial_three_dates.png": "figure_s8.png",
         "figure_s9_grouped_spatial_mean_trend.png": "figure_s9.png",
     }
     for src_name, dst_name in alias_map.items():

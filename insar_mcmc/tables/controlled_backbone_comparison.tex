@@ -1,0 +1,14 @@
+\begin{table*}[t]
+\centering
+\caption{Controlled backbone comparison on the shared MT-InSAR/W3RA Bologna tile dataset using full-map reconstruction metrics only. Both backbones use the same posterior-conditioned input tensor, the same tile windows, the same train/validation/test split, the same normalization, and the same optimization/early-stopping configuration. RMSE, MAE, and bias are reported in mm on the reconstructed full-map deformation target. Regional $R^2$ is computed after spatial averaging each reconstructed map in time, while tile $R^2$ uses all valid full-map pixels and times.}
+\label{tab:controlled_backbone_comparison}
+\begin{tabular}{lrrrrrrrrr}
+\hline
+Model & Params & RMSE & MAE & Bias & Regional $R^2$ & Tile $R^2$ & Peak GPU (GB) & Train time (s) & Inference (s) \\
+\hline
+3D CNN & 229,218 & 21.27939 & 16.52709 & -0.03111 & 0.99773 & 0.42986 & \textemdash & 63.83 & 0.36 \\
+Swin3D-UNet & 195,026 & 21.27944 & 16.52707 & -0.03195 & 0.99773 & 0.42986 & \textemdash & 115.04 & 1.32 \\
+\\
+\hline
+\end{tabular}
+\end{table*}
