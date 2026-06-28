@@ -133,5 +133,11 @@ insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw/
 insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw_fast/
 mintpy-playbook/outputs/aoi_3_bologna_filtered/S1*
 
+# Keep nested repositories independent from the top-level backup repo
+ait/LLMgeoChat/
+hydroinsar-qgis/
+w3ra-hydroinsar-qgis/
+w3raexplorer_v01/
+
 # Old local backups of this file
 .gitignore.backup.*
