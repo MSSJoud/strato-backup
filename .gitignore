@@ -1,6 +1,7 @@
 # Backup policy.
-# Include code, notes, configs, and reasonable output artifacts.
-# Exclude raw input data, imagery, SAR intermediates, and local runtime files.
+# Prioritize source code, notes, configs, and reproducible experiment setup.
+# Exclude regenerable data artifacts, raw input data, imagery, SAR intermediates,
+# and local runtime files.
 
 # Python and notebook runtime cache
 __pycache__/
@@ -40,6 +41,9 @@ node_modules/
 *.grib
 *.grb
 *.mat
+*.h5
+*.hdf5
+*.nc
 *.npy
 *.npz
 *.dem
