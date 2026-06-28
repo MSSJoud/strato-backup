@@ -1,0 +1,14 @@
+{
+  "bbox": {
+    "lat_min": 42.734892806869155,
+    "lat_max": 46.28561089133436,
+    "lon_min": 8.072083499621938,
+    "lon_max": 12.207201222965367
+  },
+  "temporal": [
+    "2017-01-04",
+    "2025-06-27"
+  ],
+  "insar_path": "/mnt/data/aoi_3_bologna/mintpy_filtered/timeseries_SET_ERA5_ramp_demErr.h5",
+  "grace_path": "/mnt/data/punjab_grace_mascon_l3/GRCTellus.JPL.200204_202512.GLO.RL06.3M.MSCNv04CRI.nc"
+}

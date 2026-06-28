@@ -1,0 +1,37 @@
+{
+  "n_tiles": 56,
+  "time_start": "2017-06-01",
+  "time_end": "2022-10-01",
+  "state_sanity": {
+    "ShallowLoad": {
+      "mean_abs": 4.707087993621826,
+      "max_abs": 33.23931121826172,
+      "trend_robust_absmax": 0.31361074650599147,
+      "theta_mean": 0.2328728884458542,
+      "theta_min": -0.6482467651367188,
+      "theta_max": 1.017063856124878
+    },
+    "DeepLoad": {
+      "mean_abs": 29.30110740661621,
+      "max_abs": 90.048095703125,
+      "trend_robust_absmax": 1.2391057129570826,
+      "theta_mean": 1.426461100578308,
+      "theta_min": -0.07740813493728638,
+      "theta_max": 2.5
+    },
+    "Groundwater": {
+      "mean_abs": 11.324960708618164,
+      "max_abs": 83.95747375488281,
+      "trend_robust_absmax": 1.6004370879315908,
+      "theta_mean": 0.3201526403427124,
+      "theta_min": -1.2817637920379639,
+      "theta_max": 2.5
+    }
+  },
+  "insar_fit": {
+    "obs_mean_abs": 0.01651543378829956,
+    "post_mean_abs": 0.006414069794118404,
+    "trend_robust_absmax_obs": NaN,
+    "trend_robust_absmax_post": 0.0007613437306112645
+  }
+}

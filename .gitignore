@@ -1,5 +1,6 @@
-# Code-only backup policy.
-# Include all folders by default and ignore binary/data/runtime artifacts.
+# Backup policy.
+# Include code, notes, configs, and reasonable output artifacts.
+# Exclude raw input data, imagery, SAR intermediates, and local runtime files.
 
 # Python and notebook runtime cache
 __pycache__/
@@ -35,10 +36,7 @@ node_modules/
 *.7z
 *.gz
 
-# Scientific/remote sensing large data binaries
-*.h5
-*.hdf5
-*.nc
+# Scientific/remote sensing raw/intermediate binaries
 *.grib
 *.grb
 *.mat
@@ -47,6 +45,47 @@ node_modules/
 *.dem
 *.dem.wgs84
 *.SAFE
+*.rdr
+*.slc
+*.int
+*.off
+*.cor
+*.unw
+*.conncomp
+*.hgt
+*.hdr
+*.EOF
+*.dir
+*.dat
+*.bak
+*.full
+*.flat
+*.crop
+*.geo
+
+# Scientific/geospatial vector input data
+*.geojson
+*.kml
+*.kmz
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.gpkg
+*.ods
+
+# Sidecar metadata for ignored remote-sensing binaries
+*.rdr.xml
+*.slc.xml
+*.int.xml
+*.off.xml
+*.cor.xml
+*.unw.xml
+*.conncomp.xml
+*.hgt.xml
+*.bin.xml
+*.xml
 
 # Raster/vector imagery and binaries
 *.tif
@@ -58,45 +97,30 @@ node_modules/
 *.gif
 *.webp
 
-# Excluded folders not needed in backup
-EarthScope2024/Geo-SInC/
-ait/LLMgeoChat/
-hydroinsar-qgis/
-w3ra-hydroinsar-qgis/
-w3raexplorer_v01/
-isce2_xmls/
-bologna_sbas_ps_2023/
-slc_stack_test_subset/
-slc_test_2_subset/
-slc_test_3_subset/
-slc_test_subset/
-slc_tops_test_subset/
-topsout/
-aoi_bologna/
-aoi_3_02_Bologna/
-dem/
-inputs/
-gmtsar_test_1/
-gmtsar_test_2/
-project_po/data/
-project_po/stack/
-insar_mcmc/outputs/
-insar_mcmc/outputs*/
-insar-layered-groundwater-mcmc-swin/summaries/
-hydro-insar-swin-inversion/outputs/
-mintpy-playbook/outputs/
-punjab/outputs/
-
 # Secrets and local credentials
 .env
 .env.*
 .copernicus_dataspace_token
 /credentials.py
 /project_po/scripts/credentials_edl.json
+.gitignore.backup.*
 *.pem
 *.key
 *.p12
 *.pfx
+
+# Raw input/output folders to keep out of the GitHub backup
+project_po/data/
+project_po/stack/topsStack_S1/inputs/
+slc_stack_test_subset/
+slc_test_2_subset/
+slc_test_3_subset/
+slc_test_subset/
+slc_tops_test_subset/
+insar_mcmc/outputs_external_constraints/smap_matched_raw/
+insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw/
+insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw_fast/
+mintpy-playbook/outputs/aoi_3_bologna_filtered/S1*
 
 # Model and compiled binaries
 *.pt

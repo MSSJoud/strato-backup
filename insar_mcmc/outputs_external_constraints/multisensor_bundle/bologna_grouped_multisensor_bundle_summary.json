@@ -1,0 +1,10 @@
+{
+  "n_times": 394,
+  "time_start": "2017-01-04",
+  "time_end": "2025-06-27",
+  "sources": {
+    "grace_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/bologna_grace_region_timeseries.csv",
+    "stage1_results": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_full_grouped_quick/stage1_bologna_real_results.npz",
+    "smap_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/smap_processed/bologna_smap_surface_soil_moisture_timeseries.csv"
+  }
+}

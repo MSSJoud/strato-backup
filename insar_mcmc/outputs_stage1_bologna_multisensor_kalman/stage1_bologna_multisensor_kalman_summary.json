@@ -1,0 +1,91 @@
+{
+  "config": {
+    "insar_path": "/mnt/data/mcma/01/insar_sub.nc",
+    "w3ra_path": "/mnt/data/mcma/01/w3ra_sub_anom.nc",
+    "grace_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/bologna_grace_region_timeseries.csv",
+    "smap_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/smap_processed/bologna_smap_surface_soil_moisture_timeseries.csv",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_multisensor_kalman",
+    "seed": 42,
+    "state_persistence": 0.98,
+    "q_scale": 0.02,
+    "p0_scale": 0.25,
+    "theta0": 1.0,
+    "r_insar": 0.15,
+    "r_grace": 0.25,
+    "r_smap": 0.3,
+    "grace_unit_scale": 10.0,
+    "ridge_eps": 1e-06
+  },
+  "time_start": "2017-06-01",
+  "time_end": "2022-10-01",
+  "n_times": 33,
+  "state_names": [
+    "ShallowLoad",
+    "DeepLoad",
+    "Groundwater"
+  ],
+  "scales": {
+    "insar_scale": 0.01681991141387946,
+    "grace_scale": 80.46901178887232,
+    "smap_scale": 0.060815072069902186,
+    "smap_slope": 0.0005489915033019779
+  },
+  "metrics": {
+    "insar_prior": {
+      "n": 31,
+      "rmse": 0.02164075241096262,
+      "corr": -0.06734478809154117,
+      "r2": -0.655378477538854
+    },
+    "insar_post": {
+      "n": 31,
+      "rmse": 0.013333126722606383,
+      "corr": 0.6524073465810059,
+      "r2": 0.37162831757437154
+    },
+    "grace_prior": {
+      "n": 33,
+      "rmse": 69.10745241362082,
+      "corr": 0.5407130691933388,
+      "r2": 0.2624483636911682
+    },
+    "grace_post": {
+      "n": 33,
+      "rmse": 59.95165177359311,
+      "corr": 0.6768435074833911,
+      "r2": 0.4449335595922639
+    },
+    "smap_prior": {
+      "n": 9,
+      "rmse": 0.06026831313430612,
+      "corr": 0.2996328419106049,
+      "r2": 0.017900204483335957
+    },
+    "smap_post": {
+      "n": 9,
+      "rmse": 0.06011443280895277,
+      "corr": 0.44719295848319607,
+      "r2": 0.02290890298091075
+    }
+  },
+  "theta_summary": {
+    "ShallowLoad": {
+      "mean": 0.1648174683117665,
+      "std": 0.2284890334410521,
+      "min": -0.28644582461258294,
+      "max": 0.6091365544485178
+    },
+    "DeepLoad": {
+      "mean": 1.6005468723399174,
+      "std": 0.3353341655889476,
+      "min": 0.7766056887383458,
+      "max": 2.15402809888886
+    },
+    "Groundwater": {
+      "mean": 0.33349922414636096,
+      "std": 0.8554099878447471,
+      "min": -0.7119728588454817,
+      "max": 2.54716235418822
+    }
+  }
+}

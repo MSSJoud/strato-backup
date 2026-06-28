@@ -1,0 +1,111 @@
+{
+  "device": "cpu",
+  "best_val_loss": 3.4020067495054076,
+  "train_samples": 264,
+  "val_samples": 54,
+  "test_samples": 60,
+  "crop": {
+    "y0": 1535,
+    "y1": 2129,
+    "x0": 896,
+    "x1": 1419,
+    "height": 594,
+    "width": 523
+  },
+  "tile_grid": {
+    "tile_size": 64,
+    "tile_stride": 512,
+    "n_tile_y": 3,
+    "n_tile_x": 2
+  },
+  "normalization": {
+    "x_mean": [
+      0.015644337981939316,
+      0.48260316252708435,
+      0.5035207271575928
+    ],
+    "x_std": [
+      0.037010498344898224,
+      0.42028921842575073,
+      0.1402767151594162
+    ],
+    "y_mean": [
+      11.900554656982422,
+      6.773495197296143
+    ],
+    "y_std": [
+      32.1420783996582,
+      28.295574188232422
+    ],
+    "u_mean": 0.029156837612390518,
+    "u_std": 0.04710062965750694
+  },
+  "model": {
+    "type": "ContextConditionedTwoLayerSwinUNet3D",
+    "context_channels": 2,
+    "inputs": [
+      "deformation_window",
+      "temporal_coherence",
+      "avg_spatial_coherence"
+    ],
+    "targets": [
+      "load_proxy",
+      "Sg"
+    ]
+  },
+  "physics": {
+    "load_proxy_definition": "S0 + Ss + Sd + Sr",
+    "forward_model": "forward_two_layer_torch",
+    "lambda_phys": 0.5
+  },
+  "metrics": {
+    "load_rmse": 14.822343826293945,
+    "load_r2": -0.2610170841217041,
+    "load_corr": -0.00028173170707952873,
+    "sg_rmse": 13.569676399230957,
+    "sg_r2": -0.5690975189208984,
+    "sg_corr": -0.05521819451430569,
+    "disp_forward_rmse": 0.646296501159668,
+    "disp_forward_corr": -0.40912634346192084
+  },
+  "config": {
+    "insar_path": "/mnt/data/mcma/01/insar_aligned.nc",
+    "w3ra_path": "/mnt/data/mcma/01/w3ra_on_insar.nc",
+    "subregion_path": "/mnt/data/mcma/01/insar_sub.nc",
+    "temporal_coh_path": "/mnt/data/aoi_3_02_bologna/MintPy/temporalCoherence.h5",
+    "avg_coh_path": "/mnt/data/aoi_3_02_bologna/MintPy/avgSpatialCoh.h5",
+    "coh_mask_path": "/mnt/data/aoi_3_02_bologna/MintPy/maskTempCoh.h5",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_smoke",
+    "cache_path": "/home/ubuntu/work/insar_mcmc/outputs/bologna_hybrid_cache.h5",
+    "seed": 42,
+    "window_size": 3,
+    "tile_size": 64,
+    "tile_stride": 512,
+    "batch_size": 1,
+    "num_workers": 0,
+    "max_epochs": 1,
+    "patience": 5,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0001,
+    "lambda_phys": 0.5,
+    "lambda_tv": 0.0001,
+    "sg_weight": 2.0,
+    "min_coherence": 0.35,
+    "target_mode": "anomaly",
+    "force_rebuild_cache": false,
+    "train_fraction": 0.7,
+    "val_fraction": 0.15,
+    "max_stats_samples": 256,
+    "base_dim": 32,
+    "time_patch": 2,
+    "spatial_patch": 4,
+    "num_heads": 4,
+    "window_attn_t": 3,
+    "window_attn_xy": 4
+  },
+  "artifacts": {
+    "history_json": "/home/ubuntu/work/insar_mcmc/outputs_smoke/bologna_hybrid_sg_history.json",
+    "summary_json": "/home/ubuntu/work/insar_mcmc/outputs_smoke/bologna_hybrid_sg_summary.json",
+    "checkpoint": "/home/ubuntu/work/insar_mcmc/outputs_smoke/bologna_hybrid_sg_best.pt"
+  }
+}

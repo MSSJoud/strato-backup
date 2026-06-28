@@ -1,0 +1,140 @@
+{
+  "device": "cuda",
+  "best_val_loss": 1.277378793083847,
+  "train_samples": 3780,
+  "val_samples": 810,
+  "test_samples": 810,
+  "crop": {
+    "y0": 1535,
+    "y1": 2129,
+    "x0": 896,
+    "x1": 1419,
+    "height": 594,
+    "width": 523
+  },
+  "tile_grid": {
+    "tile_size": 64,
+    "tile_stride": 64,
+    "n_tile_y": 10,
+    "n_tile_x": 9
+  },
+  "normalization": {
+    "x_mean": [
+      0.013252930715680122,
+      0.5291305184364319,
+      0.532842218875885
+    ],
+    "x_std": [
+      0.034869786351919174,
+      0.4161301553249359,
+      0.1639721393585205
+    ],
+    "y_mean": [
+      13.113019943237305,
+      6.880667686462402
+    ],
+    "y_std": [
+      29.490854263305664,
+      27.18708610534668
+    ],
+    "u_mean": 0.01555338129401207,
+    "u_std": 0.045988794416189194
+  },
+  "model": {
+    "type": "ContextConditionedTwoLayerSwinUNet3D",
+    "context_channels": 2,
+    "inputs": [
+      "deformation_window",
+      "temporal_coherence",
+      "avg_spatial_coherence"
+    ],
+    "targets": [
+      "load_proxy",
+      "Sg"
+    ]
+  },
+  "physics": {
+    "load_proxy_definition": "S0 + Ss + Sd + Sr",
+    "forward_model": "forward_two_layer_torch",
+    "lambda_phys": 0.5
+  },
+  "metrics": {
+    "n_test_samples": 810,
+    "n_nonempty_samples": 810,
+    "n_valid_pixels": 0,
+    "load_rmse": NaN,
+    "load_r2": NaN,
+    "load_corr": NaN,
+    "sg_rmse": NaN,
+    "sg_r2": NaN,
+    "sg_corr": NaN,
+    "disp_forward_rmse": NaN,
+    "disp_forward_corr": NaN
+  },
+  "split_coverage": {
+    "train": {
+      "n_samples": 3780,
+      "n_nonempty_samples": 1800,
+      "n_empty_samples": 1980,
+      "valid_pixels_total": 4607220,
+      "valid_pixels_mean": 1218.8412698412699,
+      "valid_pixels_max": 4020
+    },
+    "val": {
+      "n_samples": 810,
+      "n_nonempty_samples": 180,
+      "n_empty_samples": 630,
+      "valid_pixels_total": 460722,
+      "valid_pixels_mean": 568.7925925925925,
+      "valid_pixels_max": 4020
+    },
+    "test": {
+      "n_samples": 810,
+      "n_nonempty_samples": 0,
+      "n_empty_samples": 810,
+      "valid_pixels_total": 0,
+      "valid_pixels_mean": 0.0,
+      "valid_pixels_max": 0
+    }
+  },
+  "config": {
+    "insar_path": "/mnt/data/mcma/01/insar_aligned.nc",
+    "w3ra_path": "/mnt/data/mcma/01/w3ra_on_insar.nc",
+    "subregion_path": "/mnt/data/mcma/01/insar_sub.nc",
+    "temporal_coh_path": "/mnt/data/aoi_3_02_bologna/MintPy/temporalCoherence.h5",
+    "avg_coh_path": "/mnt/data/aoi_3_02_bologna/MintPy/avgSpatialCoh.h5",
+    "coh_mask_path": "/mnt/data/aoi_3_02_bologna/MintPy/maskTempCoh.h5",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs",
+    "cache_path": "/home/ubuntu/work/insar_mcmc/outputs/bologna_hybrid_cache.h5",
+    "seed": 42,
+    "window_size": 6,
+    "tile_size": 64,
+    "tile_stride": 64,
+    "batch_size": 4,
+    "num_workers": 0,
+    "max_epochs": 20,
+    "patience": 5,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0001,
+    "lambda_phys": 0.5,
+    "lambda_tv": 0.0001,
+    "sg_weight": 2.0,
+    "min_coherence": 0.35,
+    "target_mode": "anomaly",
+    "force_rebuild_cache": false,
+    "train_fraction": 0.7,
+    "val_fraction": 0.15,
+    "max_stats_samples": 256,
+    "base_dim": 32,
+    "time_patch": 2,
+    "spatial_patch": 4,
+    "num_heads": 4,
+    "window_attn_t": 3,
+    "window_attn_xy": 4
+  },
+  "artifacts": {
+    "history_json": "/home/ubuntu/work/insar_mcmc/outputs/bologna_hybrid_sg_history.json",
+    "summary_json": "/home/ubuntu/work/insar_mcmc/outputs/bologna_hybrid_sg_summary.json",
+    "checkpoint": "/home/ubuntu/work/insar_mcmc/outputs/bologna_hybrid_sg_best.pt"
+  }
+}

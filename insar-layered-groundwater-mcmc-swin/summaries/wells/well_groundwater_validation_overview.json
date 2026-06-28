@@ -1,0 +1,26 @@
+{
+  "n_station_series_evaluated": 83,
+  "tolerance_days": 14,
+  "min_matches": 5,
+  "lag_days_tested": [
+    -90,
+    -60,
+    -30,
+    -14,
+    0,
+    14,
+    30,
+    60,
+    90
+  ],
+  "top_10_mean_corr": 0.9471322829043529,
+  "median_corr": 0.7043032795791102,
+  "n_positive_corr": 83,
+  "n_corr_ge_0_3": 74,
+  "n_corr_ge_0_5": 62,
+  "n_best_groundwater": 42,
+  "n_best_shallowload": 25,
+  "n_best_deepload": 16,
+  "n_trusted_gwb_groups": 6,
+  "n_trusted_stations": 21
+}

@@ -1,0 +1,124 @@
+{
+  "config": {
+    "insar_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/insar_mintpy2025_on_w3ra_grid.nc",
+    "w3ra_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/w3ra_on_mintpy2025_overlap_anom.nc",
+    "grace_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025/bologna_grace_region_timeseries.csv",
+    "smap_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025/smap_processed_fast4/bologna_smap_surface_soil_moisture_timeseries.csv",
+    "swot_river_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_bologna_overlap2025/swot_bologna_overlap_river_summary.csv",
+    "swot_lake_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_bologna_overlap2025/swot_bologna_overlap_lake_summary.csv",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_multisensor_kalman_overlap2025_swot",
+    "seed": 42,
+    "state_persistence": 0.98,
+    "q_scale": 0.02,
+    "p0_scale": 0.25,
+    "theta0": 1.0,
+    "r_insar": 0.15,
+    "r_grace": 0.25,
+    "r_smap": 0.3,
+    "r_swot_river": 0.4,
+    "r_swot_lake": 0.4,
+    "swot_max_gap_days": 14,
+    "grace_unit_scale": 10.0,
+    "ridge_eps": 1e-06
+  },
+  "time_start": "2017-01-04",
+  "time_end": "2024-08-01",
+  "n_times": 362,
+  "state_names": [
+    "ShallowLoad",
+    "DeepLoad",
+    "Groundwater"
+  ],
+  "scales": {
+    "insar_scale": 0.00038055003249488326,
+    "grace_scale": 64.61688697178896,
+    "smap_scale": 0.06153618649299435,
+    "smap_slope": 0.003342451787190187,
+    "swot_river_scale": 8.796285638696288,
+    "swot_river_slope": 0.17513177330187765,
+    "swot_lake_scale": 41.186164804485266,
+    "swot_lake_slope": 1.431642956595356
+  },
+  "metrics": {
+    "insar_prior": {
+      "n": 362,
+      "rmse": 0.006147268249711743,
+      "corr": 0.1967624707669692,
+      "r2": -259.94008718532814
+    },
+    "insar_post": {
+      "n": 362,
+      "rmse": 6.526559307260912e-05,
+      "corr": 0.9852962680451939,
+      "r2": 0.9705866120639571
+    },
+    "grace_prior": {
+      "n": 362,
+      "rmse": 57.61424928307929,
+      "corr": 0.5233700143230119,
+      "r2": 0.20499885869891032
+    },
+    "grace_post": {
+      "n": 362,
+      "rmse": 46.30103234572163,
+      "corr": 0.7049637107913902,
+      "r2": 0.48656048912494965
+    },
+    "smap_prior": {
+      "n": 254,
+      "rmse": 0.04641301957552678,
+      "corr": 0.6567257261343755,
+      "r2": 0.4311228491232
+    },
+    "smap_post": {
+      "n": 254,
+      "rmse": 0.03805283342851165,
+      "corr": 0.8065480149478097,
+      "r2": 0.617604438620865
+    },
+    "swot_river_prior": {
+      "n": 9,
+      "rmse": 8.736539865289897,
+      "corr": 0.20422672640943018,
+      "r2": 0.013538185194640562
+    },
+    "swot_river_post": {
+      "n": 9,
+      "rmse": 8.754366223261648,
+      "corr": 0.22285495742749653,
+      "r2": 0.00950845208048523
+    },
+    "swot_lake_prior": {
+      "n": 9,
+      "rmse": 40.3274109391963,
+      "corr": 0.3565581128139678,
+      "r2": 0.04126633919377232
+    },
+    "swot_lake_post": {
+      "n": 9,
+      "rmse": 40.4798420035714,
+      "corr": 0.44770548235810326,
+      "r2": 0.03400492651240827
+    }
+  },
+  "theta_summary": {
+    "ShallowLoad": {
+      "mean": 1.0852335983568127,
+      "std": 0.6354321372456566,
+      "min": 0.2009404463240329,
+      "max": 3.319911594977744
+    },
+    "DeepLoad": {
+      "mean": 1.55862067389224,
+      "std": 1.0487036176847306,
+      "min": -1.2882492051493033,
+      "max": 3.795983617285677
+    },
+    "Groundwater": {
+      "mean": 0.015690261200939904,
+      "std": 0.1461041239746847,
+      "min": -0.5604209346828262,
+      "max": 0.8914902869943142
+    }
+  }
+}

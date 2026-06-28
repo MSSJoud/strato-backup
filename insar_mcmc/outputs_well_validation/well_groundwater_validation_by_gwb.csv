@@ -1,0 +1,23 @@
+gwb_name,n_series,median_corr,mean_corr,n_corr_ge_0_3,n_corr_ge_0_5
+Pianura Alluvionale Appenninica - confinato superiore,11,0.8042192062949284,0.7292696253580178,10,9
+Pianura Alluvionale - confinato inferiore,11,0.4132842271067319,0.5236898243179549,8,5
+Freatico di pianura fluviale,10,0.7585729860900254,0.7543387693536256,10,10
+Conoide Zena-Idice - confinato superiore,5,0.8118005665936261,0.8333332015503216,5,5
+Conoide Reno-Lavino - confinato superiore,5,0.48967154380371614,0.5971358566656365,5,2
+Conoide Reno-Lavino - libero,4,0.7775592231060078,0.7810147682058146,4,4
+Conoide Reno-Lavino - confinato inferiore,4,0.7670136848635094,0.7491494264089327,4,4
+Conoidi montane e Sabbie gialle orientali,4,0.7626585313710442,0.6946913424054384,4,3
+Conoide Sillaro-Sellustra - confinato inferiore,4,0.6750055185560315,0.5891517350365523,3,3
+Conoide Santerno - libero,3,0.6631101945881336,0.616325312134897,3,2
+Conoide Savena - confinato inferiore,3,0.12456580156324103,0.11863088574068063,0,0
+Conoide Sillaro-Sellustra - confinato superiore,2,0.830192633853688,0.830192633853688,2,2
+Transizione Pianura Appenninica-Padana - confinato superiore,2,0.7799952582393723,0.7799952582393723,2,2
+Conoide Sillaro - libero,2,0.7607861047319575,0.7607861047319575,2,2
+Conoide Zena-Idice - libero,2,0.7034379293272011,0.7034379293272011,2,2
+Conoide Samoggia - confinato inferiore,2,0.6092931768184291,0.6092931768184291,2,2
+Conoide Zena-Idice - confinato inferiore,2,0.563142792099097,0.563142792099097,2,1
+Conoide Savena - confinato superiore,2,0.5236814404334977,0.5236814404334977,2,1
+Conoide Santerno - confinato inferiore,2,0.34969022722862064,0.34969022722862064,1,0
+Conoide Quaderna - confinato,1,0.6870394183946391,0.6870394183946391,1,1
+Conoide Samoggia - libero,1,0.5618431377393956,0.5618431377393956,1,1
+Conoide Panaro - confinato superiore,1,0.5300797141182548,0.5300797141182548,1,1

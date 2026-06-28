@@ -1,0 +1,15 @@
+{
+  "n_files": 358,
+  "n_valid_times": 254,
+  "time_start": "2017-01-04",
+  "time_end": "2024-08-01",
+  "mean_of_means": 0.24303174307970293,
+  "std_of_means": 0.06165767957572067,
+  "bbox": {
+    "lat_min": 43.79999923706055,
+    "lat_max": 45.900001525878906,
+    "lon_min": 10.199999809265137,
+    "lon_max": 12.5
+  },
+  "smap_dir": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw_fast"
+}

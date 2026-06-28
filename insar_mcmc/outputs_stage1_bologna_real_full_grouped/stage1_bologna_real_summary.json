@@ -1,0 +1,63 @@
+{
+  "config": {
+    "insar_path": "/mnt/data/mcma/01/insar_sub.nc",
+    "w3ra_path": "/mnt/data/mcma/01/w3ra_sub_anom.nc",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_full_grouped",
+    "seed": 42,
+    "n_iter": 12,
+    "burn": 4,
+    "q0_scale": 0.01,
+    "p0_scale": 0.25,
+    "r0": 0.0001,
+    "iw_dof_extra": 2,
+    "m0_value": 0.0,
+    "drop_empty_times": true,
+    "y0": 0,
+    "y1": -1,
+    "x0": 0,
+    "x1": -1,
+    "use_insar_anomaly": true,
+    "standardize_global": true,
+    "mode": "grouped"
+  },
+  "shape": {
+    "time": 31,
+    "height": 58,
+    "width": 52,
+    "pixels": 3016,
+    "layers": 2
+  },
+  "observation_fit": {
+    "rmse": 0.0004696716496255249,
+    "corr": 0.9998634129643464,
+    "r2": 0.9997222423553467
+  },
+  "posterior": {
+    "Q_hat_diag": [
+      2.1500566005706787,
+      3.0541858673095703
+    ],
+    "R_hat": 0.002118001246802414,
+    "y_scale": 0.02818174660205841,
+    "z_scale": [
+      9.999999974752427e-07,
+      0.012547585181891918
+    ],
+    "theta_summary": {
+      "Load_total": {
+        "mean": 19013.42578125,
+        "std": 68900.4140625,
+        "min": -318393.46875,
+        "max": 506742.25,
+        "l2_norm": 21855212.0
+      },
+      "Sg": {
+        "mean": -0.09064746648073196,
+        "std": 3.5876693725585938,
+        "min": -18.82722282409668,
+        "max": 21.279064178466797,
+        "l2_norm": 1097.35595703125
+      }
+    }
+  }
+}

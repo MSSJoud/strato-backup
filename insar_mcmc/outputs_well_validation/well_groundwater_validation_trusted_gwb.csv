@@ -1,0 +1,7 @@
+gwb_name,n_series,median_corr,mean_corr,n_corr_ge_0_3,n_corr_ge_0_5
+Pianura Alluvionale Appenninica - confinato superiore,11,0.8042192062949284,0.7292696253580178,10,9
+Freatico di pianura fluviale,10,0.7585729860900254,0.7543387693536256,10,10
+Conoide Zena-Idice - confinato superiore,5,0.8118005665936261,0.8333332015503216,5,5
+Conoide Reno-Lavino - libero,4,0.7775592231060078,0.7810147682058146,4,4
+Conoide Reno-Lavino - confinato inferiore,4,0.7670136848635094,0.7491494264089327,4,4
+Conoidi montane e Sabbie gialle orientali,4,0.7626585313710442,0.6946913424054384,4,3

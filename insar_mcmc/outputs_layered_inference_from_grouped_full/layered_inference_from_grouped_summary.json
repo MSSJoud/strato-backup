@@ -1,0 +1,22 @@
+{
+  "config": {
+    "grouped_results_path": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_full_grouped_quick/stage1_bologna_real_results.npz",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_layered_inference_from_grouped_full",
+    "zero_tol": 1e-08
+  },
+  "shape": {
+    "time": 31,
+    "height": 58,
+    "width": 52,
+    "layers": 5
+  },
+  "consistency": {
+    "load_sum_rmse": 3.2178581022890285e-05,
+    "load_sum_max_abs": 0.00390625,
+    "sg_identity_rmse": 0.0
+  },
+  "notes": {
+    "type": "conditional layered decomposition from grouped posterior",
+    "interpretation": "S0,Ss,Sd,Sr are distributed from grouped Load_total using W3RA layer shares; Sg is taken directly from grouped posterior."
+  }
+}

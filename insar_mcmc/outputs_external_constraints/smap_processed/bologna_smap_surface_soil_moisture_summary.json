@@ -1,0 +1,15 @@
+{
+  "n_files": 33,
+  "n_valid_times": 11,
+  "time_start": "2017-06-01",
+  "time_end": "2022-10-01",
+  "mean_of_means": 0.2513106736269864,
+  "std_of_means": 0.06617754732898888,
+  "bbox": {
+    "lat_min": 44.2864875793457,
+    "lat_max": 44.7121467590332,
+    "lon_min": 11.18384075164795,
+    "lon_max": 11.720951080322266
+  },
+  "smap_dir": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/smap_matched_raw"
+}

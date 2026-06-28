@@ -1,0 +1,21 @@
+{
+  "bbox": {
+    "west": 9.15,
+    "south": 43.7,
+    "east": 12.85,
+    "north": 45.15
+  },
+  "n_raw_zip_files": 340,
+  "river_rows": 2381,
+  "lake_rows": 3884,
+  "river_times": 159,
+  "lake_times": 600,
+  "time_start": "2023-11-22",
+  "time_end": "2024-03-17",
+  "outputs": {
+    "river_features_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_emilia_romagna_processed/swot_emilia_romagna_river_features.csv",
+    "lake_features_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_emilia_romagna_processed/swot_emilia_romagna_lake_features.csv",
+    "river_summary_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_emilia_romagna_processed/swot_emilia_romagna_river_summary.csv",
+    "lake_summary_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_emilia_romagna_processed/swot_emilia_romagna_lake_summary.csv"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "bbox": {
+    "lat_min": 43.79999923706055,
+    "lat_max": 45.900001525878906,
+    "lon_min": 10.199999809265137,
+    "lon_max": 12.5
+  },
+  "temporal": [
+    "2017-01-04",
+    "2024-08-01"
+  ],
+  "insar_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/insar_mintpy2025_on_w3ra_grid.nc",
+  "grace_path": "/mnt/data/punjab_grace_mascon_l3/GRCTellus.JPL.200204_202512.GLO.RL06.3M.MSCNv04CRI.nc"
+}

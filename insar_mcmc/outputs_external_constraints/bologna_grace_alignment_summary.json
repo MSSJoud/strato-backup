@@ -1,0 +1,33 @@
+{
+  "n_times": 394,
+  "date_start": "2017-01-04",
+  "date_end": "2025-06-27",
+  "source_month_start": "2017-01-01",
+  "source_month_end": "2025-06-01",
+  "variable": "lwe_thickness",
+  "lwe_thickness_mean": -6.734140096060435,
+  "lwe_thickness_std": 8.94486631730044,
+  "lwe_thickness_anom_mean": -1.1413568592469065e-14,
+  "lwe_thickness_anom_std": 6.221588178261365,
+  "config": {
+    "insar_path": "/mnt/data/aoi_3_bologna/mintpy_filtered/timeseries_SET_ERA5_ramp_demErr.h5",
+    "grace_path": "/mnt/data/punjab_grace_mascon_l3/GRCTellus.JPL.200204_202512.GLO.RL06.3M.MSCNv04CRI.nc",
+    "grace_variable": "lwe_thickness",
+    "grace_uncertainty_variable": "uncertainty",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints",
+    "write_aligned_dataset": false
+  },
+  "bologna_bbox": {
+    "lat_min": 42.734892806869155,
+    "lat_max": 46.28561089133436,
+    "lon_min": 8.072083499621938,
+    "lon_max": 12.207201222965367
+  },
+  "insar_time_start": "2017-01-04",
+  "insar_time_end": "2025-06-27",
+  "insar_n_times": 394,
+  "insar_shape": {
+    "height": 4881,
+    "width": 3985
+  }
+}

@@ -1,0 +1,341 @@
+{
+  "config": {
+    "old_five_layer_npz": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_patch20_std/stage1_bologna_real_results.npz",
+    "old_grouped_npz": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_patch20_grouped/stage1_bologna_real_results.npz",
+    "kalman_summary_json": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_multisensor_kalman_overlap2025_smaprefresh/stage1_bologna_multisensor_kalman_summary.json",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_conditioning_diagnostics"
+  },
+  "old_five_layer_patch": {
+    "field_names": [
+      "S0",
+      "Ss",
+      "Sd",
+      "Sg",
+      "Sr"
+    ],
+    "raw": {
+      "shape": [
+        12400,
+        5
+      ],
+      "column_names": [
+        "S0",
+        "Ss",
+        "Sd",
+        "Sg",
+        "Sr"
+      ],
+      "column_norms": {
+        "S0": 3.948712760392485e-06,
+        "Ss": 3.6418083742410674e-06,
+        "Sd": 9.558974041907296e-06,
+        "Sg": 0.475371779864311,
+        "Sr": 3.7675137226994684e-07
+      },
+      "column_scale_spread": 1261765.2246365317,
+      "singular_values": [
+        0.4753717799304921,
+        6.622075336558215e-06,
+        3.314117571854896e-06,
+        1.6014430166076117e-06,
+        2.1960622840256135e-07
+      ],
+      "condition_number": 2164655.2713390514,
+      "effective_rank_1e-6": 4,
+      "effective_rank_1e-4": 1,
+      "information_eigenvalues": [
+        4.822689797806573e-14,
+        2.5646259432269686e-12,
+        1.0983377787498723e-11,
+        4.3851882646475495e-11,
+        0.22597832915428376
+      ],
+      "information_condition_number": 88113562818.4218,
+      "column_correlation": {
+        "0": {
+          "0": 1.0,
+          "1": 0.8084128619549789,
+          "2": 0.6378090543229961,
+          "3": 0.5013658919663414,
+          "4": 0.45295312528435233
+        },
+        "1": {
+          "0": 0.8084128619549789,
+          "1": 1.0,
+          "2": 0.7242531749057215,
+          "3": 0.59607272241723,
+          "4": 0.4687670630242044
+        },
+        "2": {
+          "0": 0.6378090543229962,
+          "1": 0.7242531749057215,
+          "2": 1.0,
+          "3": 0.7715320786127787,
+          "4": 0.6236839717483713
+        },
+        "3": {
+          "0": 0.5013658919663414,
+          "1": 0.5960727224172301,
+          "2": 0.7715320786127787,
+          "3": 1.0,
+          "4": 0.8061589144440654
+        },
+        "4": {
+          "0": 0.45295312528435233,
+          "1": 0.46876706302420434,
+          "2": 0.6236839717483713,
+          "3": 0.8061589144440654,
+          "4": 1.0
+        }
+      }
+    },
+    "column_standardized": {
+      "shape": [
+        12400,
+        5
+      ],
+      "column_names": [
+        "S0",
+        "Ss",
+        "Sd",
+        "Sg",
+        "Sr"
+      ],
+      "column_norms": {
+        "S0": 111.45788783361836,
+        "Ss": 111.35586827608631,
+        "Sd": 111.35961381023344,
+        "Sg": 111.44559233437921,
+        "Sr": 111.38903570078703
+      },
+      "column_scale_spread": 1.0009161578919137,
+      "singular_values": [
+        210.22170656808598,
+        100.1783385189731,
+        62.476776160643745,
+        47.028611125977804,
+        41.32417970441318
+      ],
+      "condition_number": 5.087135620640899,
+      "effective_rank_1e-6": 5,
+      "effective_rank_1e-4": 5,
+      "information_eigenvalues": [
+        1707.6878282426426,
+        2211.6902644384463,
+        3903.347559427184,
+        10035.699508421963,
+        44193.16591239844
+      ],
+      "information_condition_number": 25.878948822793337,
+      "column_correlation": {
+        "0": {
+          "0": 1.0,
+          "1": 0.808412861954979,
+          "2": 0.6378090543229964,
+          "3": 0.5013658919663415,
+          "4": 0.45295312528435244
+        },
+        "1": {
+          "0": 0.808412861954979,
+          "1": 1.0,
+          "2": 0.7242531749057216,
+          "3": 0.5960727224172301,
+          "4": 0.4687670630242046
+        },
+        "2": {
+          "0": 0.6378090543229964,
+          "1": 0.7242531749057217,
+          "2": 1.0,
+          "3": 0.7715320786127785,
+          "4": 0.6236839717483712
+        },
+        "3": {
+          "0": 0.5013658919663415,
+          "1": 0.5960727224172301,
+          "2": 0.7715320786127785,
+          "3": 1.0,
+          "4": 0.8061589144440654
+        },
+        "4": {
+          "0": 0.45295312528435244,
+          "1": 0.4687670630242046,
+          "2": 0.6236839717483711,
+          "3": 0.8061589144440654,
+          "4": 1.0
+        }
+      }
+    }
+  },
+  "old_grouped_patch": {
+    "field_names": [
+      "Load_total",
+      "Sg"
+    ],
+    "raw": {
+      "shape": [
+        12400,
+        2
+      ],
+      "column_names": [
+        "Load_total",
+        "Sg"
+      ],
+      "column_norms": {
+        "Load_total": 1.5788553337167632e-05,
+        "Sg": 0.475371779864311
+      },
+      "column_scale_spread": 30108.63438293896,
+      "singular_values": [
+        0.475371780010942,
+        1.0481810658862206e-05
+      ],
+      "condition_number": 45352.06706954038,
+      "effective_rank_1e-6": 2,
+      "effective_rank_1e-4": 1,
+      "information_eigenvalues": [
+        1.0986835468823629e-10,
+        0.2259783292307709
+      ],
+      "information_condition_number": 2056809987.480104,
+      "column_correlation": {
+        "0": {
+          "0": 1.0,
+          "1": 0.749191727396343
+        },
+        "1": {
+          "0": 0.749191727396343,
+          "1": 1.0
+        }
+      }
+    },
+    "column_standardized": {
+      "shape": [
+        12400,
+        2
+      ],
+      "column_names": [
+        "Load_total",
+        "Sg"
+      ],
+      "column_norms": {
+        "Load_total": 111.36994435732858,
+        "Sg": 111.44559233437921
+      },
+      "column_scale_spread": 1.0006792494823191,
+      "singular_values": [
+        147.28736904180067,
+        55.94475379925796
+      ],
+      "condition_number": 2.632728880536324,
+      "effective_rank_1e-6": 2,
+      "effective_rank_1e-4": 2,
+      "information_eigenvalues": [
+        3129.8154776595875,
+        21693.56907925557
+      ],
+      "information_condition_number": 6.931261358410042,
+      "column_correlation": {
+        "0": {
+          "0": 1.0,
+          "1": 0.7491917273963427
+        },
+        "1": {
+          "0": 0.7491917273963427,
+          "1": 1.0
+        }
+      }
+    }
+  },
+  "current_grouped_kalman": {
+    "state_names": [
+      "ShallowLoad",
+      "DeepLoad",
+      "Groundwater"
+    ],
+    "n_rows": 978,
+    "row_labels_sample": [
+      "t0_insar",
+      "t0_grace",
+      "t0_smap",
+      "t1_insar",
+      "t1_grace",
+      "t1_smap",
+      "t2_insar",
+      "t2_grace",
+      "t2_smap",
+      "t3_insar",
+      "t3_grace",
+      "t3_smap"
+    ],
+    "stacked_operator": {
+      "shape": [
+        978,
+        3
+      ],
+      "column_names": [
+        "ShallowLoad",
+        "DeepLoad",
+        "Groundwater"
+      ],
+      "column_norms": {
+        "ShallowLoad": 11.038470456517773,
+        "DeepLoad": 4.636129897025027,
+        "Groundwater": 310.62322940784327
+      },
+      "column_scale_spread": 67.00054491725265,
+      "singular_values": [
+        310.62325178791946,
+        11.116068384694978,
+        4.44529532928996
+      ],
+      "condition_number": 69.87685379219445,
+      "effective_rank_1e-6": 3,
+      "effective_rank_1e-4": 3,
+      "information_eigenvalues": [
+        19.760650564589817,
+        123.56697633321498,
+        96486.80455130128
+      ],
+      "information_condition_number": 4882.774695900003,
+      "column_correlation": {
+        "0": {
+          "0": 1.0,
+          "1": 0.25924175512946895,
+          "2": 0.005226838005553094
+        },
+        "1": {
+          "0": 0.25924175512946895,
+          "1": 1.0,
+          "2": 0.022172559509508537
+        },
+        "2": {
+          "0": 0.005226838005553094,
+          "1": 0.022172559509508537,
+          "2": 1.0
+        }
+      }
+    },
+    "information_eigenvalues": [
+      303.2902063016252,
+      1454.7286581584988,
+      4286425.421153341
+    ],
+    "information_condition_number": 14133.082216609553,
+    "observability_gramian_eigenvalues": [
+      17.63903670202722,
+      56.8492198017746,
+      373624.6517346377
+    ],
+    "observability_condition_number": 21181.692517919517,
+    "scales": {
+      "insar_scale": 0.00038055003249488326,
+      "grace_scale": 64.61688697178896,
+      "smap_scale": 0.06153618649299435,
+      "swot_river_scale": 1.0,
+      "swot_lake_scale": 1.0,
+      "smap_slope": 0.003342451787190187,
+      "swot_river_slope": 0.0,
+      "swot_lake_slope": 0.0
+    }
+  }
+}

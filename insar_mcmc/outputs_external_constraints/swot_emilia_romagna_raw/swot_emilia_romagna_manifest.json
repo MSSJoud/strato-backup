@@ -1,0 +1,62 @@
+{
+  "bbox": {
+    "west": 9.15,
+    "south": 43.7,
+    "east": 12.85,
+    "north": 45.15
+  },
+  "start_time": "2022-12-16",
+  "end_time": "2026-04-04",
+  "products": {
+    "SWOT_L2_HR_RiverSP_reach_2.0": {
+      "n_results": 170,
+      "sample": [
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_RiverSP_2.0/SWOT_L2_HR_RiverSP_Reach_006_557_EU_20231122T104158_20231122T104200_PIC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_RiverSP_2.0/SWOT_L2_HR_RiverSP_Reach_007_001_EU_20231123T104209_20231123T104211_PIC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_RiverSP_2.0/SWOT_L2_HR_RiverSP_Reach_007_001_EU_20231123T104209_20231123T104211_PGC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_RiverSP_2.0/SWOT_L2_HR_RiverSP_Reach_007_012_EU_20231123T193603_20231123T193613_PGC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_RiverSP_2.0/SWOT_L2_HR_RiverSP_Reach_007_040_EU_20231124T193703_20231124T193714_PGC0_01.zip"
+        }
+      ]
+    },
+    "SWOT_L2_HR_LakeSP_obs_2.0": {
+      "n_results": 170,
+      "sample": [
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_LakeSP_2.0/SWOT_L2_HR_LakeSP_Obs_006_557_EU_20231122T104158_20231122T105027_PIC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_LakeSP_2.0/SWOT_L2_HR_LakeSP_Obs_007_001_EU_20231123T104209_20231123T105105_PIC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_LakeSP_2.0/SWOT_L2_HR_LakeSP_Obs_007_001_EU_20231123T104209_20231123T105105_PGC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_LakeSP_2.0/SWOT_L2_HR_LakeSP_Obs_007_012_EU_20231123T193603_20231123T194753_PGC0_01.zip"
+        },
+        {
+          "umm": null,
+          "url": "https://archive.swot.podaac.earthdata.nasa.gov/podaac-swot-ops-cumulus-protected/SWOT_L2_HR_LakeSP_2.0/SWOT_L2_HR_LakeSP_Obs_007_029_EU_20231124T104309_20231124T105153_PGC0_01.zip"
+        }
+      ]
+    }
+  }
+}

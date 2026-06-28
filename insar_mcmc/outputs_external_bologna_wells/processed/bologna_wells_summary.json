@@ -1,0 +1,14 @@
+{
+  "manual_metadata_rows": 630,
+  "automatic_metadata_rows": 614,
+  "manual_measurements": 16044,
+  "automatic_measurements": 118223,
+  "all_measurements": 134267,
+  "bologna_measurements": 19467,
+  "bologna_manual_stations_with_measurements": 113,
+  "bologna_automatic_stations_with_measurements": 4,
+  "bologna_measurement_start": "2009-01-01",
+  "bologna_measurement_end": "2024-12-18",
+  "crs_input": "ETRS89 / UTM zone 32N (EPSG:25832)",
+  "crs_output": "WGS84 lon/lat (EPSG:4326)"
+}

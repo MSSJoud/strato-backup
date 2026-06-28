@@ -1,0 +1,16 @@
+{
+  "n_times": 362,
+  "time_start": "2017-01-04",
+  "time_end": "2024-08-01",
+  "sources": {
+    "grace_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025/bologna_grace_region_timeseries.csv",
+    "stage1_results": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_real_full_grouped_quick/stage1_bologna_real_results.npz",
+    "smap_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025/smap_processed_fast4/bologna_smap_surface_soil_moisture_timeseries.csv",
+    "swot_river_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_bologna_overlap2025/swot_bologna_overlap_river_summary.csv",
+    "swot_lake_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/swot_bologna_overlap2025/swot_bologna_overlap_lake_summary.csv"
+  },
+  "smap_non_null": 362,
+  "swot_river_non_null": 9,
+  "swot_max_gap_days": 14,
+  "swot_lake_non_null": 9
+}

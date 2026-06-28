@@ -1,0 +1,33 @@
+{
+  "n_times": 362,
+  "date_start": "2017-01-04",
+  "date_end": "2024-08-01",
+  "source_month_start": "2017-01-01",
+  "source_month_end": "2024-08-01",
+  "variable": "lwe_thickness",
+  "lwe_thickness_mean": -9.263000577760735,
+  "lwe_thickness_std": 8.330654583704643,
+  "lwe_thickness_anom_mean": -3.7183761287953974e-14,
+  "lwe_thickness_anom_std": 7.026098435900717,
+  "config": {
+    "insar_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/insar_mintpy2025_on_w3ra_grid.nc",
+    "grace_path": "/mnt/data/punjab_grace_mascon_l3/GRCTellus.JPL.200204_202512.GLO.RL06.3M.MSCNv04CRI.nc",
+    "grace_variable": "lwe_thickness",
+    "grace_uncertainty_variable": "uncertainty",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints_overlap2025",
+    "write_aligned_dataset": true
+  },
+  "bologna_bbox": {
+    "lat_min": 43.79999923706055,
+    "lat_max": 45.900001525878906,
+    "lon_min": 10.199999809265137,
+    "lon_max": 12.5
+  },
+  "insar_time_start": "2017-01-04",
+  "insar_time_end": "2024-08-01",
+  "insar_n_times": 362,
+  "insar_shape": {
+    "height": 22,
+    "width": 24
+  }
+}

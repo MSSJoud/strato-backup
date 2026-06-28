@@ -1,0 +1,59 @@
+{
+  "config": {
+    "insar_path": "/mnt/data/mcma/01/insar_sub.nc",
+    "w3ra_path": "/mnt/data/mcma/01/w3ra_sub_anom.nc",
+    "grace_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/bologna_grace_region_timeseries.csv",
+    "smap_csv": "/home/ubuntu/work/insar_mcmc/outputs_external_constraints/smap_processed/bologna_smap_surface_soil_moisture_timeseries.csv",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_stage1_bologna_multisensor_kalman_tiled_v2",
+    "seed": 42,
+    "state_persistence": 0.98,
+    "q_scale": 0.02,
+    "p0_scale": 0.25,
+    "theta0": 1.0,
+    "r_insar": 0.15,
+    "r_grace": 0.25,
+    "r_smap": 0.3,
+    "grace_unit_scale": 10.0,
+    "ridge_eps": 1e-06,
+    "tile_size": 8,
+    "tile_stride": 8,
+    "theta_min": -1.5,
+    "theta_max": 2.5
+  },
+  "n_times": 33,
+  "tile_grid": {
+    "ny": 8,
+    "nx": 7,
+    "n_tiles": 56
+  },
+  "metrics": {
+    "tile_insar_post": {
+      "rmse": 0.01641617901623249,
+      "corr": 0.6287839123989144,
+      "r2": 0.33406776189804077
+    }
+  },
+  "magnitude": {
+    "ShallowLoad": {
+      "theta_min": -0.41939017176628113,
+      "theta_max": 1.4173660278320312,
+      "x_min": -49.72201156616211,
+      "x_max": 17.691381454467773,
+      "x_abs_max": 49.72201156616211
+    },
+    "DeepLoad": {
+      "theta_min": -0.07342343032360077,
+      "theta_max": 2.4756929874420166,
+      "x_min": -86.4020767211914,
+      "x_max": 86.85580444335938,
+      "x_abs_max": 86.85580444335938
+    },
+    "Groundwater": {
+      "theta_min": -1.2800829410552979,
+      "theta_max": 2.5,
+      "x_min": -70.92633819580078,
+      "x_max": 84.4061508178711,
+      "x_abs_max": 84.4061508178711
+    }
+  }
+}

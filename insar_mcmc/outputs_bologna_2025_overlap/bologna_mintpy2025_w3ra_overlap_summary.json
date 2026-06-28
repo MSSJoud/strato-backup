@@ -1,0 +1,29 @@
+{
+  "config": {
+    "mintpy_path": "/mnt/data/aoi_3_bologna/mintpy_filtered/timeseries_SET_ERA5_ramp_demErr.h5",
+    "w3ra_source_path": "/mnt/data/data_bologna_swin_test/w3ra/W3RA_2010_2024_.nc",
+    "output_dir": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap",
+    "end_date_limit": "2024-08-01",
+    "valid_fill_values": [
+      -9999.0
+    ]
+  },
+  "n_times": 362,
+  "time_start": "2017-01-04",
+  "time_end": "2024-08-01",
+  "grid_shape": {
+    "y": 22,
+    "x": 24
+  },
+  "bbox": {
+    "lat_min": 43.79999923706055,
+    "lat_max": 45.900001525878906,
+    "lon_min": 10.199999809265137,
+    "lon_max": 12.5
+  },
+  "outputs": {
+    "insar_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/insar_mintpy2025_on_w3ra_grid.nc",
+    "w3ra_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/w3ra_on_mintpy2025_overlap.nc",
+    "w3ra_anom_path": "/home/ubuntu/work/insar_mcmc/outputs_bologna_2025_overlap/w3ra_on_mintpy2025_overlap_anom.nc"
+  }
+}
