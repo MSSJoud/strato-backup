@@ -1,16 +1,13 @@
-# Backup policy.
-# Prioritize source code, notes, configs, and reproducible experiment setup.
-# Exclude regenerable data artifacts, raw input data, imagery, SAR intermediates,
-# and local runtime files.
+# Backup policy for /home/ubuntu/work
+# Keep code, notebooks, configs, text data, and project structure.
+# Exclude the EarthScope2024 directory and large/generated data artifacts.
 
-# Python and notebook runtime cache
-__pycache__/
-.ipynb_checkpoints/
-*.pyc
-*.pyo
-*.pyd
+# Explicit project exclusion
+EarthScope2024/
 
-# Virtual environments and local tooling
+# Local tooling and caches
+.agents/
+.codex
 .venv/
 venv/
 env/
@@ -18,18 +15,33 @@ env/
 node_modules/
 .vscode/
 .idea/
-.codex
+__pycache__/
+.ipynb_checkpoints/
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
 
-# Logs and temporary files
+# Temporary files and logs
+*.pyc
+*.pyo
+*.pyd
 *.log
 *.tmp
 *.swp
 *.swo
 
-# Common archive and package binaries
+# Secrets and machine-local files
+.env
+.env.*
+.copernicus_dataspace_token
+credentials.py
+project_po/scripts/credentials_edl.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Archive/build artifacts
 *.zip
 *.tar
 *.tar.gz
@@ -37,20 +49,21 @@ node_modules/
 *.7z
 *.gz
 
-# Scientific/remote sensing raw/intermediate binaries
+# Large scientific and remote-sensing data
 *.grib
 *.grb
-*.mat
 *.h5
 *.hdf5
 *.nc
 *.npy
 *.npz
+*.mat
 *.dem
 *.dem.wgs84
+*.vrt
 *.SAFE
-*.rdr
 *.slc
+*.rdr
 *.int
 *.off
 *.cor
@@ -59,15 +72,24 @@ node_modules/
 *.hgt
 *.hdr
 *.EOF
-*.dir
-*.dat
-*.bak
 *.full
 *.flat
 *.crop
 *.geo
+*.dat
+*.dir
 
-# Scientific/geospatial vector input data
+# Large image and raster data
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp
+*.tif
+*.tiff
+
+# Geospatial/vector data exports
 *.geojson
 *.kml
 *.kmz
@@ -79,57 +101,7 @@ node_modules/
 *.gpkg
 *.ods
 
-# Sidecar metadata for ignored remote-sensing binaries
-*.rdr.xml
-*.slc.xml
-*.int.xml
-*.off.xml
-*.cor.xml
-*.unw.xml
-*.conncomp.xml
-*.hgt.xml
-*.bin.xml
-*.xml
-!isce2_xmls/**/*.xml
-!bologna_sbas_ps_2023/xml_ps/**/*.xml
-!bologna_sbas_ps_2023/xml_sbas/**/*.xml
-
-# Raster/vector imagery and binaries
-*.tif
-*.tiff
-*.vrt
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.webp
-
-# Secrets and local credentials
-.env
-.env.*
-.copernicus_dataspace_token
-/credentials.py
-/project_po/scripts/credentials_edl.json
-.gitignore.backup.*
-*.pem
-*.key
-*.p12
-*.pfx
-
-# Raw input/output folders to keep out of the GitHub backup
-project_po/data/
-project_po/stack/topsStack_S1/inputs/
-slc_stack_test_subset/
-slc_test_2_subset/
-slc_test_3_subset/
-slc_test_subset/
-slc_tops_test_subset/
-insar_mcmc/outputs_external_constraints/smap_matched_raw/
-insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw/
-insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw_fast/
-mintpy-playbook/outputs/aoi_3_bologna_filtered/S1*
-
-# Model and compiled binaries
+# Large model/binary artifacts
 *.pt
 *.pth
 *.onnx
@@ -139,3 +111,27 @@ mintpy-playbook/outputs/aoi_3_bologna_filtered/S1*
 *.dll
 *.dylib
 *.exe
+
+# Local backup scratch space
+repo_backups/
+
+# Known large data/output folders
+dem/
+gmtsar_test_1/
+gmtsar_test_2/
+bologna_sbas_ps_2023/test_run/
+project_po/data/
+project_po/stack/topsStack_S1/inputs/
+slc_stack_test_subset/
+slc_test_2_subset/
+slc_test_3_subset/
+slc_test_subset/
+slc_tops_test_subset/
+topsout/
+insar_mcmc/outputs_external_constraints/smap_matched_raw/
+insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw/
+insar_mcmc/outputs_external_constraints_overlap2025/smap_matched_raw_fast/
+mintpy-playbook/outputs/aoi_3_bologna_filtered/S1*
+
+# Old local backups of this file
+.gitignore.backup.*
