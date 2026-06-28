@@ -1,0 +1,11 @@
+<topsApp>
+    <component name="topsinsar">
+        <property name="Sensor name">SENTINEL1</property>
+        <property name="Sentinel1 ZIP file">[/mnt/slc_data/path_117/S1A_IW_SLC__1SDV_20200830T170642_20200830T170709_034139_03F712_C42C.zip, /mnt/slc_data/path_117/S1A_IW_SLC__1SDV_20200911T170643_20200911T170710_034314_03FD32_F272.zip]</property>
+        <property name="Swaths">[IW1, IW2, IW3]</property>
+        <property name="Polarizations">['VV']</property>
+        <property name="Processing mode">full</property>
+        <component name="Reference"><property name="safe">/mnt/slc_data/path_117/S1A_IW_SLC__1SDV_20200830T170642_20200830T170709_034139_03F712_C42C.zip</property></component>
+        <component name="Secondary"><property name="safe">/mnt/slc_data/path_117/S1A_IW_SLC__1SDV_20200911T170643_20200911T170710_034314_03FD32_F272.zip</property></component>
+    </component>
+</topsApp>

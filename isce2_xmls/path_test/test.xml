@@ -1,0 +1,19 @@
+<topsApp>
+  <component name="topsinsar">
+    <property name="Sensor name">SENTINEL1</property>
+    <property name="swaths">[2]</property>
+
+    <component name="reference">
+      <property name="safe">/mnt/slc_data/path_15/S1A_IW_SLC__1SDV_20181208T171426_20181208T171453_024937_02BF5F_B19F.zip</property>
+      <property name="output directory">reference</property>
+      <property name="orbit directory">/mnt/orbits</property>
+    </component>
+
+    <component name="secondary">
+      <property name="safe">/mnt/slc_data/path_15/S1A_IW_SLC__1SDV_20181220T171515_20181220T171542_025112_02C5B5_8DB2.zip</property>
+      <property name="output directory">secondary</property>
+      <property name="orbit directory">/mnt/orbits</property>
+    </component>
+
+  </component>
+</topsApp>

@@ -1,0 +1,7 @@
+<component name="secondary">
+  <property name="safe">/mnt/slc_data/path_117/S1B_IW_SLC__1SDV_20211205T170643_20211205T170710_029893_03918C_1338.zip</property>
+  <property name="orbit directory">/mnt/orbits/</property>
+  <property name="auxiliary data directory">/mnt/aux/</property>
+  <property name="output directory">secondary</property>
+  <property name="swath number">3</property>
+</component>

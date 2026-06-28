@@ -1,0 +1,7 @@
+<component name="reference">
+  <property name="safe">/mnt/slc_data/path_117/S1B_IW_SLC__1SDV_20211205T170618_20211205T170645_029893_03918C_87B3.zip</property>
+  <property name="orbit directory">/mnt/orbits/</property>
+  <property name="auxiliary data directory">/mnt/aux/</property>
+  <property name="output directory">reference</property>
+  <property name="swath number">3</property>
+</component>

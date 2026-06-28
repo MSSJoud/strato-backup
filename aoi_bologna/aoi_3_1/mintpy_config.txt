@@ -1,0 +1,35 @@
+
+##---------processor info:
+mintpy.load.processor        = hyp3
+
+##---------interferogram datasets:
+mintpy.load.unwFile          = /mnt/data/aoi_3_bologna/*/*_unw_phase_clipped.tif
+mintpy.load.corFile          = /mnt/data/aoi_3_bologna/*/*_corr_clipped.tif
+
+##---------geometry datasets:
+mintpy.load.demFile          = /mnt/data/aoi_3_bologna/*/*_dem_clipped.tif
+mintpy.load.incAngleFile     = /mnt/data/aoi_3_bologna/*/*_lv_theta_clipped.tif
+mintpy.load.azAngleFile      = /mnt/data/aoi_3_bologna/*/*_lv_phi_clipped.tif
+mintpy.load.waterMaskFile    = /mnt/data/aoi_3_bologna/*/*_water_mask_clipped.tif
+
+##---------tropospheric delay correction:
+mintpy.troposphericDelay.method        = weatherModel
+mintpy.weatherModel.weatherModel       = ERA5
+mintpy.weatherModel.weatherDir         = /mnt/data/aoi_3_bologna
+mintpy.weatherModel.weatherFile        = era5_tcwv_*.nc
+mintpy.weatherModel.heightRef          = auto
+
+##---------additional options:
+mintpy.network.inBaseline              = yes
+mintpy.network.maxTempBaseline         = 180
+mintpy.network.maxBTempBaseline        = 1500
+
+mintpy.unwrapMask.connCompMinPix       = 100
+mintpy.unwrapMask.maskFile             = auto
+
+mintpy.waterBody.mask                  = auto
+mintpy.reference.pixelMethod           = lonlat
+mintpy.reference.lalo                  = 44.5199558120, 11.6468120447  # MEDI GPS lat, lon (adjusted from -348° to +11.65°)
+mintpy.reference.interpMethod          = linear
+mintpy.tempCohMask.min                 = 0.7
+mintpy.deramp                          = quadratic

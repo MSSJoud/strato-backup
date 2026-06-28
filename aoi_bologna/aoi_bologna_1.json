@@ -1,0 +1,5 @@
+{
+    "intersectsWith": "POLYGON((11.2 44.4, 11.2 44.6, 11.5 44.6, 11.5 44.4, 11.2 44.4))",
+    "dataset": "SENTINEL-1",
+    "maxResults": 250
+}

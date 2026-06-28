@@ -1,0 +1,15 @@
+<topsApp>
+    <component name="topsinsar">
+        <property name="Sensor name">SENTINEL1</property>
+        <property name="swaths">[1, 2, 3]</property>
+        <property name="demFilename">demLat_N45_N46_Lon_E011_E012.dem.wgs84</property>
+        <component name="reference">
+            <property name="output directory">reference</property>
+            <property name="safe">/mnt/data/po_plain_italy/raw/slc/S1/ASC/path_15/S1A_IW_SLC__1SDV_20231007T171456_20231007T171523_050662_061A9E_AA97.zip</property>
+        </component>
+        <component name="secondary">
+            <property name="output directory">secondary</property>
+            <property name="safe">/mnt/data/po_plain_italy/raw/slc/S1/ASC/path_15/S1A_IW_SLC__1SDV_20231230T171453_20231230T171521_051887_0644CF_F2CD.zip</property>
+        </component>
+    </component>
+</topsApp>

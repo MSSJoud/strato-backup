@@ -90,6 +90,9 @@ node_modules/
 *.hgt.xml
 *.bin.xml
 *.xml
+!isce2_xmls/**/*.xml
+!bologna_sbas_ps_2023/xml_ps/**/*.xml
+!bologna_sbas_ps_2023/xml_sbas/**/*.xml
 
 # Raster/vector imagery and binaries
 *.tif

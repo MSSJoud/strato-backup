@@ -1,0 +1,45 @@
+
+## ===== MintPy config for Bologna HyP3 stack on cluster =====
+
+# Parallel compute setup
+mintpy.compute.cluster    = local
+mintpy.compute.numWorker  = 64
+mintpy.compute.memory     = auto
+
+# Input processor
+mintpy.load.processor     = hyp3
+
+# HyP3 product files
+mintpy.load.unwFile       = /mnt/data/aoi_3_02_bologna/*/*_unw_phase*.tif
+mintpy.load.corFile       = /mnt/data/aoi_3_02_bologna/*/*_corr*.tif
+mintpy.load.demFile       = /mnt/data/aoi_3_02_bologna/*/*_dem*.tif
+mintpy.load.incAngleFile  = /mnt/data/aoi_3_02_bologna/*/*_lv_theta*.tif
+mintpy.load.azAngleFile   = /mnt/data/aoi_3_02_bologna/*/*_lv_phi*.tif
+mintpy.load.waterMaskFile = /mnt/data/aoi_3_02_bologna/*/*_water_mask*.tif
+
+# Network pruning
+mintpy.network.maxTempBaseline = 60
+mintpy.network.maxPerpBaseline = 100
+
+# Tropospheric delay (ERA5 model)
+mintpy.troposphericDelay.method      = weatherModel
+mintpy.weatherModel.weatherModel     = ERA5
+mintpy.weatherModel.weatherDir       = /mnt/data/aoi_3_bologna_weather
+mintpy.weatherModel.weatherFile      = era5_tcwv_*.nc
+mintpy.weatherModel.heightRef        = auto
+
+# Reference point (GNSS MEDI station)
+mintpy.reference.pixelMethod   = lonlat
+mintpy.reference.lalo          = 44.5199558120, 11.6468120447
+mintpy.reference.interpMethod  = linear
+
+# Masks and unwrap settings
+mintpy.unwrapMask.connCompMinPix = 100
+mintpy.unwrapMask.maskFile       = auto
+mintpy.tempCohMask.min           = 0.6
+mintpy.waterBody.mask            = auto
+
+# Misc
+mintpy.deramp    = quadratic
+mintpy.workDir   = /mnt/data/aoi_3_02_bologna/mintpy
+
